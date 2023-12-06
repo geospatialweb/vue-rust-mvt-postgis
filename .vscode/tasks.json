@@ -6,8 +6,8 @@
       "type": "cargo",
       "command": "build",
       "args": [
-        "--package",
-        "rust",
+        "--bin",
+        "main",
         "--manifest-path",
         "${workspaceFolder}/rust/Cargo.toml"
       ],
