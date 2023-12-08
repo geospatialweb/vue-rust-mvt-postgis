@@ -1,7 +1,7 @@
 use envy;
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct Config {
     pub api_path_prefix: String,
     pub app_mode: String,
@@ -21,9 +21,7 @@ pub struct Config {
     pub postgres_dsn: String,
     pub register_endpoint: String,
     pub server_host: String,
-    pub server_message: String,
     pub server_port: String,
-    pub server_protocol: String,
     pub ssl_cert: String,
     pub ssl_key: String,
     pub update_password_endpoint: String,
