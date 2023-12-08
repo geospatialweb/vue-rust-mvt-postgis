@@ -1,8 +1,13 @@
 {
   "recommendations": [
+    "dbaeumer.vscode-eslint",
     "editorconfig.editorcon",
+    "esbenp.prettier-vscode",
+    "ms-azuretools.vscode-docker",
     "rust-lang.rust-analyzer",
+    "stylelint.vscode-stylelint",
     "tamasfe.even-better-toml",
-    "vadimcn.vscode-lldb"
+    "vadimcn.vscode-lldb",
+    "zixuanchen.vitest-explorer"
   ]
 }
