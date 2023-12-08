@@ -1,10 +1,10 @@
 [package]
 name = "rust"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 rust-version = "1.74.0"
 authors = ["John Campbell <johncampbell@geospatialweb.ca> <http://www.linkedin.com/in/geospatialweb>"]
-repository = "https://gitlab.com/geospatialweb/rust-vue3-tsx"
+repository = "https://gitlab.com/geospatialweb/rust-mvt-postgis"
 homepage = "https://www.geospatialweb.ca/"
 license = "MIT"
 publish = false
@@ -12,10 +12,11 @@ publish = false
 [dependencies]
 dotenvy = "0.15.7"
 envy = "0.4.2"
-salvo = "0.60"
+salvo = "0.60.0"
 serde = { version = "1.0", features = ["derive"] }
 tokio = { version = "1", features = ["macros"] }
+tracing-subscriber = "0.3.18"
 
 [lib]
 name = "lib"
-path="src/lib/lib.rs"
+path="src/lib/mod.rs"
