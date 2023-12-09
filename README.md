@@ -4,7 +4,7 @@ https://www.geospatialweb.ca
 
 NOTE: .env file is available upon request at johncampbell@geospatialweb.ca
 
-Development sandbox website to showcase the application integration of Rust REST API, Vue 3 Composition API, CSS Modules with vanilla CSS, TypeScript/TSX, Mapbox GL, Deck.GL, PostGIS, Martin MVT Tile Server and Docker. This implementation features isolated Map instances in separate routes.
+Development sandbox website to showcase the application integration of Rust REST API, Vue 3 Composition API, CSS Modules with vanilla CSS, TypeScript/TSX, Mapbox GL, Deck.GL, PostGIS, Martin MVT Tile Server (written in Rust) and Docker. This implementation features isolated Map instances in separate routes.
 
 In essence, this implementation is a Proof of Concept and MVP Prototype that embodies what I _consider_ to be the major tenets of the three leading JavaScript front-end frameworks, namely:
 
