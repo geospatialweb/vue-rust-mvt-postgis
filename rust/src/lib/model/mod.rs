@@ -14,3 +14,11 @@ pub struct User {
     password: Option<String>,
     username: String,
 }
+impl User {
+    pub fn new(password: &str, username: &str) -> Self {
+        Self {
+            password: Some(password.to_owned()),
+            username: username.to_owned(),
+        }
+    }
+}
