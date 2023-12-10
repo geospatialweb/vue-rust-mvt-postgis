@@ -1,0 +1,3 @@
+ALTER SYSTEM SET ssl_cert_file TO $SSL_CERT;
+ALTER SYSTEM SET ssl_key_file TO $SSL_KEY;
+ALTER SYSTEM SET ssl TO 'ON';
