@@ -1,8 +1,8 @@
 {
   "css.validate": false,
-  "eslint.validate": ["typescript", "typescriptreact"],
   "stylelint.enable": true,
-  "lldb.launch.terminal": "console",
+  "eslint.validate": ["typescript", "typescriptreact"],
+  "lldb.launch.terminal": "integrated",
   "rust-analyzer.debug.engine": "vadimcn.vscode-lldb",
   "rust-analyzer.linkedProjects": ["./rust/Cargo.toml"],
   "[rust]": {

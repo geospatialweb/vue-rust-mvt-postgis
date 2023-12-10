@@ -20,9 +20,7 @@ services:
 
   # rust:
   #   container_name: rust
-  #   build:
-  #     context: ./rust
-  #     dockerfile: Dockerfile
+  #   build: .
   #   # image: geospatialweb/rust-mvt-postgis:latest
   #   command: /app/main
   #   restart: unless-stopped
@@ -39,7 +37,7 @@ services:
   # martin:
   #   container_name: martin
   #   image: ghcr.io/maplibre/martin:latest
-  #   command: ["--config", "./config/martin.yml"]
+  #   command: ["--config", "./config/mvt.yml"]
   #   restart: unless-stopped
   #   depends_on:
   #     postgres:
