@@ -1442,8 +1442,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust"
-version = "1.0.0"
+name = "rust_mvt_postgis"
+version = "0.1.0"
 dependencies = [
  "dotenvy",
  "envy",

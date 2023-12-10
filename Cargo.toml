@@ -1,6 +1,6 @@
 [package]
-name = "rust"
-version = "1.0.0"
+name = "rust_mvt_postgis"
+version = "0.1.0"
 edition = "2021"
 rust-version = "1.74.0"
 authors = ["John Campbell <johncampbell@geospatialweb.ca> <http://www.linkedin.com/in/geospatialweb>"]
