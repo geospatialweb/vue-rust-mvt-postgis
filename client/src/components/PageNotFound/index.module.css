@@ -1,0 +1,8 @@
+.pagenotfound {
+  align-items: center;
+  background-color: var(--cream);
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}

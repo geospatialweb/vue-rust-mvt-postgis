@@ -1,0 +1,11 @@
+.deckgl {
+  background-color: var(--black);
+  bottom: 0;
+  position: absolute;
+  top: 4.5rem;
+  width: 100%;
+}
+
+.hexagonlayer {
+  top: 2.5rem;
+}

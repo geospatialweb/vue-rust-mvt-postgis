@@ -1,0 +1,78 @@
+.credentials {
+  composes: credentials from '../Authentication/index.module.css';
+}
+
+.credentials button {
+  width: 9rem;
+}
+
+.credentials div.spacer {
+  height: 1rem;
+}
+
+.credentials div.doublespacer {
+  height: 2rem;
+}
+
+.credentials p.active {
+  color: var(--strong-red);
+  cursor: default;
+  font-weight: bold;
+  text-shadow: none;
+  top: -5.8rem;
+  width: 40rem;
+}
+
+.credentials p.inactive {
+  display: none;
+}
+
+@-webkit-keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@media screen and (width <= 3840px) {
+  .credentials {
+    transform: scale(1.5) translate(-30%, -30%);
+  }
+}
+
+@media screen and (width <= 2560px) {
+  .credentials {
+    transform: scale(1.3) translate(-35%, -30%);
+  }
+}
+
+@media screen and (width <= 1920px) {
+  .credentials {
+    transform: scale(1.1) translate(-40%, -35%);
+  }
+}
+
+@media screen and (width <= 884px) and (height <= 1280px), (width <= 1280px) and (height <= 884px) {
+  .credentials {
+    transform: scale(1) translate(-50%, -40%);
+  }
+}
+
+@media screen and (width <= 430px) and (height <= 1024px), (width <= 1024px) and (height <= 430px) {
+  .credentials {
+    transform: scale(0.6) translate(-85%, -70%);
+  }
+}

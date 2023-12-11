@@ -1,0 +1,178 @@
+:root {
+  --archivo: archivo, sans-serif;
+  --michroma: michroma, sans-serif;
+  --border-radius: 0.5rem;
+  --black: rgb(0 0 0);
+  --black-alpha-30: rgba(0 0 0 / 30%);
+  --cream: rgb(230 220 210);
+  --grey: rgb(187 187 187);
+  --strong-red: rgb(187 0 0);
+  --taupe: rgb(140 130 120);
+  --dark-taupe: rgb(120 110 100);
+  --light-taupe: rgb(160 150 140);
+  --white: rgb(255 255 255);
+  --off-white: rgb(230 230 230);
+  --black-text-shadow: 0.1rem 0.1rem 0.1rem var(--black);
+  --black-bold-text-shadow: 0.2rem 0.2rem 0.2rem var(--black);
+  --cream-text-shadow: 0.1rem 0.1rem 0.1rem var(--cream);
+  --grey-border: 0.2rem solid var(--grey);
+  --thin-grey-border: 0.1rem solid var(--grey);
+  --thick-grey-border: 0.3rem solid var(--grey);
+}
+
+@font-face {
+  font-family: archivo;
+  font-display: block;
+  font-style: normal;
+  font-weight: 400;
+  src:
+    local(''),
+    url('/assets/fonts/archivo-v9-latin-regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: michroma;
+  font-display: block;
+  font-style: normal;
+  font-weight: 400;
+  src:
+    local(''),
+    url('/assets/fonts/michroma-v11-latin-regular.woff2') format('woff2');
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+  overflow: hidden;
+}
+
+body {
+  background: url('/assets/images/background.webp') no-repeat center fixed;
+  background-color: var(--black);
+  background-size: cover;
+  color: var(--black);
+  font-family: var(--archivo);
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+html,
+body,
+canvas {
+  height: 100%;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mapboxgl-marker.office {
+  background-image: url('/assets/icons/office.png');
+  height: 2.5rem;
+  width: 2rem;
+}
+
+.mapboxgl-marker.places {
+  background-image: url('/assets/icons/places.png');
+  height: 2.5rem;
+  width: 2rem;
+}
+
+.mapboxgl-marker.trails {
+  background-image: url('/assets/icons/trails.png');
+  height: 2.5rem;
+  width: 2rem;
+}
+
+.mapboxgl-popup {
+  max-width: 25rem;
+}
+
+.mapboxgl-popup-content > div.bold {
+  font-weight: bold;
+}
+
+.mapboxgl-ctrl-top-left {
+  transform: rotate(90deg) scale(1.2) translate(-1rem, -4.1rem);
+}
+
+@media screen and (width <=3840px) {
+  .mapboxgl-ctrl-top-left {
+    transform: rotate(90deg) scale(1.2) translate(-1rem, -4.1rem);
+  }
+}
+
+@media screen and (width <=3200px) {
+  .mapboxgl-ctrl-top-left {
+    transform: rotate(90deg) scale(1.1) translate(-1.6rem, -3.9rem);
+  }
+}
+
+@media screen and (width <=2560px) {
+  .mapboxgl-ctrl-top-left {
+    transform: rotate(90deg) scale(1) translate(-2.4rem, -3.8rem);
+  }
+}
+
+@media screen and (width <=1920px) {
+  .mapboxgl-ctrl-top-left {
+    transform: rotate(90deg) scale(0.9) translate(-2.9rem, -3.7rem);
+  }
+}
+
+@media screen and (width <=1110px) and (height <=1680px), (width <=1680px) and (height <=1110px) {
+  .mapboxgl-ctrl-top-left {
+    transform: rotate(90deg) scale(0.85) translate(-3rem, -3.7rem);
+  }
+}
+
+@media screen and (width <=1024px) and (height <=1440px), (width <=1440px) and (height <=1024px) {
+  .mapboxgl-ctrl-top-left {
+    transform: rotate(90deg) scale(0.8) translate(-3.3rem, -3.5rem);
+  }
+}
+
+@media screen and (width <=884px) and (height <=1280px), (width <=1280px) and (height <=884px) {
+  .mapboxgl-ctrl-top-left {
+    transform: rotate(90deg) scale(0.75) translate(-3.6rem, -3.5rem);
+  }
+}
+
+@media screen and (width <=884px) and (height <=1104px), (width <=1104px) and (height <=884px) {
+  .mapboxgl-ctrl-top-left {
+    transform: rotate(90deg) scale(0.7) translate(-4rem, -3.4rem);
+  }
+}
+
+@media screen and (width <=600px) and (height <=960px), (width <=960px) and (height <=600px) {
+  .mapboxgl-ctrl-top-left {
+    transform: rotate(90deg) scale(0.6) translate(-5.5rem, -3rem);
+  }
+}
+
+@media screen and (width <=430px) and (height <=1024px), (width <=1024px) and (height <=430px) {
+  .mapboxgl-ctrl-top-left {
+    transform: rotate(90deg) scale(0.5) translate(-6.9rem, -2.7rem);
+  }
+}
+
+@media screen and (width <=392px) and (height <=800px), (width <=800px) and (height <=392px) {
+  .mapboxgl-ctrl-top-left {
+    transform: rotate(90deg) scale(0.45) translate(-8.1rem, -2.4rem);
+  }
+}
