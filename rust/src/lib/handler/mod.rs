@@ -1,3 +1,4 @@
+// use super::database;
 use super::env::Config;
 use super::model::{LayerParams, User};
 use salvo::prelude::{handler, Request, Response};
@@ -16,25 +17,27 @@ pub async fn get_mapbox_access_token(res: &mut Response) {
 #[handler]
 pub async fn get_user(req: &mut Request, res: &mut Response) {
     let user: User = req.extract().await.unwrap();
-    res.render(serde_json::to_string(&user).unwrap());
+    let sql = format!("select username from users where id = {}", user.username);
+    println!("{:?}", sql);
+    res.render(serde_json::to_string(&user.username).unwrap());
 }
 #[handler]
 pub async fn delete_user(req: &mut Request, res: &mut Response) {
     let user: User = req.extract().await.unwrap();
-    res.render(serde_json::to_string(&user).unwrap());
+    res.render(serde_json::to_string(&user.username).unwrap());
 }
 #[handler]
 pub async fn login(req: &mut Request, res: &mut Response) {
     let user: User = req.extract().await.unwrap();
-    res.render(serde_json::to_string(&user).unwrap());
+    res.render(serde_json::to_string(&user.username).unwrap());
 }
 #[handler]
 pub async fn register(req: &mut Request, res: &mut Response) {
     let user: User = req.extract().await.unwrap();
-    res.render(serde_json::to_string(&user).unwrap());
+    res.render(serde_json::to_string(&user.username).unwrap());
 }
 #[handler]
 pub async fn update_password(req: &mut Request, res: &mut Response) {
     let user: User = req.extract().await.unwrap();
-    res.render(serde_json::to_string(&user).unwrap());
+    res.render(serde_json::to_string(&user.username).unwrap());
 }

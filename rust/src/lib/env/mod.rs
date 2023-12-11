@@ -27,7 +27,6 @@ pub struct Config {
     pub update_password_endpoint: String,
     pub validate_user_endpoint: String,
 }
-
 impl Default for Config {
     fn default() -> Self {
         envy::from_env::<Self>().unwrap()

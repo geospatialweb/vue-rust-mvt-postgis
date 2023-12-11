@@ -7,8 +7,18 @@ use salvo::prelude::Router;
 pub fn new() -> Router {
     let env: Config = Default::default();
     let cors_handler = Cors::new()
-        .allow_origin(vec!["https://www.geospatialweb.ca", "http://localhost:4173", "http://localhost:5173"])
-        .allow_methods(vec![Method::DELETE, Method::GET, Method::OPTIONS, Method::PATCH, Method::POST])
+        .allow_origin(vec![
+            "https://www.geospatialweb.ca",
+            "http://localhost:4173",
+            "http://localhost:5173"
+        ])
+        .allow_methods(vec![
+            Method::DELETE,
+            Method::GET,
+            Method::OPTIONS,
+            Method::PATCH,
+            Method::POST
+        ])
         .allow_headers(vec!["Accept", "Authorization", "Content-Type"])
         .into_handler();
     Router::with_hoop(cors_handler)

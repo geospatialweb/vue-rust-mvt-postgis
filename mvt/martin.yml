@@ -1,0 +1,26 @@
+postgres:
+  auto_publish: false
+  connection_string: $POSTGRES_DSN
+  # ssl_cert: $SSL_CERT
+  # ssl_key: $SSL_KEY
+  tables:
+    biosphere:
+      id_column: id
+      geometry_column: geom
+      geometry_type: GEOMETRY
+      schema: public
+      table: biosphere
+      srid: 4326
+      properties:
+        name: varchar
+        description: varchar
+    trails:
+      id_column: id
+      geometry_column: geom
+      geometry_type: GEOMETRY
+      schema: public
+      table: trails
+      srid: 4326
+      properties:
+        name: varchar
+        description: varchar
