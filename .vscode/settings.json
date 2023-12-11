@@ -2,7 +2,7 @@
   "css.validate": false,
   "stylelint.enable": true,
   "eslint.validate": ["typescript", "typescriptreact"],
-  "lldb.launch.terminal": "integrated",
+  "lldb.launch.terminal": "integrated", // "console"
   "rust-analyzer.debug.engine": "vadimcn.vscode-lldb",
   "rust-analyzer.linkedProjects": ["./rust/Cargo.toml"],
   "[rust]": {
@@ -10,8 +10,5 @@
   },
   "[toml]": {
     "editor.defaultFormatter": "tamasfe.even-better-toml"
-  },
-  "[typescript, typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

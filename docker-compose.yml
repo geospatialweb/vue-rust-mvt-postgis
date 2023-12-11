@@ -20,12 +20,14 @@ services:
 
   # rust:
   #   container_name: rust
-  #   build: .
+    # build:
+    #   context: ./rust
+    #   dockerfile: Dockerfile
   #   # image: geospatialweb/rust-mvt-postgis:latest
   #   command: /app/main
   #   restart: unless-stopped
   #   depends_on:
-  #     postgres:
+  #     postgis:
   #       condition: service_healthy
   #   networks:
   #     - app-network
@@ -34,34 +36,34 @@ services:
   #   # volumes:
   #   #   - /etc/letsencrypt:/etc/letsencrypt:rw
 
-  # martin:
-  #   container_name: martin
-  #   image: ghcr.io/maplibre/martin:latest
-  #   command: ["--config", "./config/mvt.yml"]
-  #   restart: unless-stopped
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - app-network
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./mvt:/config:ro
-  #     # - /etc/letsencrypt:/etc/letsencrypt:rw
+  mvt:
+    container_name: martin
+    image: ghcr.io/maplibre/martin:latest
+    command: ["--config", "./config/martin.yml"]
+    restart: unless-stopped
+    depends_on:
+      postgis:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - app-network
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./mvt:/config:ro
+      # - /etc/letsencrypt:/etc/letsencrypt:rw
 
-  postgres:
+  postgis:
     container_name: postgis
     image: kartoza/postgis:16-3.4
     restart: unless-stopped
     env_file:
       - .env
-    # healthcheck:
-    #   test: pg_isready -d $POSTGRES_DSN
-    #   interval : 5s
-    #   timeout : 5s
+    healthcheck:
+      test: pg_isready -d $POSTGRES_DSN
+      interval : 5s
+      timeout : 5s
     logging:
       options:
         max-size: 10m
@@ -71,7 +73,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres:/docker-entrypoint-initdb.d:ro
+      - ./postgis:/docker-entrypoint-initdb.d:ro
       # - /etc/letsencrypt:/etc/letsencrypt:rw
 
 networks:

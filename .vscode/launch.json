@@ -5,8 +5,20 @@
       "name": "Launch",
       "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/target/debug/main",
+      "program": "${workspaceFolder}/rust/target/debug/main",
       "preLaunchTask": "build"
+    },
+    {
+      "name": "Debug Vitest Current File",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceRoot}/vue",
+      "program": "node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}"],
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "console": "integratedTerminal",
+      "autoAttachChildProcesses": true,
+      "smartStep": true
     }
   ]
 }

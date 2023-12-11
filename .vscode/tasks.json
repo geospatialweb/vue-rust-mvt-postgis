@@ -7,7 +7,9 @@
       "command": "build",
       "args": [
         "--bin",
-        "main"
+        "main",
+        "--manifest-path",
+        "${workspaceFolder}/rust/Cargo.toml"
       ],
       "problemMatcher": ["$rustc"],
       "group": {
