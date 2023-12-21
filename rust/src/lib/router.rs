@@ -1,30 +1,41 @@
-use super::env::Config;
-use super::handler;
-use salvo::cors::Cors;
+use salvo::cors::{ Cors, CorsHandler};
 use salvo::http::Method;
+use salvo::logging::Logger;
 use salvo::prelude::Router;
 
-pub fn new() -> Router {
-    let env: Config = Default::default();
-    let cors_handler = Cors::new()
+use super::env::Config;
+use super::handler;
+
+pub fn cors() -> CorsHandler {
+    Cors::new()
         .allow_origin(vec![
             "https://www.geospatialweb.ca",
             "http://localhost:4173",
-            "http://localhost:5173"
+            "http://localhost:5173",
         ])
         .allow_methods(vec![
             Method::DELETE,
             Method::GET,
             Method::OPTIONS,
             Method::PATCH,
-            Method::POST
+            Method::POST,
         ])
-        .allow_headers(vec!["Accept", "Authorization", "Content-Type"])
-        .into_handler();
-    Router::with_hoop(cors_handler)
+        .allow_headers(vec![
+            "Accept",
+            "Authorization",
+            "Content-Type",
+        ])
+        .into_handler()
+}
+
+pub fn new() -> Router {
+    let env: Config = Default::default();
+    Router::new()
+        .hoop(cors())
+        .hoop(Logger::new())
         .push(
             Router::with_path(env.api_path_prefix)
-                // .hoop(auth_middleware)
+                // .hoop(jwt_auth_middleware)
                 .push(
                     Router::with_path(env.geojson_endpoint)
                         .get(handler::get_geojson_feature_collection),

@@ -21,7 +21,7 @@ import {
 
 export type CsvResponse = DSVRowArray<string> | void
 export type HexagonLayerData = number[][]
-export type HttpResponse = FeatureCollection | IJWT | number | string | void
+export type HttpResponse = FeatureCollection | IJWT | boolean | string | void
 export type LayerElementsHashmap = Record<string, (id: LayerId) => void>
 export type MediaQuery = Record<string, number> | undefined
 export type MediaQueryCollection = Record<string, MediaQuery>

@@ -1,4 +1,3 @@
-use envy;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -11,14 +10,10 @@ pub struct Config {
     pub delete_user_endpoint: String,
     pub geojson_endpoint: String,
     pub get_user_endpoint: String,
-    pub jwt_domain: String,
-    pub jwt_expiry: String,
-    pub jwt_secret: String,
     pub login_endpoint: String,
     pub mapbox_access_token: String,
     pub mapbox_access_token_endpoint: String,
-    pub postgres_admin_password: String,
-    pub postgres_dsn: String,
+    pub postgres_uri: String,
     pub register_endpoint: String,
     pub server_host: String,
     pub server_port: String,

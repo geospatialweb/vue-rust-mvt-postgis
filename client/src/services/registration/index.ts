@@ -14,15 +14,15 @@ export default class RegistrationService {
     if (id) {
       return this.#setCredentialsState({ isCorrect: true, isValid: false })
     }
-    const userName = await this.#registerUser(credentials)
-    if (userName !== <string>username) {
+    const isRegistered = await this.#registerUser(credentials)
+    if (!isRegistered) {
       return this.#setCredentialsState({ isCorrect: false, isValid: true })
     }
     this.#setCredentialsState({ isAdmin: false, isCorrect: true, isValid: true, ...credentials })
     await this.#setRoute('login')
   }
 
-  async #registerUser(credentials: ICredential): Promise<string> {
+  async #registerUser(credentials: ICredential): Promise<boolean> {
     return this.#credentialsService.registerUser(credentials)
   }
 
