@@ -8,12 +8,11 @@ use super::model::User;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct JwtClaims {
-    admin: bool,
-    audience: String,
-    issuer: String,
+    aud: String,
+    iss: String,
     name: String,
-    subject: String,
-    expiry: i64,
+    sub: String,
+    exp: i64,
 }
 
 #[derive(Debug, Serialize)]
@@ -22,17 +21,16 @@ pub struct Jwt {
     expiry: i64,
 }
 
-pub fn get_jwt(user: &User) -> Result<Jwt, Error> {
+pub fn get_jwt_token(user: &User) -> Result<Jwt, Error> {
     let env: Config = Default::default();
     let jwt_expiry = env.jwt_expiry.parse::<i64>().unwrap();
     let expiry = (Utc::now() + Duration::minutes(jwt_expiry)).timestamp();
     let jwt_claims = JwtClaims {
-        admin: false,
-        audience: env.jwt_domain.to_owned(),
-        issuer: env.jwt_domain.to_owned(),
+        aud: env.jwt_domain.to_owned(),
+        iss: env.jwt_domain.to_owned(),
         name: user.username.to_owned(),
-        subject: user.username.to_owned(),
-        expiry,
+        sub: user.username.to_owned(),
+        exp: expiry,
     };
     let token = jsonwebtoken::encode(
         &jsonwebtoken::Header::default(),
