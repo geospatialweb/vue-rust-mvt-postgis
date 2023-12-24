@@ -1,19 +1,22 @@
 use serde::Deserialize;
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Config {
     pub api_path_prefix: String,
     pub app_mode: String,
     pub app_mode_dev: String,
     pub app_mode_prod: String,
     pub credentials_path_prefix: String,
+    pub database_url: String,
     pub delete_user_endpoint: String,
     pub geojson_endpoint: String,
     pub get_user_endpoint: String,
+    pub jwt_domain: String,
+    pub jwt_expiry: String,
+    pub jwt_secret: String,
     pub login_endpoint: String,
     pub mapbox_access_token: String,
     pub mapbox_access_token_endpoint: String,
-    pub postgres_uri: String,
     pub register_endpoint: String,
     pub server_host: String,
     pub server_port: String,

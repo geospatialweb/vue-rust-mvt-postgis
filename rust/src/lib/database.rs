@@ -18,13 +18,13 @@ pub async fn set_pool() {
         Ok(pool) => {
             let _ = PG_POOL.set(pool);
             info!("PgPool creation success");
-        }
+        },
         Err(err) => error!("PgPool creation failure: {}", err),
     }
 }
 
 async fn connect_pool() -> Result<PgPool, Error> {
     let env: Config = Default::default();
-    let pool = PgPool::connect(&env.postgres_uri).await?;
+    let pool = PgPool::connect(&env.database_url).await?;
     Ok(pool)
 }
