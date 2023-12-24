@@ -4,7 +4,7 @@ use salvo::jwt_auth::{ConstDecoder, HeaderFinder};
 use salvo::logging::Logger;
 use salvo::prelude::{JwtAuth,Router};
 
-use super::auth::Claims;
+use super::auth::JwtClaims;
 use super::env::Config;
 use super::handler;
 
@@ -32,7 +32,7 @@ pub fn cors() -> CorsHandler {
 
 pub fn new() -> Router {
     let env: Config = Default::default();
-    let _auth_handler: JwtAuth<Claims, _> = JwtAuth::new(ConstDecoder::from_secret(env.jwt_secret.as_bytes()))
+    let auth_handler: JwtAuth<JwtClaims, _> = JwtAuth::new(ConstDecoder::from_secret(env.jwt_secret.as_bytes()))
         .finders(vec![Box::new(HeaderFinder::new())])
         .force_passed(true);
     Router::new()
@@ -40,7 +40,7 @@ pub fn new() -> Router {
         .hoop(Logger::new())
         .push(
             Router::with_path(env.api_path_prefix)
-                // .hoop(auth_handler)
+                .hoop(auth_handler)
                 .push(Router::with_path(env.geojson_endpoint).get(handler::get_geojson_feature_collection))
                 .push(Router::with_path(env.mapbox_access_token_endpoint).get(handler::get_mapbox_access_token))
                 .push(Router::with_path(env.get_user_endpoint).get(handler::get_user))

@@ -7,7 +7,7 @@ use super::env::Config;
 use super::model::User;
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct Claims {
+pub struct JwtClaims {
     admin: bool,
     audience: String,
     issuer: String,
@@ -26,7 +26,7 @@ pub fn get_jwt(user: &User) -> Result<Jwt, Error> {
     let env: Config = Default::default();
     let jwt_expiry = env.jwt_expiry.parse::<i64>().unwrap();
     let expiry = (Utc::now() + Duration::minutes(jwt_expiry)).timestamp();
-    let claims = Claims {
+    let jwt_claims = JwtClaims {
         admin: false,
         audience: env.jwt_domain.to_owned(),
         issuer: env.jwt_domain.to_owned(),
@@ -36,7 +36,7 @@ pub fn get_jwt(user: &User) -> Result<Jwt, Error> {
     };
     let token = jsonwebtoken::encode(
         &jsonwebtoken::Header::default(),
-        &claims,
+        &jwt_claims,
         &EncodingKey::from_secret(env.jwt_secret.as_bytes()),
     )?;
     Ok(Jwt { token, expiry })
