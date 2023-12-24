@@ -3,7 +3,7 @@ use sqlx::FromRow;
 use std::str::FromStr;
 use tracing::error;
 
-#[derive(FromRow)]
+#[derive(Debug, FromRow)]
 pub struct JsonFeature {
     pub feature: String,
 }
@@ -22,10 +22,10 @@ pub fn create_feature_collection(json_features: &[JsonFeature]) -> FeatureCollec
             error!("geojson feature creation failure: {}", err);
             FeatureCollection {
                 bbox: None,
-                features: Vec::new(),
+                features: vec![],
                 foreign_members: None,
             }
-        }
+        },
     }
 }
 

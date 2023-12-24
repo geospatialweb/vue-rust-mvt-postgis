@@ -1,6 +1,7 @@
 import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
+import { routes } from '@/configuration'
 import { ICredential } from '@/interfaces'
 import { AuthenticationService, CredentialsService } from '@/services'
 import styles from './index.module.css'
@@ -9,6 +10,7 @@ export default defineComponent({
   name: 'Authentication',
   setup() {
     const { active, inactive, credentials, spacer, doublespacer } = styles,
+      { register } = routes,
       authenticationService = Container.get(AuthenticationService),
       credentialsService = Container.get(CredentialsService),
       getCredentialsState = (): ICredential => {
@@ -41,16 +43,45 @@ export default defineComponent({
               <h1>Welcome to Geospatial Web</h1>
               <label for="username">Username:</label>
               {isAdmin ? (
-                <input id="username" type="email" value={username} />
+                /* prettier-ignore */
+                <input
+                  id="username"
+                  name="username"
+                  type="email"
+                  autocomplete="username"
+                  value={username}
+                  required
+                />
               ) : (
-                <input id="username" type="email" placeholder="Enter Email Address" />
+                <input
+                  id="username"
+                  name="username"
+                  type="email"
+                  autocomplete="username"
+                  placeholder="Enter Email Address"
+                  required
+                />
               )}
               <div class={spacer}></div>
               <label for="password">Password:</label>
               {isAdmin ? (
-                <input id="password" type="password" value={password} />
+                /* prettier-ignore */
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autocomplete="off"
+                  value={password}
+                  required />
               ) : (
-                <input id="password" type="password" placeholder="Enter Password" />
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autocomplete="off"
+                  placeholder="Enter Password"
+                  required
+                />
               )}
               <div class={spacer}></div>
               <button type="submit">Login</button>
@@ -58,7 +89,7 @@ export default defineComponent({
           </form>
           <div class={doublespacer}></div>
           <router-link
-            to={{ name: 'register' }}
+            to={{ name: register }}
             onClick={(): void => setCredentialsState({ isCorrect: true, isValid: true })}
           >
             Optional Registration

@@ -1,16 +1,20 @@
+import { routes } from '@/configuration'
+import { IRoutes } from '@/interfaces'
 import { Authentication, Deck, Mapbox, PageNotFound, Registration } from '@/views'
 
-const baseURL = import.meta.env.BASE_URL
+const { deckgl, login, mapbox, pageNotFound, register }: IRoutes = routes,
+  baseURL = import.meta.env.BASE_URL
 
 export default {
   credentials: {
     password: 'Click_Login',
     username: 'johncampbell@geospatialweb.ca'
   },
+  expiry: 1681334027,
   initialZoom: 10,
   initialZoomFactor: 0.9,
-  jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiYXVkIjoiZ2Vvc3BhdGlhbHdlYi5jYSIsImV4cCI6MTY4MDgwNzg3NCwiaXNzIjoiZ2Vvc3BhdGlhbHdlYi5jYSIsIm5hbWUiOiJqb2huY2FtcGJlbGxAZ2Vvc3BhdGlhbHdlYi5jYSIsInN1YiI6IjEifQ.1zNsIABBvgKvm2F4Z_Gf78f-MgoPqJcuFQKU_fhbZz8',
-  jwtExpiry: 1681334027,
+  token:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiYXVkIjoiZ2Vvc3BhdGlhbHdlYi5jYSIsImV4cCI6MTY4MDgwNzg3NCwiaXNzIjoiZ2Vvc3BhdGlhbHdlYi5jYSIsIm5hbWUiOiJqb2huY2FtcGJlbGxAZ2Vvc3BhdGlhbHdlYi5jYSIsInN1YiI6IjEifQ.1zNsIABBvgKvm2F4Z_Gf78f-MgoPqJcuFQKU_fhbZz8',
   layer: {
     type: 'FeatureCollection',
     features: [
@@ -109,31 +113,31 @@ export default {
   routes: [
     {
       path: baseURL,
-      redirect: 'login'
+      redirect: login
     },
     {
-      path: `${baseURL}login`,
-      name: 'login',
+      path: `${baseURL}${login}`,
+      name: login,
       component: Authentication
     },
     {
-      path: `${baseURL}register`,
-      name: 'register',
+      path: `${baseURL}${register}`,
+      name: register,
       component: Registration
     },
     {
-      path: `${baseURL}deckgl`,
-      name: 'deckgl',
+      path: `${baseURL}${deckgl}`,
+      name: deckgl,
       component: Deck
     },
     {
-      path: `${baseURL}mapbox`,
-      name: 'mapbox',
+      path: `${baseURL}${mapbox}`,
+      name: mapbox,
       component: Mapbox
     },
     {
       path: `${baseURL}:pathMatch(.*)*`,
-      name: '404',
+      name: pageNotFound,
       component: PageNotFound
     }
   ],

@@ -1,6 +1,7 @@
 import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
+import { routes } from '@/configuration'
 import { ICredential } from '@/interfaces'
 import { CredentialsService, RegistrationService } from '@/services'
 import styles from './index.module.css'
@@ -9,6 +10,7 @@ export default defineComponent({
   name: 'Registration',
   setup() {
     const { active, inactive, credentials, spacer, doublespacer } = styles,
+      { login } = routes,
       credentialsService = Container.get(CredentialsService),
       registrationService = Container.get(RegistrationService),
       getCredentialsState = (): ICredential => {
@@ -40,17 +42,31 @@ export default defineComponent({
             <fieldset>
               <h1>Welcome to Geospatial Web</h1>
               <label for="username">Username:</label>
-              <input id="username" type="email" placeholder="Enter Email Address" />
+              <input
+                id="username"
+                name="username"
+                type="email"
+                autocomplete="off"
+                placeholder="Enter Email Address"
+                required
+              />
               <div class={spacer}></div>
               <label for="password">Password:</label>
-              <input id="password" type="password" placeholder="Enter Password" />
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="off"
+                placeholder="Enter Password"
+                required
+              />
               <div class={spacer}></div>
               <button type="submit">Register</button>
             </fieldset>
           </form>
           <div class={doublespacer}></div>
           <router-link
-            to={{ name: 'login' }}
+            to={{ name: login }}
             onClick={(): void => setCredentialsState({ isCorrect: true, isValid: true })}
           >
             Already Registered?

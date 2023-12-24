@@ -20,14 +20,14 @@ export default class CredentialsService {
     this.#storeService.setState(this.#storeStates.CREDENTIALS, state)
   }
 
-  async loginUser(credentials: ICredential): Promise<IJWT> {
+  async login(credentials: ICredential): Promise<IJWT> {
     const params = <AxiosRequestConfig>{ params: { ...credentials } }
     return <IJWT>await this.#httpService.get(this.#endpoint.LOGIN_ENDPOINT, '', params)
   }
 
-  async registerUser(credentials: ICredential): Promise<boolean> {
+  async register(credentials: ICredential): Promise<string> {
     const body = <AxiosRequestConfig>{ ...credentials }
-    return <boolean>await this.#httpService.post(this.#endpoint.REGISTER_ENDPOINT, '', body)
+    return <string>await this.#httpService.post(this.#endpoint.REGISTER_ENDPOINT, '', body)
   }
 
   async validateUser(username: string): Promise<string> {

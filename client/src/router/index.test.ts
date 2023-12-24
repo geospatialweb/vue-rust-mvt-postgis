@@ -37,7 +37,7 @@ describe('router test suite', (): void => {
     expect(mapbox).toBeInTheDocument()
   })
 
-  test('set 404 route', async (): Promise<void> => {
+  test('set pageNotFound route', async (): Promise<void> => {
     render(PageNotFound, { global: { plugins: [router] } })
     const pageNotFound = screen.getAllByRole('presentation')[0]
     await router.push(`${baseURL}abc`)
