@@ -1,8 +1,7 @@
-// use salvo::http::{StatusCode, StatusError};
-use salvo::http::StatusCode;
+use garde::Validate;
+use salvo::http::{ParseError, StatusCode, StatusError};
 use salvo::macros::Extractible;
-// use salvo::prelude::{handler, Depot, JwtAuthDepotExt, JwtAuthState, Request, Response};
-use salvo::prelude::{handler, Request, Response};
+use salvo::prelude::{handler, Depot, JwtAuthDepotExt, JwtAuthState, Request, Response};
 use serde::Deserialize;
 use serde_json::json;
 use tracing::error;
@@ -10,6 +9,7 @@ use tracing::error;
 use super::auth;
 use super::env::Config;
 use super::geojson;
+use super::model::User;
 use super::query;
 
 #[derive(Debug, Deserialize, Extractible)]
@@ -37,31 +37,34 @@ pub async fn get_geojson_feature_collection(req: &mut Request, res: &mut Respons
     }
 }
 #[handler]
-// pub async fn get_mapbox_access_token(_depot: &mut Depot, res: &mut Response) {
-pub async fn get_mapbox_access_token(res: &mut Response) {
-    // match depot.jwt_auth_state() {
-    //     JwtAuthState::Authorized => {
+pub async fn get_mapbox_access_token(depot: &mut Depot, res: &mut Response) {
+    match depot.jwt_auth_state() {
+        JwtAuthState::Authorized => {
             let env: Config = Default::default();
             res.status_code(StatusCode::OK)
                .render(json!(&env.mapbox_access_token).to_string());
-    //     }
-    //     JwtAuthState::Unauthorized => {
-    //         res.render(StatusError::unauthorized());
-    //     }
-    //     JwtAuthState::Forbidden => {
-    //         res.render(StatusError::forbidden());
-    //     }
-    // }
+        },
+        JwtAuthState::Unauthorized => {
+            res.render(StatusError::unauthorized());
+        },
+        JwtAuthState::Forbidden => {
+            res.render(StatusError::forbidden());
+        },
+    }
 }
 
 #[handler]
 pub async fn get_user(req: &mut Request, res: &mut Response) {
-    let user = req.extract().await.unwrap();
-    let user = query::get_user(&user).await;
+    let user: Result<User, ParseError>  = req.extract().await;
+    if let Err(err) = user.as_ref().unwrap().validate(&()) {
+        return error!("username validation failure: {}", err);
+    }
+    let user = query::get_user(user.as_ref().unwrap()).await;
     match user {
-        Ok(user) => res
-            .status_code(StatusCode::OK)
-            .render(json!(&user.username).to_string()),
+        Ok(user) => {
+            res.status_code(StatusCode::OK)
+               .render(json!(&user.username).to_string())
+        },
         Err(err) => {
             error!("get_user error: {}", err);
             res.status_code(StatusCode::BAD_REQUEST)
@@ -71,12 +74,16 @@ pub async fn get_user(req: &mut Request, res: &mut Response) {
 }
 #[handler]
 pub async fn delete_user(req: &mut Request, res: &mut Response) {
-    let user = req.extract().await.unwrap();
-    let user = query::delete_user(&user).await;
+    let user: Result<User, ParseError>  = req.extract().await;
+    if let Err(err) = user.as_ref().unwrap().validate(&()) {
+        return error!("username validation failure: {}", err);
+    };
+    let user = query::delete_user(user.as_ref().unwrap()).await;
     match user {
-        Ok(user) => res
-            .status_code(StatusCode::OK)
-            .render(json!(&user.username).to_string()),
+        Ok(user) => {
+            res.status_code(StatusCode::OK)
+               .render(json!(&user.username).to_string())
+        },
         Err(err) => {
             error!("delete_user error: {}", err);
             res.status_code(StatusCode::BAD_REQUEST)
@@ -86,15 +93,19 @@ pub async fn delete_user(req: &mut Request, res: &mut Response) {
 }
 #[handler]
 pub async fn login(req: &mut Request, res: &mut Response) {
-    let user = req.extract().await.unwrap();
-    let user = query::get_user(&user).await;
+    let user: Result<User, ParseError>  = req.extract().await;
+    if let Err(err) = user.as_ref().unwrap().validate(&()) {
+        return error!("username validation failure: {}", err);
+    };
+    let user = query::get_user(user.as_ref().unwrap()).await;
     match user {
         Ok(user) => {
             let jwt = auth::get_jwt(&user);
             match jwt {
-                Ok(jwt) => res
-                    .status_code(StatusCode::OK)
-                    .render(json!(&jwt).to_string()),
+                Ok(jwt) => {
+                    res.status_code(StatusCode::OK)
+                       .render(json!(&jwt).to_string())
+                },
                 Err(err) => {
                     error!("jwt creation error: {}", err);
                     res.status_code(StatusCode::UNAUTHORIZED)
@@ -111,12 +122,16 @@ pub async fn login(req: &mut Request, res: &mut Response) {
 }
 #[handler]
 pub async fn register(req: &mut Request, res: &mut Response) {
-    let user = req.extract().await.unwrap();
-    let user = query::insert_user(&user).await;
+    let user: Result<User, ParseError>  = req.extract().await;
+    if let Err(err) = user.as_ref().unwrap().validate(&()) {
+        return error!("username validation failure: {}", err);
+    };
+    let user = query::insert_user(user.as_ref().unwrap()).await;
     match user {
-        Ok(user) => res
-            .status_code(StatusCode::OK)
-            .render(json!(&user.username).to_string()),
+        Ok(user) => {
+            res.status_code(StatusCode::OK)
+               .render(json!(&user.username).to_string())
+        },
         Err(err) => {
             error!("register error: {}", err);
             res.status_code(StatusCode::BAD_REQUEST)
@@ -126,12 +141,16 @@ pub async fn register(req: &mut Request, res: &mut Response) {
 }
 #[handler]
 pub async fn update_password(req: &mut Request, res: &mut Response) {
-    let user = req.extract().await.unwrap();
-    let user = query::update_password(&user).await;
+    let user: Result<User, ParseError>  = req.extract().await;
+    if let Err(err) = user.as_ref().unwrap().validate(&()) {
+        return error!("username validation failure: {}", err);
+    };
+    let user = query::update_password(user.as_ref().unwrap()).await;
     match user {
-        Ok(user) => res
-            .status_code(StatusCode::OK)
-            .render(json!(&user.username).to_string()),
+        Ok(user) => {
+            res.status_code(StatusCode::OK)
+               .render(json!(&user.username).to_string())
+        },
         Err(err) => {
             error!("update_password error: {}", err);
             res.status_code(StatusCode::BAD_REQUEST)
