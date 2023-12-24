@@ -19,16 +19,12 @@ async fn main() {
     let env: Config = Default::default();
     let host = format!("{}:{}", env.server_host, env.server_port);
     if env.app_mode == env.app_mode_dev {
-        let acceptor = TcpListener::new(&host)
-            .bind()
-            .await;
+        let acceptor = TcpListener::new(&host).bind().await;
         let service = Service::new(router::new())
             .catcher(Catcher::default()
                 .hoop(router::cors())
             );
-        Server::new(acceptor)
-            .serve(service)
-            .await;
+        Server::new(acceptor).serve(service).await;
     }
     if env.app_mode == env.app_mode_prod {
         let config = RustlsConfig::new(
@@ -44,8 +40,6 @@ async fn main() {
             .catcher(Catcher::default()
                 .hoop(router::cors())
             );
-        Server::new(acceptor)
-            .serve(service)
-            .await;
+        Server::new(acceptor).serve(service).await;
     }
 }
