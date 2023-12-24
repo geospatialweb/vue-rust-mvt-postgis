@@ -15,57 +15,57 @@ describe('HttpService test suite', (): void => {
   test('delete method should be called', async (): Promise<void> => {
     const { DELETE_USER_ENDPOINT } = Endpoint,
       /* prettier-ignore */
-      { credentials: { username }, jwt } = testData,
+      { credentials: { username }, token } = testData,
       params = { params: { username } },
       spy = vi.spyOn(httpService, 'delete')
-    await httpService.delete(DELETE_USER_ENDPOINT, jwt, <AxiosRequestConfig>params)
+    await httpService.delete(DELETE_USER_ENDPOINT, token, <AxiosRequestConfig>params)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(DELETE_USER_ENDPOINT, jwt, <AxiosRequestConfig>params)
+    expect(spy).toHaveBeenCalledWith(DELETE_USER_ENDPOINT, token, <AxiosRequestConfig>params)
     expect(spy).toHaveReturnedTimes(1)
   })
 
   test('get method should be called', async (): Promise<void> => {
     const { GEOJSON_ENDPOINT } = Endpoint,
       /* prettier-ignore */
-      { jwt, queryParams: { columns, id } } = testData,
+      { token, queryParams: { columns, id } } = testData,
       params = { params: { columns, table: id } },
       spy = vi.spyOn(httpService, 'get')
-    await httpService.get(GEOJSON_ENDPOINT, jwt, <AxiosRequestConfig>params)
+    await httpService.get(GEOJSON_ENDPOINT, token, <AxiosRequestConfig>params)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(GEOJSON_ENDPOINT, jwt, <AxiosRequestConfig>params)
+    expect(spy).toHaveBeenCalledWith(GEOJSON_ENDPOINT, token, <AxiosRequestConfig>params)
     expect(spy).toHaveReturnedTimes(1)
   })
 
   test('patch method should be called', async (): Promise<void> => {
     const { UPDATE_PASSWORD_ENDPOINT } = Endpoint,
-      { credentials, jwt } = testData,
+      { credentials, token } = testData,
       params = { params: { ...credentials } },
       spy = vi.spyOn(httpService, 'patch')
-    await httpService.patch(UPDATE_PASSWORD_ENDPOINT, jwt, <AxiosRequestConfig>params)
+    await httpService.patch(UPDATE_PASSWORD_ENDPOINT, token, <AxiosRequestConfig>params)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(UPDATE_PASSWORD_ENDPOINT, jwt, <AxiosRequestConfig>params)
+    expect(spy).toHaveBeenCalledWith(UPDATE_PASSWORD_ENDPOINT, token, <AxiosRequestConfig>params)
     expect(spy).toHaveReturnedTimes(1)
   })
 
   test('post method should be called', async (): Promise<void> => {
     const { REGISTER_ENDPOINT } = Endpoint,
-      { jwt, requestBody } = testData,
+      { token, requestBody } = testData,
       body = { ...requestBody },
       spy = vi.spyOn(httpService, 'post')
-    await httpService.post(REGISTER_ENDPOINT, jwt, <AxiosRequestConfig>body)
+    await httpService.post(REGISTER_ENDPOINT, token, <AxiosRequestConfig>body)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(REGISTER_ENDPOINT, jwt, <AxiosRequestConfig>body)
+    expect(spy).toHaveBeenCalledWith(REGISTER_ENDPOINT, token, <AxiosRequestConfig>body)
     expect(spy).toHaveReturnedTimes(1)
   })
 
   test('put method should be called', async (): Promise<void> => {
     const { REGISTER_ENDPOINT } = Endpoint,
-      { jwt, requestBody } = testData,
+      { token, requestBody } = testData,
       body = { ...requestBody },
       spy = vi.spyOn(httpService, 'put')
-    await httpService.put(REGISTER_ENDPOINT, jwt, <AxiosRequestConfig>body)
+    await httpService.put(REGISTER_ENDPOINT, token, <AxiosRequestConfig>body)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(REGISTER_ENDPOINT, jwt, <AxiosRequestConfig>body)
+    expect(spy).toHaveBeenCalledWith(REGISTER_ENDPOINT, token, <AxiosRequestConfig>body)
     expect(spy).toHaveReturnedTimes(1)
   })
 })

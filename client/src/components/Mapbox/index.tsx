@@ -20,8 +20,8 @@ export default defineComponent({
       modalService = Container.get(ModalService),
       getMapboxAccessToken = async (): Promise<void> => {
         /* prettier-ignore */
-        const { jwtState: { jwt }, mapboxAccessToken } = authorizationService
-        if (!mapboxAccessToken) await authorizationService.getMapboxAccessToken(jwt)
+        const { jwtState: { token }, mapboxAccessToken } = authorizationService
+        if (!mapboxAccessToken) await authorizationService.getMapboxAccessToken(token)
       },
       loadMap = (): void => mapboxService.loadMap(),
       removeMapResources = (): void => mapboxService.removeMapResources(),
