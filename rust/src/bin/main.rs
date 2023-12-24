@@ -13,8 +13,7 @@ use lib::router;
 async fn main() {
     tracing_subscriber::fmt().init();
     if let Err(err) = dotenv() {
-        error!("dotenv error: {}", err);
-        return;
+        return error!("dotenv error: {}", err);
     }
     database::set_pool().await;
     let env: Config = Default::default();
