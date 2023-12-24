@@ -13,20 +13,20 @@ describe('AuthorizationService test suite', (): void => {
   })
 
   test('getMapboxAccessToken method should be called', async (): Promise<void> => {
-    const { jwt } = testData,
+    const { token } = testData,
       spy = vi.spyOn(authorizationService, 'getMapboxAccessToken')
-    await authorizationService.getMapboxAccessToken(jwt)
+    await authorizationService.getMapboxAccessToken(token)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(jwt)
+    expect(spy).toHaveBeenCalledWith(token)
     expect(spy).toHaveReturnedTimes(1)
   })
 
   test('setJWTState method should be called', (): void => {
-    const { jwt, jwtExpiry } = testData,
+    const { token, expiry } = testData,
       spy = vi.spyOn(authorizationService, 'setJWTState')
-    authorizationService.setJWTState({ jwt, jwtExpiry })
+    authorizationService.setJWTState({ token, expiry })
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith({ jwt, jwtExpiry })
+    expect(spy).toHaveBeenCalledWith({ token, expiry })
     expect(spy).toHaveReturnedTimes(1)
   })
 })

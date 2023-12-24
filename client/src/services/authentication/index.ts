@@ -1,6 +1,7 @@
 import { Container, Service } from 'typedi'
 
-import { ICredential, IJWT } from '@/interfaces'
+import { routes } from '@/configuration'
+import { ICredential, IJWT, IRoutes } from '@/interfaces'
 import { AuthorizationService, CredentialsService, MarkerService, RouterService } from '@/services'
 
 @Service()
@@ -9,6 +10,7 @@ export default class AuthenticationService {
   #credentialsService = Container.get(CredentialsService)
   #markerService = Container.get(MarkerService)
   #routerService = Container.get(RouterService)
+  #routes: IRoutes = routes
 
   async login(credentials: ICredential): Promise<void> {
     const { username } = credentials,
@@ -16,26 +18,27 @@ export default class AuthenticationService {
     if (!id) {
       return this.#setCredentialsState({ isCorrect: true, isValid: false })
     }
-    const auth = await this.#loginUser(credentials)
+    const auth = await this.#login(credentials)
     if (!auth) {
       return this.#setCredentialsState({ isCorrect: false, isValid: true })
     }
     this.#setCredentialsState({ isCorrect: true, isValid: true, ...credentials })
-    const { jwt, jwtExpiry } = auth
-    if (!jwt || !jwtExpiry) {
+    const { token, expiry } = auth
+    if (!token || !expiry) {
       return this.#consoleError('undefined JWT')
     }
-    this.#setJWTState({ jwt, jwtExpiry })
-    await this.#setMarkerFeatures(jwt)
-    await this.#setRoute('mapbox')
+    const { mapbox } = this.#routes
+    this.#setJWTState({ token, expiry })
+    await this.#setMarkerFeatures(token)
+    await this.#setRoute(mapbox)
   }
 
-  async #loginUser(credentials: ICredential): Promise<IJWT> {
-    return this.#credentialsService.loginUser(credentials)
+  async #login(credentials: ICredential): Promise<IJWT> {
+    return this.#credentialsService.login(credentials)
   }
 
-  async #setMarkerFeatures(jwt: string): Promise<void> {
-    await this.#markerService.setMarkerFeatures(jwt)
+  async #setMarkerFeatures(token: string): Promise<void> {
+    await this.#markerService.setMarkerFeatures(token)
   }
 
   async #setRoute(name: string): Promise<void> {
@@ -50,8 +53,8 @@ export default class AuthenticationService {
     this.#credentialsService.setCredentialsState(state)
   }
 
-  #setJWTState({ jwt, jwtExpiry }: IJWT): void {
-    this.#authorizationService.setJWTState({ jwt, jwtExpiry })
+  #setJWTState({ token, expiry }: IJWT): void {
+    this.#authorizationService.setJWTState({ token, expiry })
   }
 
   #consoleError(msg: string): void {
