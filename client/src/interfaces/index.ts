@@ -105,8 +105,8 @@ export interface IHttpResponseError {
 }
 
 export interface IJWT {
-  jwt: string
-  jwtExpiry: number
+  expiry: number
+  token: string
 }
 
 export interface ILayer {
@@ -219,6 +219,19 @@ export interface INavigationControl {
 export interface IQueryParam {
   columns: string
   id: string
+}
+
+export interface IRoutes {
+  deckgl: string
+  login: string
+  mapbox: string
+  pageNotFound: string
+  register: string
+}
+
+export interface ISlot {
+  id: string
+  text: string
 }
 
 export interface IStoreState {
