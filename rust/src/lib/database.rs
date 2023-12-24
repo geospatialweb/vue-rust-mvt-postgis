@@ -23,6 +23,7 @@ pub async fn set_pool() {
     }
 }
 
+#[tracing::instrument]
 async fn connect_pool() -> Result<PgPool, Error> {
     let env: Config = Default::default();
     let pool = PgPool::connect(&env.database_url).await?;

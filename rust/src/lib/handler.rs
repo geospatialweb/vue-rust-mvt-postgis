@@ -22,6 +22,7 @@ pub struct LayerParams {
 }
 
 #[handler]
+#[tracing::instrument]
 pub async fn get_geojson_feature_collection(req: &mut Request, res: &mut Response) {
     let params: Result<LayerParams, ParseError>  = req.extract().await;
     if let Err(err) = params.as_ref().unwrap().validate(&()) {
@@ -42,6 +43,7 @@ pub async fn get_geojson_feature_collection(req: &mut Request, res: &mut Respons
     }
 }
 #[handler]
+#[tracing::instrument]
 pub async fn get_mapbox_access_token(depot: &mut Depot, res: &mut Response) {
     match depot.jwt_auth_state() {
         JwtAuthState::Authorized => {
@@ -59,6 +61,7 @@ pub async fn get_mapbox_access_token(depot: &mut Depot, res: &mut Response) {
 }
 
 #[handler]
+#[tracing::instrument]
 pub async fn get_user(req: &mut Request, res: &mut Response) {
     let user: Result<User, ParseError>  = req.extract().await;
     if let Err(err) = user.as_ref().unwrap().validate(&()) {
@@ -78,6 +81,7 @@ pub async fn get_user(req: &mut Request, res: &mut Response) {
     }
 }
 #[handler]
+#[tracing::instrument]
 pub async fn delete_user(req: &mut Request, res: &mut Response) {
     let user: Result<User, ParseError>  = req.extract().await;
     if let Err(err) = user.as_ref().unwrap().validate(&()) {
@@ -97,6 +101,7 @@ pub async fn delete_user(req: &mut Request, res: &mut Response) {
     }
 }
 #[handler]
+#[tracing::instrument]
 pub async fn login(req: &mut Request, res: &mut Response) {
     let user: Result<User, ParseError>  = req.extract().await;
     if let Err(err) = user.as_ref().unwrap().validate(&()) {
@@ -105,7 +110,7 @@ pub async fn login(req: &mut Request, res: &mut Response) {
     let user = query::get_user(user.as_ref().unwrap()).await;
     match user {
         Ok(user) => {
-            let jwt = auth::get_jwt(&user);
+            let jwt = auth::get_jwt_token(&user);
             match jwt {
                 Ok(jwt) => {
                     res.status_code(StatusCode::OK)
@@ -126,6 +131,7 @@ pub async fn login(req: &mut Request, res: &mut Response) {
     }
 }
 #[handler]
+#[tracing::instrument]
 pub async fn register(req: &mut Request, res: &mut Response) {
     let user: Result<User, ParseError>  = req.extract().await;
     if let Err(err) = user.as_ref().unwrap().validate(&()) {
@@ -145,6 +151,7 @@ pub async fn register(req: &mut Request, res: &mut Response) {
     }
 }
 #[handler]
+#[tracing::instrument]
 pub async fn update_password(req: &mut Request, res: &mut Response) {
     let user: Result<User, ParseError>  = req.extract().await;
     if let Err(err) = user.as_ref().unwrap().validate(&()) {
@@ -158,6 +165,26 @@ pub async fn update_password(req: &mut Request, res: &mut Response) {
         },
         Err(err) => {
             error!("update_password error: {}", err);
+            res.status_code(StatusCode::BAD_REQUEST)
+               .render(json!(format!("{}", err)).to_string())
+        },
+    }
+}
+#[handler]
+#[tracing::instrument]
+pub async fn validate_user(req: &mut Request, res: &mut Response) {
+    let user: Result<User, ParseError>  = req.extract().await;
+    if let Err(err) = user.as_ref().unwrap().validate(&()) {
+        return error!("username validation failure: {}", err);
+    }
+    let user = query::get_user(user.as_ref().unwrap()).await;
+    match user {
+        Ok(user) => {
+            res.status_code(StatusCode::OK)
+               .render(json!(&user.username).to_string())
+        },
+        Err(err) => {
+            error!("get_user error: {}", err);
             res.status_code(StatusCode::BAD_REQUEST)
                .render(json!(format!("{}", err)).to_string())
         },

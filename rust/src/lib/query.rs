@@ -5,6 +5,7 @@ use super::geojson::JsonFeature;
 use super::handler::LayerParams;
 use super::model::User;
 
+#[tracing::instrument]
 pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Error> {
     let query = format!(
         "
@@ -22,6 +23,7 @@ pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Erro
     Ok(features)
 }
 
+#[tracing::instrument]
 pub async fn get_user(user: &User) -> Result<User, Error> {
     let query =
         "
@@ -40,6 +42,7 @@ pub async fn get_user(user: &User) -> Result<User, Error> {
     Ok(user)
 }
 
+#[tracing::instrument]
 pub async fn delete_user(user: &User) -> Result<User, Error> {
     let query =
         "
@@ -58,6 +61,7 @@ pub async fn delete_user(user: &User) -> Result<User, Error> {
     Ok(user)
 }
 
+#[tracing::instrument]
 pub async fn insert_user(user: &User) -> Result<User, Error> {
     let query =
         "
@@ -77,6 +81,7 @@ pub async fn insert_user(user: &User) -> Result<User, Error> {
     Ok(user)
 }
 
+#[tracing::instrument]
 pub async fn update_password(user: &User) -> Result<User, Error> {
     let user = sqlx::query_as!(
         User,
