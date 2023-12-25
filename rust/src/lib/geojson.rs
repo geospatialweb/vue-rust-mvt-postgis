@@ -25,7 +25,7 @@ pub fn create_feature_collection(json_features: &[JsonFeature]) -> FeatureCollec
                 features: vec![],
                 foreign_members: None,
             }
-        },
+        }
     }
 }
 
