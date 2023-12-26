@@ -1,3 +1,5 @@
+#![cfg_attr(rustfmt, rustfmt_skip)]
+
 use sqlx::{Error, Row};
 
 use super::database::get_pool;
@@ -12,8 +14,8 @@ pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Erro
         AS feature
         FROM (SELECT {} FROM {})
         AS feature",
-        params.columns, params.table
-    );
+        params.columns,
+        params.table);
     let features = sqlx::query_as::<_, JsonFeature>(&query)
         .fetch_all(get_pool())
         .await?;
