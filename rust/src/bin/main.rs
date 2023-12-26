@@ -1,3 +1,5 @@
+#![cfg_attr(rustfmt, rustfmt_skip)]
+
 use dotenvy::dotenv;
 use salvo::catcher::Catcher;
 use salvo::conn::rustls::{Keycert, RustlsConfig};
@@ -23,7 +25,7 @@ async fn main() {
         let service = Service::new(router::new())
             .catcher(Catcher::default()
                 .hoop(router::cors())
-            );
+        );
         Server::new(acceptor).serve(service).await;
     }
     if env.app_mode == env.app_mode_prod {
@@ -39,7 +41,7 @@ async fn main() {
         let service = Service::new(router::new())
             .catcher(Catcher::default()
                 .hoop(router::cors())
-            );
+        );
         Server::new(acceptor).serve(service).await;
     }
 }

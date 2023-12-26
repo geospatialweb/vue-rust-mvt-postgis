@@ -1,3 +1,5 @@
+#![cfg_attr(rustfmt, rustfmt_skip)]
+
 use salvo::cors::{Cors, CorsHandler};
 use salvo::http::Method;
 use salvo::jwt_auth::{ConstDecoder, HeaderFinder};
