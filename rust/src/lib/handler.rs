@@ -5,14 +5,13 @@ use salvo::http::{ParseError, StatusCode, StatusError};
 use salvo::macros::Extractible;
 use salvo::prelude::{handler, Depot, JwtAuthDepotExt, JwtAuthState, Request, Response};
 use serde::Deserialize;
-use serde_json::json;
 use tracing::error;
 
 use super::auth;
-use super::env::Config;
 use super::geojson;
 use super::model::User;
 use super::query;
+use super::response;
 
 #[derive(Debug, Deserialize, Extractible, Validate)]
 #[salvo(extract(default_source(from = "query")))]
@@ -29,77 +28,72 @@ pub async fn get_geojson_feature_collection(depot: &mut Depot, req: &mut Request
     match depot.jwt_auth_state() {
         JwtAuthState::Authorized => {
             let params: Result<LayerParams, ParseError> = req.extract().await;
-            if let Err(err) = params.as_ref().unwrap().validate(&()) {
-                return error!("layer params validation failure: {}", err);
-            }
-            let features = query::get_features(params.as_ref().unwrap()).await;
-            match features {
-                Ok(features) => {
-                    let fc = geojson::create_feature_collection(&features);
-                    res.status_code(StatusCode::OK)
-                       .render(json!(&fc).to_string());
+            match params {
+                Ok(params) => {
+                    if let Err(err) = params.validate(&()) {
+                        return error!("layer params validation error: {}", &err);
+                    }
+                    let features = query::get_features(&params).await;
+                    match features {
+                        Ok(features) => {
+                            let fc = geojson::create_feature_collection(&features);
+                            response::render_geojson_feature_collection(StatusCode::OK, res, &fc);
+                        }
+                        Err(err) => {
+                            error!("get_features query error: {}", &err);
+                            response::render_query_error(StatusCode::BAD_REQUEST, res, &err);
+                        }
+                    }
                 }
                 Err(err) => {
-                    error!("get_geojson_feature_collection error: {}", err);
-                    res.status_code(StatusCode::BAD_REQUEST)
-                       .render(json!(format!("{}", err)).to_string())
+                    error!("get_geojson_feature_collection parse error: {}", &err);
+                    response::render_parse_error(StatusCode::BAD_REQUEST, res, &err);
                 }
             }
         }
-        JwtAuthState::Unauthorized => {
-            res.render(StatusError::unauthorized());
-        }
-        JwtAuthState::Forbidden => {
-            res.render(StatusError::forbidden());
-        }
+        JwtAuthState::Unauthorized => res.render(StatusError::unauthorized()),
+        JwtAuthState::Forbidden => res.render(StatusError::forbidden()),
     }
 }
 #[handler]
 #[tracing::instrument]
 pub async fn get_mapbox_access_token(depot: &mut Depot, res: &mut Response) {
     match depot.jwt_auth_state() {
-        JwtAuthState::Authorized => {
-            let env: Config = Default::default();
-            res.status_code(StatusCode::OK)
-               .render(json!(&env.mapbox_access_token).to_string());
-        }
-        JwtAuthState::Unauthorized => {
-            res.render(StatusError::unauthorized());
-        }
-        JwtAuthState::Forbidden => {
-            res.render(StatusError::forbidden());
-        }
+        JwtAuthState::Authorized => response::render_mapbox_access_token(StatusCode::OK, res),
+        JwtAuthState::Unauthorized => res.render(StatusError::unauthorized()),
+        JwtAuthState::Forbidden => res.render(StatusError::forbidden()),
     }
 }
-
 #[handler]
 #[tracing::instrument]
 pub async fn get_user(depot: &mut Depot, req: &mut Request, res: &mut Response) {
     match depot.jwt_auth_state() {
         JwtAuthState::Authorized => {
             let user: Result<User, ParseError> = req.extract().await;
-            if let Err(err) = user.as_ref().unwrap().validate(&()) {
-                return error!("username validation failure: {}", err);
-            }
-            let user = query::get_user(user.as_ref().unwrap()).await;
             match user {
                 Ok(user) => {
-                    res.status_code(StatusCode::OK)
-                       .render(json!(&user.username).to_string())
+                    if let Err(err) = user.validate(&()) {
+                        return error!("user validation error: {}", &err);
+                    }
+                    let user = query::get_user(&user).await;
+                    match user {
+                        Ok(user) => {
+                            response::render_username(StatusCode::OK, res, &user)
+                        }
+                        Err(err) => {
+                            error!("get_user query error: {}", &err);
+                            response::render_query_error(StatusCode::BAD_REQUEST, res, &err);
+                        }
+                    }
                 }
                 Err(err) => {
-                    error!("get_user error: {}", err);
-                    res.status_code(StatusCode::BAD_REQUEST)
-                       .render(json!(format!("{}", err)).to_string())
+                    error!("get_user parse error: {}", &err);
+                    response::render_parse_error(StatusCode::BAD_REQUEST, res, &err);
                 }
             }
         }
-        JwtAuthState::Unauthorized => {
-            res.render(StatusError::unauthorized());
-        }
-        JwtAuthState::Forbidden => {
-            res.render(StatusError::forbidden());
-        }
+        JwtAuthState::Unauthorized => res.render(StatusError::unauthorized()),
+        JwtAuthState::Forbidden => res.render(StatusError::forbidden()),
     }
 }
 #[handler]
@@ -108,57 +102,64 @@ pub async fn delete_user(depot: &mut Depot, req: &mut Request, res: &mut Respons
     match depot.jwt_auth_state() {
         JwtAuthState::Authorized => {
             let user: Result<User, ParseError> = req.extract().await;
-            if let Err(err) = user.as_ref().unwrap().validate(&()) {
-                return error!("username validation failure: {}", err);
-            };
-            let user = query::delete_user(user.as_ref().unwrap()).await;
             match user {
                 Ok(user) => {
-                    res.status_code(StatusCode::OK)
-                       .render(json!(&user.username).to_string())
+                    if let Err(err) = user.validate(&()) {
+                        return error!("user validation error: {}", &err);
+                    }
+                    let user = query::delete_user(&user).await;
+                    match user {
+                        Ok(user) => {
+                            response::render_username(StatusCode::OK, res, &user)
+                        }
+                        Err(err) => {
+                            error!("delete_user query error: {}", &err);
+                            response::render_query_error(StatusCode::BAD_REQUEST, res, &err);
+                        }
+                    }
                 }
                 Err(err) => {
-                    error!("delete_user error: {}", err);
-                    res.status_code(StatusCode::BAD_REQUEST)
-                       .render(json!(format!("{}", err)).to_string())
+                    error!("delete_user parse error: {}", &err);
+                    response::render_parse_error(StatusCode::BAD_REQUEST, res, &err);
                 }
             }
         }
-        JwtAuthState::Unauthorized => {
-            res.render(StatusError::unauthorized());
-        }
-        JwtAuthState::Forbidden => {
-            res.render(StatusError::forbidden());
-        }
+        JwtAuthState::Unauthorized => res.render(StatusError::unauthorized()),
+        JwtAuthState::Forbidden => res.render(StatusError::forbidden()),
     }
 }
 #[handler]
 #[tracing::instrument]
 pub async fn login(req: &mut Request, res: &mut Response) {
     let user: Result<User, ParseError> = req.extract().await;
-    if let Err(err) = user.as_ref().unwrap().validate(&()) {
-        return error!("username validation failure: {}", err);
-    };
-    let user = query::get_user(user.as_ref().unwrap()).await;
     match user {
         Ok(user) => {
-            let jwt = auth::get_jwt_token(&user);
-            match jwt {
-                Ok(jwt) => {
-                    res.status_code(StatusCode::OK)
-                       .render(json!(&jwt).to_string())
+            if let Err(err) = user.validate(&()) {
+                return error!("user validation error: {}", &err);
+            }
+            let user = query::get_user(&user).await;
+            match user {
+                Ok(user) => {
+                    let jwt = auth::get_jwt_token(&user);
+                    match jwt {
+                        Ok(jwt) => {
+                            response::render_jwt(StatusCode::OK, res, &jwt)
+                        }
+                        Err(err) => {
+                            error!("get_jwt_token error: {}", &err);
+                            response::render_jwt_error(StatusCode::UNAUTHORIZED, res, &err);
+                        }
+                    }
                 }
                 Err(err) => {
-                    error!("jwt creation error: {}", err);
-                    res.status_code(StatusCode::UNAUTHORIZED)
-                       .render(json!(format!("{}", err)).to_string())
+                    error!("get_user error: {}", &err);
+                    response::render_query_error(StatusCode::BAD_REQUEST, res, &err);
                 }
             }
         }
         Err(err) => {
-            error!("login error: {}", err);
-            res.status_code(StatusCode::BAD_REQUEST)
-               .render(json!(format!("{}", err)).to_string())
+            error!("login parse error: {}", &err);
+            response::render_parse_error(StatusCode::BAD_REQUEST, res, &err);
         }
     }
 }
@@ -166,19 +167,25 @@ pub async fn login(req: &mut Request, res: &mut Response) {
 #[tracing::instrument]
 pub async fn register(req: &mut Request, res: &mut Response) {
     let user: Result<User, ParseError> = req.extract().await;
-    if let Err(err) = user.as_ref().unwrap().validate(&()) {
-        return error!("username validation failure: {}", err);
-    };
-    let user = query::insert_user(user.as_ref().unwrap()).await;
     match user {
         Ok(user) => {
-            res.status_code(StatusCode::OK)
-               .render(json!(&user.username).to_string())
+            if let Err(err) = user.validate(&()) {
+                return error!("user validation error: {}", &err);
+            }
+            let user = query::insert_user(&user).await;
+            match user {
+                Ok(user) => {
+                    response::render_username(StatusCode::CREATED, res, &user)
+                }
+                Err(err) => {
+                    error!("insert_user query error: {}", &err);
+                    response::render_query_error(StatusCode::BAD_REQUEST, res, &err);
+                }
+            }
         }
         Err(err) => {
-            error!("register error: {}", err);
-            res.status_code(StatusCode::BAD_REQUEST)
-               .render(json!(format!("{}", err)).to_string())
+            error!("register parse error: {}", &err);
+            response::render_parse_error(StatusCode::BAD_REQUEST, res, &err);
         }
     }
 }
@@ -188,47 +195,55 @@ pub async fn update_password(depot: &mut Depot, req: &mut Request, res: &mut Res
     match depot.jwt_auth_state() {
         JwtAuthState::Authorized => {
             let user: Result<User, ParseError> = req.extract().await;
-            if let Err(err) = user.as_ref().unwrap().validate(&()) {
-                return error!("username validation failure: {}", err);
-            };
-            let user = query::update_password(user.as_ref().unwrap()).await;
             match user {
                 Ok(user) => {
-                    res.status_code(StatusCode::OK)
-                       .render(json!(&user.username).to_string())
+                    if let Err(err) = user.validate(&()) {
+                        return error!("user validation error: {}", &err);
+                    }
+                    let user = query::update_password(&user).await;
+                    match user {
+                        Ok(user) => {
+                            response::render_username(StatusCode::OK, res, &user)
+                        }
+                        Err(err) => {
+                            error!("update_password query error: {}", &err);
+                            response::render_query_error(StatusCode::BAD_REQUEST, res, &err);
+                        }
+                    }
                 }
                 Err(err) => {
-                    error!("update_password error: {}", err);
-                    res.status_code(StatusCode::BAD_REQUEST)
-                       .render(json!(format!("{}", err)).to_string())
+                    error!("update_password parse error: {}", &err);
+                    response::render_parse_error(StatusCode::BAD_REQUEST, res, &err);
                 }
             }
         }
-        JwtAuthState::Unauthorized => {
-            res.render(StatusError::unauthorized());
-        }
-        JwtAuthState::Forbidden => {
-            res.render(StatusError::forbidden());
-        }
+        JwtAuthState::Unauthorized => res.render(StatusError::unauthorized()),
+        JwtAuthState::Forbidden => res.render(StatusError::forbidden()),
     }
 }
 #[handler]
 #[tracing::instrument]
 pub async fn validate_user(req: &mut Request, res: &mut Response) {
     let user: Result<User, ParseError> = req.extract().await;
-    if let Err(err) = user.as_ref().unwrap().validate(&()) {
-        return error!("username validation failure: {}", err);
-    }
-    let user = query::get_user(user.as_ref().unwrap()).await;
     match user {
         Ok(user) => {
-            res.status_code(StatusCode::OK)
-               .render(json!(&user.username).to_string())
+            if let Err(err) = user.validate(&()) {
+                return error!("user validation error: {}", &err);
+            }
+            let user = query::get_user(&user).await;
+            match user {
+                Ok(user) => {
+                    response::render_username(StatusCode::OK, res, &user)
+                }
+                Err(err) => {
+                    error!("get_user query error: {}", &err);
+                    response::render_query_error(StatusCode::BAD_REQUEST, res, &err);
+                }
+            }
         }
         Err(err) => {
-            error!("get_user error: {}", err);
-            res.status_code(StatusCode::BAD_REQUEST)
-               .render(json!(format!("{}", err)).to_string())
+            error!("validate_user parse error: {}", &err);
+            response::render_parse_error(StatusCode::BAD_REQUEST, res, &err);
         }
     }
 }

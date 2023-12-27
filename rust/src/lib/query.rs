@@ -28,7 +28,8 @@ pub async fn get_user(user: &User) -> Result<User, Error> {
         SELECT username
         FROM users
         WHERE username = $1";
-    let row = sqlx::query(query).bind(&user.username)
+    let row = sqlx::query(query)
+        .bind(&user.username)
         .fetch_one(get_pool())
         .await?;
     let user = User {

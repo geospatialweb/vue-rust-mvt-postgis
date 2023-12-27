@@ -20,7 +20,7 @@ pub async fn set_pool() {
             info!("PgPool creation success");
         }
         Err(err) => {
-            error!("PgPool creation error: {}", err)
+            error!("PgPool creation error: {}", &err)
         }
     }
 }

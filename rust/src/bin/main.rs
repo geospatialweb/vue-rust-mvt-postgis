@@ -15,11 +15,11 @@ use lib::router;
 async fn main() {
     tracing_subscriber::fmt().init();
     if let Err(err) = dotenv() {
-        return error!("dotenv error: {}", err);
+        return error!("dotenv error: {}", &err);
     }
     database::set_pool().await;
     let env: Config = Default::default();
-    let host = format!("{}:{}", env.server_host, env.server_port);
+    let host = format!("{}:{}", &env.server_host, &env.server_port);
     if env.app_mode == env.app_mode_dev {
         let acceptor = TcpListener::new(&host).bind().await;
         let service = Service::new(router::new())

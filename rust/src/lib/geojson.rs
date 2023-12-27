@@ -20,7 +20,7 @@ pub fn create_feature_collection(json_features: &[JsonFeature]) -> FeatureCollec
             }
         },
         Err(err) => {
-            error!("geojson feature creation failure: {}", err);
+            error!("geojson feature creation failure: {}", &err);
             FeatureCollection {
                 bbox: None,
                 features: vec![],
