@@ -10,7 +10,7 @@ pub struct JsonFeature {
 
 #[rustfmt::skip]
 pub fn create_feature_collection(json_features: &[JsonFeature]) -> FeatureCollection {
-    let features = create_features(json_features);
+    let features = create_geojson_features(json_features);
     match features {
         Ok(features) => {
             FeatureCollection {
@@ -20,7 +20,7 @@ pub fn create_feature_collection(json_features: &[JsonFeature]) -> FeatureCollec
             }
         },
         Err(err) => {
-            error!("geojson feature creation failure: {}", &err);
+            error!("create_geojson_features error: {}", &err);
             FeatureCollection {
                 bbox: None,
                 features: vec![],
@@ -30,7 +30,7 @@ pub fn create_feature_collection(json_features: &[JsonFeature]) -> FeatureCollec
     }
 }
 
-fn create_features(json_features: &[JsonFeature]) -> Result<Vec<Feature>, Error> {
+fn create_geojson_features(json_features: &[JsonFeature]) -> Result<Vec<Feature>, Error> {
     json_features
         .iter()
         .map(|json_feature| Feature::from_str(json_feature.feature.as_str()))

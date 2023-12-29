@@ -79,7 +79,7 @@ pub async fn get_user(depot: &mut Depot, req: &mut Request, res: &mut Response) 
                     match user {
                         Ok(user) => {
                             response::render_username(StatusCode::OK, res, &user)
-                        }
+                        },
                         Err(err) => {
                             error!("get_user query error: {}", &err);
                             response::render_query_error(StatusCode::BAD_REQUEST, res, &err);
@@ -111,7 +111,7 @@ pub async fn delete_user(depot: &mut Depot, req: &mut Request, res: &mut Respons
                     match user {
                         Ok(user) => {
                             response::render_username(StatusCode::OK, res, &user)
-                        }
+                        },
                         Err(err) => {
                             error!("delete_user query error: {}", &err);
                             response::render_query_error(StatusCode::BAD_REQUEST, res, &err);
@@ -140,19 +140,19 @@ pub async fn login(req: &mut Request, res: &mut Response) {
             let user = query::get_user(&user).await;
             match user {
                 Ok(user) => {
-                    let jwt = auth::get_jwt_token(&user);
+                    let jwt = auth::get_jwt(&user);
                     match jwt {
                         Ok(jwt) => {
                             response::render_jwt(StatusCode::OK, res, &jwt)
-                        }
+                        },
                         Err(err) => {
-                            error!("get_jwt_token error: {}", &err);
-                            response::render_jwt_error(StatusCode::UNAUTHORIZED, res, &err);
+                            error!("get_jwt auth error: {}", &err);
+                            response::render_auth_error(StatusCode::UNAUTHORIZED, res, &err);
                         }
                     }
                 }
                 Err(err) => {
-                    error!("get_user error: {}", &err);
+                    error!("get_user query error: {}", &err);
                     response::render_query_error(StatusCode::BAD_REQUEST, res, &err);
                 }
             }
@@ -176,7 +176,7 @@ pub async fn register(req: &mut Request, res: &mut Response) {
             match user {
                 Ok(user) => {
                     response::render_username(StatusCode::CREATED, res, &user)
-                }
+                },
                 Err(err) => {
                     error!("insert_user query error: {}", &err);
                     response::render_query_error(StatusCode::BAD_REQUEST, res, &err);
@@ -204,7 +204,7 @@ pub async fn update_password(depot: &mut Depot, req: &mut Request, res: &mut Res
                     match user {
                         Ok(user) => {
                             response::render_username(StatusCode::OK, res, &user)
-                        }
+                        },
                         Err(err) => {
                             error!("update_password query error: {}", &err);
                             response::render_query_error(StatusCode::BAD_REQUEST, res, &err);
@@ -234,7 +234,7 @@ pub async fn validate_user(req: &mut Request, res: &mut Response) {
             match user {
                 Ok(user) => {
                     response::render_username(StatusCode::OK, res, &user)
-                }
+                },
                 Err(err) => {
                     error!("get_user query error: {}", &err);
                     response::render_query_error(StatusCode::BAD_REQUEST, res, &err);

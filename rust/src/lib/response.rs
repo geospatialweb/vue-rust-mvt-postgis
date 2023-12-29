@@ -18,7 +18,7 @@ pub fn render_geojson_feature_collection(status: StatusCode, res: &mut Response,
 
 pub fn render_jwt(status: StatusCode, res: &mut Response, jwt: &Jwt) {
     res.status_code(status)
-       .render(json!(&jwt).to_string())
+       .render(json!(&jwt).to_string());
 }
 
 pub fn render_mapbox_access_token(status: StatusCode, res: &mut Response) {
@@ -29,20 +29,20 @@ pub fn render_mapbox_access_token(status: StatusCode, res: &mut Response) {
 
 pub fn render_username(status: StatusCode, res: &mut Response, user: &User) {
     res.status_code(status)
-       .render(json!(&user.username).to_string())
+       .render(json!(&user.username).to_string());
 }
 
-pub fn render_jwt_error(status: StatusCode, res: &mut Response, err: &JwtError) {
+pub fn render_auth_error(status: StatusCode, res: &mut Response, err: &JwtError) {
     res.status_code(status)
-       .render(json!(format!("{}", &err)).to_string())
+       .render(json!(format!("{}", &err)).to_string());
 }
 
 pub fn render_query_error(status: StatusCode, res: &mut Response, err: &QueryError) {
     res.status_code(status)
-       .render(json!(format!("{}", &err)).to_string())
+       .render(json!(format!("{}", &err)).to_string());
 }
 
 pub fn render_parse_error(status: StatusCode, res: &mut Response, err: &ParseError) {
     res.status_code(status)
-       .render(json!(format!("{}", &err)).to_string())
+       .render(json!(format!("{}", &err)).to_string());
 }
