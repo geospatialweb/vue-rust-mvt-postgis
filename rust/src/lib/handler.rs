@@ -3,7 +3,16 @@
 use garde::Validate;
 use salvo::http::{ParseError, StatusCode, StatusError};
 use salvo::macros::Extractible;
-use salvo::prelude::{handler, Depot, JwtAuthDepotExt, JwtAuthState, Request, Response};
+use salvo::prelude::{
+    handler,
+    Depot,
+    JwtAuthDepotExt,
+    JwtAuthState::Authorized,
+    JwtAuthState::Forbidden,
+    JwtAuthState::Unauthorized,
+    Request,
+    Response,
+};
 use serde::Deserialize;
 use tracing::error;
 
@@ -26,7 +35,7 @@ pub struct LayerParams {
 #[tracing::instrument]
 pub async fn get_geojson_feature_collection(depot: &mut Depot, req: &mut Request, res: &mut Response) {
     match depot.jwt_auth_state() {
-        JwtAuthState::Authorized => {
+        Authorized => {
             let params: Result<LayerParams, ParseError> = req.extract().await;
             match params {
                 Ok(params) => {
@@ -51,24 +60,24 @@ pub async fn get_geojson_feature_collection(depot: &mut Depot, req: &mut Request
                 }
             }
         }
-        JwtAuthState::Unauthorized => res.render(StatusError::unauthorized()),
-        JwtAuthState::Forbidden => res.render(StatusError::forbidden()),
+        Unauthorized => res.render(StatusError::unauthorized()),
+        Forbidden => res.render(StatusError::forbidden()),
     }
 }
 #[handler]
 #[tracing::instrument]
 pub async fn get_mapbox_access_token(depot: &mut Depot, res: &mut Response) {
     match depot.jwt_auth_state() {
-        JwtAuthState::Authorized => response::render_mapbox_access_token(StatusCode::OK, res),
-        JwtAuthState::Unauthorized => res.render(StatusError::unauthorized()),
-        JwtAuthState::Forbidden => res.render(StatusError::forbidden()),
+        Authorized => response::render_mapbox_access_token(StatusCode::OK, res),
+        Unauthorized => res.render(StatusError::unauthorized()),
+        Forbidden => res.render(StatusError::forbidden()),
     }
 }
 #[handler]
 #[tracing::instrument]
 pub async fn get_user(depot: &mut Depot, req: &mut Request, res: &mut Response) {
     match depot.jwt_auth_state() {
-        JwtAuthState::Authorized => {
+        Authorized => {
             let user: Result<User, ParseError> = req.extract().await;
             match user {
                 Ok(user) => {
@@ -92,15 +101,15 @@ pub async fn get_user(depot: &mut Depot, req: &mut Request, res: &mut Response) 
                 }
             }
         }
-        JwtAuthState::Unauthorized => res.render(StatusError::unauthorized()),
-        JwtAuthState::Forbidden => res.render(StatusError::forbidden()),
+        Unauthorized => res.render(StatusError::unauthorized()),
+        Forbidden => res.render(StatusError::forbidden()),
     }
 }
 #[handler]
 #[tracing::instrument]
 pub async fn delete_user(depot: &mut Depot, req: &mut Request, res: &mut Response) {
     match depot.jwt_auth_state() {
-        JwtAuthState::Authorized => {
+        Authorized => {
             let user: Result<User, ParseError> = req.extract().await;
             match user {
                 Ok(user) => {
@@ -124,8 +133,8 @@ pub async fn delete_user(depot: &mut Depot, req: &mut Request, res: &mut Respons
                 }
             }
         }
-        JwtAuthState::Unauthorized => res.render(StatusError::unauthorized()),
-        JwtAuthState::Forbidden => res.render(StatusError::forbidden()),
+        Unauthorized => res.render(StatusError::unauthorized()),
+        Forbidden => res.render(StatusError::forbidden()),
     }
 }
 #[handler]
@@ -193,7 +202,7 @@ pub async fn register(req: &mut Request, res: &mut Response) {
 #[tracing::instrument]
 pub async fn update_password(depot: &mut Depot, req: &mut Request, res: &mut Response) {
     match depot.jwt_auth_state() {
-        JwtAuthState::Authorized => {
+        Authorized => {
             let user: Result<User, ParseError> = req.extract().await;
             match user {
                 Ok(user) => {
@@ -217,8 +226,8 @@ pub async fn update_password(depot: &mut Depot, req: &mut Request, res: &mut Res
                 }
             }
         }
-        JwtAuthState::Unauthorized => res.render(StatusError::unauthorized()),
-        JwtAuthState::Forbidden => res.render(StatusError::forbidden()),
+        Unauthorized => res.render(StatusError::unauthorized()),
+        Forbidden => res.render(StatusError::forbidden()),
     }
 }
 #[handler]
