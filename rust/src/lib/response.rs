@@ -11,6 +11,19 @@ use super::auth::Jwt;
 use super::env::Config;
 use super::model::User;
 
+#[derive(Debug, thiserror::Error)]
+pub enum AppError {
+    #[error("jwt error: {0}")]
+    Jwt(JwtError),
+
+    #[error("query error: {0}")]
+    Query(QueryError),
+
+    // ParseError has to be handled separately since Salvo extracts `req` into structs
+    // let params: Result<LayerParams, ParseError> = req.extract().await;
+    // let user: Result<User, ParseError> = req.extract().await;
+}
+
 pub fn render_geojson_feature_collection(status: StatusCode, res: &mut Response, fc: &FeatureCollection) {
     res.status_code(status)
        .render(json!(&fc).to_string());
