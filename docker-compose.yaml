@@ -1,11 +1,11 @@
 services:
   # Production only
   # nginx:
-  #   container_name: nginx
+  #   container_name: nginx`
   #   image: nginx:stable-alpine
   #   restart: on-failure
   #   depends_on:
-  #     - go
+  #     - rust
   #   networks:
   #     - app-network
   #   ports:
@@ -15,14 +15,15 @@ services:
   #     - /etc/letsencrypt:/etc/letsencrypt:rw
   #     - /var/log/letsencrypt:/var/log/letsencrypt:rw
   #     - /var/www/letsencrypt:/var/www/letsencrypt:rw
-  #     - ./client/static:/var/www/geospatialweb.ca/static:ro
-  #     - ./logs:/var/log/nginx:rw
+  #     - client/static:/var/www/geospatialweb.ca/static:ro
+  #     - logs:/var/log/nginx:rw
 
+  # not working yet
   # rust:
   #   container_name: rust
   #   build:
   #     context: ./rust
-  #     dockerfile: Dockerfile
+  #     target: app
   #   # image: geospatialweb/rust-mvt-postgis:latest
   #   command: /app/main
   #   restart: unless-stopped
@@ -62,10 +63,8 @@ services:
       - .env
     healthcheck:
       test: pg_isready -d $POSTGRES_URI
-    logging:
-      options:
-        max-size: 10m
-        max-file: "3"
+      interval: 10s
+      timeout: 5s
     networks:
       - app-network
     ports:
