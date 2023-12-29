@@ -45,6 +45,11 @@ pub fn render_username(status: StatusCode, res: &mut Response, user: &User) {
        .render(json!(&user.username).to_string());
 }
 
+pub fn _render_error(status: StatusCode, res: &mut Response, err: &AppError) {
+    res.status_code(status)
+       .render(json!(format!("{}", &err)).to_string());
+}
+
 pub fn render_auth_error(status: StatusCode, res: &mut Response, err: &JwtError) {
     res.status_code(status)
        .render(json!(format!("{}", &err)).to_string());
