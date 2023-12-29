@@ -2,11 +2,10 @@
 
 use salvo::cors::{Cors, CorsHandler};
 use salvo::http::Method;
-use salvo::jwt_auth::{ConstDecoder, HeaderFinder};
 use salvo::logging::Logger;
-use salvo::prelude::{JwtAuth,Router};
+use salvo::prelude::Router;
 
-use super::auth::JwtClaims;
+use super::auth::auth;
 use super::env::Config;
 use super::handler;
 
@@ -68,11 +67,4 @@ pub fn new() -> Router {
                     Router::with_path(env.register_endpoint)
                         .post(handler::register)),
         )
-}
-
-fn auth() -> JwtAuth<JwtClaims, ConstDecoder> {
-    let env: Config = Default::default();
-    JwtAuth::new(ConstDecoder::from_secret(env.jwt_secret.as_bytes()))
-        .finders(vec![Box::new(HeaderFinder::new())])
-        .force_passed(true)
 }
