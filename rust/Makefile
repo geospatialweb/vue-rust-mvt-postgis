@@ -1,5 +1,5 @@
 build:
-	@cargo build
+	@cargo build --bin main
 
 check:
 	@cargo check
@@ -7,5 +7,8 @@ check:
 clippy:
 	@cargo clippy
 
+release:
+	@cargo build --bin main --release
+
 run:
-	@cargo run
+	@cargo run --bin main
