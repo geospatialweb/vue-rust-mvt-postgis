@@ -70,7 +70,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./postgis:/docker-entrypoint-initdb.d:ro
+      - ./postgis/data:/var/lib/postgresql/data:rw
+      - ./postgis/migration.sql:/docker-entrypoint-initdb.d/migration.sql:ro
       # - /etc/letsencrypt:/etc/letsencrypt:ro
 
 networks:

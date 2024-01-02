@@ -1,5 +1,5 @@
 compose:
-	@docker-compose up -d
+	@docker-compose up -d --build
 
 start:
 	@make compose

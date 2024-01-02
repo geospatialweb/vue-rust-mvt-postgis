@@ -2,11 +2,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch",
+      "name": "Rust",
       "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/rust/target/debug/main",
-      "preLaunchTask": "build"
+      "cargo": {
+        "args": [
+          "build",
+          "--bin",
+          "main",
+          "--manifest-path",
+          "${workspaceFolder}/rust/Cargo.toml"
+        ]
+      }
     },
     {
       "name": "Debug Vitest Current File",
