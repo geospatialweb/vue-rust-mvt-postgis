@@ -50,12 +50,11 @@ export default class LayerElementService {
   }
 
   #layer = (id: LayerId): void => {
-    const { BIOSPHERE, BIOSPHERE_BORDER, TRAILS } = this.#layerId
     this.#setLayerElementsState(id)
     this.#setLayerVisibilityState(id)
     this.#setLayerVisibility(id)
-    id === <LayerId>BIOSPHERE && this.#setLayerVisibility(<LayerId>BIOSPHERE_BORDER)
-    id === <LayerId>TRAILS && this.#toggleMarkerVisibility(id)
+    id === <LayerId>this.#layerId.BIOSPHERE && this.#setLayerVisibility(<LayerId>this.#layerId.BIOSPHERE_BORDER)
+    id === <LayerId>this.#layerId.TRAILS && this.#toggleMarkerVisibility(id)
   }
 
   #marker = (id: LayerId): void => {

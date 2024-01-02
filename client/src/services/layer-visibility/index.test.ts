@@ -8,12 +8,11 @@ describe('LayerVisibilityService test suite', (): void => {
   setActivePinia(createPinia())
 
   test('setLayerVisibilityState method should be called', (): void => {
-    const { BIOSPHERE } = LayerId,
-      layerVisibilityService = Container.get(LayerVisibilityService),
+    const layerVisibilityService = Container.get(LayerVisibilityService),
       spy = vi.spyOn(layerVisibilityService, 'setLayerVisibilityState')
-    layerVisibilityService.setLayerVisibilityState(BIOSPHERE)
+    layerVisibilityService.setLayerVisibilityState(LayerId.BIOSPHERE)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(BIOSPHERE)
+    expect(spy).toHaveBeenCalledWith(LayerId.BIOSPHERE)
     expect(spy).toHaveReturnedTimes(1)
   })
 })

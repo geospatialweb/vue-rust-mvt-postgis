@@ -30,8 +30,8 @@ export default class CredentialsService {
     return <string>await this.#httpService.post(this.#endpoint.REGISTER_ENDPOINT, '', body)
   }
 
-  async validateUser(username: string): Promise<string> {
-    const params = <AxiosRequestConfig>{ params: { username } }
+  async validateUser(credentials: ICredential): Promise<string> {
+    const params = <AxiosRequestConfig>{ params: { ...credentials } }
     return <string>await this.#httpService.get(this.#endpoint.VALIDATE_USER_ENDPOINT, '', params)
   }
 

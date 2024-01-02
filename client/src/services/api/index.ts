@@ -11,8 +11,8 @@ export default class ApiService {
   #httpService = Container.get(HttpService)
   #endpoint: IEndpoint = Endpoint
 
-  async deleteUser(token: string, username: string): Promise<string> {
-    const params = <AxiosRequestConfig>{ params: { username } }
+  async deleteUser(credentials: ICredential, token: string): Promise<string> {
+    const params = <AxiosRequestConfig>{ params: { ...credentials } }
     return <string>await this.#httpService.delete(this.#endpoint.DELETE_USER_ENDPOINT, token, params)
   }
 
@@ -26,12 +26,12 @@ export default class ApiService {
     return <string>await this.#httpService.get(this.#endpoint.MAPBOX_ACCESS_TOKEN_ENDPOINT, token, params)
   }
 
-  async getUser(token: string, username: string): Promise<string> {
-    const params = <AxiosRequestConfig>{ params: { username } }
+  async getUser(credentials: ICredential, token: string): Promise<string> {
+    const params = <AxiosRequestConfig>{ params: { ...credentials } }
     return <string>await this.#httpService.get(this.#endpoint.GET_USER_ENDPOINT, token, params)
   }
 
-  async updatePassword(token: string, credentials: ICredential): Promise<string> {
+  async updatePassword(credentials: ICredential, token: string): Promise<string> {
     const body = <AxiosRequestConfig>{ ...credentials }
     return <string>await this.#httpService.patch(this.#endpoint.UPDATE_PASSWORD_ENDPOINT, token, body)
   }

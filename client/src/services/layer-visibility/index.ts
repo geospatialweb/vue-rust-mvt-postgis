@@ -19,12 +19,11 @@ export default class LayerVisibilityService {
   }
 
   setLayerVisibilityState(id: string): void {
-    const { BIOSPHERE, BIOSPHERE_BORDER } = this.#layerId,
-      state: ILayerVisibility = { ...this.layerVisibilityState }
+    const state: ILayerVisibility = { ...this.layerVisibilityState }
     state[id as keyof ILayerVisibility].isActive = !state[id as keyof ILayerVisibility].isActive
-    if (id === BIOSPHERE) {
-      state[BIOSPHERE_BORDER as keyof ILayerVisibility].isActive =
-        !state[BIOSPHERE_BORDER as keyof ILayerVisibility].isActive
+    if (id === this.#layerId.BIOSPHERE) {
+      state[this.#layerId.BIOSPHERE_BORDER as keyof ILayerVisibility].isActive =
+        !state[this.#layerId.BIOSPHERE_BORDER as keyof ILayerVisibility].isActive
     }
     this.#layerVisibilityState = state
   }

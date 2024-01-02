@@ -2,6 +2,7 @@
 
 use sqlx::{Error, Row};
 
+use super::auth::Credential;
 use super::database::get_pool;
 use super::geojson::JsonFeature;
 use super::handler::LayerParams;
@@ -23,72 +24,69 @@ pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Erro
 }
 
 #[tracing::instrument]
-pub async fn get_user(user: &User) -> Result<User, Error> {
+pub async fn get_password(username: &str) -> Result<Credential, Error> {
+    let query = "
+        SELECT password
+        FROM users
+        WHERE username = $1";
+    let row = sqlx::query(query)
+        .bind(username)
+        .fetch_one(get_pool())
+        .await?;
+    Ok(Credential::new(row.get("password")))
+}
+
+#[tracing::instrument]
+pub async fn get_user(username: &str) -> Result<User, Error> {
     let query = "
         SELECT username
         FROM users
         WHERE username = $1";
     let row = sqlx::query(query)
-        .bind(&user.username)
+        .bind(username)
         .fetch_one(get_pool())
         .await?;
-    let user = User {
-        username: row.get("username"),
-        password: None,
-    };
-    Ok(user)
+    Ok(User::new(row.get("username"), &None))
 }
 
 #[tracing::instrument]
-pub async fn delete_user(user: &User) -> Result<User, Error> {
+pub async fn delete_user(username: &str) -> Result<User, Error> {
     let query = "
         DELETE FROM users
         WHERE username = $1
         RETURNING username";
     let row = sqlx::query(query)
-        .bind(&user.username)
+        .bind(username)
         .fetch_one(get_pool())
         .await?;
-    let user = User {
-        username: row.get("username"),
-        password: None,
-    };
-    Ok(user)
+    Ok(User::new(row.get("username"), &None))
 }
 
 #[tracing::instrument]
 pub async fn insert_user(user: &User) -> Result<User, Error> {
     let query = "
-        INSERT INTO users (password, username)
+        INSERT INTO users (username, password)
         VALUES ($1, $2)
         RETURNING username";
     let row = sqlx::query(query)
-        .bind(&user.password)
         .bind(&user.username)
+        .bind(&user.password)
         .fetch_one(get_pool())
         .await?;
-    let user = User {
-        username: row.get("username"),
-        password: None,
-    };
-    Ok(user)
+    Ok(User::new(row.get("username"), &None))
 }
 
 #[tracing::instrument]
 pub async fn update_password(user: &User) -> Result<User, Error> {
     let query = "
         UPDATE users
-        SET password = $1
-        WHERE username = $2
-        RETURNING password, username";
+        SET password = $2
+        WHERE username = $1
+        RETURNING username, password";
     let row = sqlx::query(query)
-        .bind(&user.password)
         .bind(&user.username)
+        .bind(&user.password)
         .fetch_one(get_pool())
         .await?;
-    let user = User {
-        username: row.get("username"),
-        password: row.get("password"),
-    };
-    Ok(user)
+    Ok(User::new(row.get("username"), &Some(row.get("password"))))
 }

@@ -11,13 +11,13 @@ export default class RegistrationService {
   #routes: IRoutes = routes
 
   async register(credentials: ICredential): Promise<void> {
-    const { username } = credentials,
-      id = await this.#validateUser(<string>username)
-    if (id) {
+    let username: string
+    username = await this.#validateUser(credentials)
+    if (!username) {
       return this.#setCredentialsState({ isCorrect: true, isValid: false })
     }
-    const userName = await this.#register(credentials)
-    if (userName !== <string>username) {
+    username = await this.#register(credentials)
+    if (username) {
       return this.#setCredentialsState({ isCorrect: false, isValid: true })
     }
     const { login } = this.#routes
@@ -33,8 +33,8 @@ export default class RegistrationService {
     await this.#routerService.setRoute(name)
   }
 
-  async #validateUser(username: string): Promise<string> {
-    return this.#credentialsService.validateUser(username)
+  async #validateUser(credentials: ICredential): Promise<string> {
+    return this.#credentialsService.validateUser(credentials)
   }
 
   #setCredentialsState(state: ICredential): void {

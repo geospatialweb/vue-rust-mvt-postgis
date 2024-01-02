@@ -13,21 +13,18 @@ export default class AuthenticationService {
   #routes: IRoutes = routes
 
   async login(credentials: ICredential): Promise<void> {
-    const { username } = credentials,
-      id = await this.#validateUser(<string>username)
-    if (!id) {
+    const username = await this.#validateUser(credentials)
+    if (!username) {
       return this.#setCredentialsState({ isCorrect: true, isValid: false })
     }
-    const auth = await this.#login(credentials)
-    if (!auth) {
+    const jwt = await this.#login(credentials)
+    if (!jwt) {
+      this.#consoleError('undefined JWT')
       return this.#setCredentialsState({ isCorrect: false, isValid: true })
     }
     this.#setCredentialsState({ isCorrect: true, isValid: true, ...credentials })
-    const { token, expiry } = auth
-    if (!token || !expiry) {
-      return this.#consoleError('undefined JWT')
-    }
-    const { mapbox } = this.#routes
+    const { token, expiry } = jwt,
+      { mapbox } = this.#routes
     this.#setJWTState({ token, expiry })
     await this.#setMarkerFeatures(token)
     await this.#setRoute(mapbox)
@@ -45,8 +42,8 @@ export default class AuthenticationService {
     await this.#routerService.setRoute(name)
   }
 
-  async #validateUser(username: string): Promise<string> {
-    return this.#credentialsService.validateUser(username)
+  async #validateUser(credentials: ICredential): Promise<string> {
+    return this.#credentialsService.validateUser(credentials)
   }
 
   #setCredentialsState(state: ICredential): void {

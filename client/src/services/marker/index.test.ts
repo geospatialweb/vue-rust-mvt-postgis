@@ -21,11 +21,10 @@ describe('MarkerService test suite', (): void => {
   })
 
   test('toggleMarkerVisibility method should be called', (): void => {
-    const { OFFICE } = LayerId,
-      spy = vi.spyOn(markerService, 'toggleMarkerVisibility').mockImplementation(mockMapImplementation)
-    markerService.toggleMarkerVisibility(OFFICE)
+    const spy = vi.spyOn(markerService, 'toggleMarkerVisibility').mockImplementation(mockMapImplementation)
+    markerService.toggleMarkerVisibility(LayerId.OFFICE)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(OFFICE)
+    expect(spy).toHaveBeenCalledWith(LayerId.OFFICE)
     expect(spy).toHaveReturnedTimes(1)
   })
 })
