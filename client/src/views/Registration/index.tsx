@@ -1,3 +1,4 @@
+import 'vue/jsx'
 import { defineComponent } from 'vue'
 
 import { Registration } from '@/components'

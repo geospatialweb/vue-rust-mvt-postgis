@@ -1,3 +1,4 @@
+import 'vue/jsx'
 import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 

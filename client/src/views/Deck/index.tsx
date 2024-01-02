@@ -1,3 +1,4 @@
+import 'vue/jsx'
 import { defineComponent } from 'vue'
 
 import { Deckgl, Footer, HexagonUI, Modal } from '@/components'

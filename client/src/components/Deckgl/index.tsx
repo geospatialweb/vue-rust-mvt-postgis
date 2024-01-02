@@ -1,3 +1,4 @@
+import 'vue/jsx'
 import { Container } from 'typedi'
 import { defineComponent, onMounted, onUnmounted } from 'vue'
 

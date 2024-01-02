@@ -1,3 +1,4 @@
+import 'vue/jsx'
 import { defineComponent } from 'vue'
 
 import { LayerElements, Mapbox, Modal, Trails } from '@/components'
