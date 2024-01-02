@@ -5,7 +5,7 @@ use tracing::error;
 
 #[derive(Debug, FromRow)]
 pub struct JsonFeature {
-    pub feature: String,
+    feature: String,
 }
 
 #[rustfmt::skip]
