@@ -5,6 +5,7 @@ import { Container, Service } from 'typedi'
 import { mapbox, mapboxDraw } from '@/configuration'
 import { LayerId, StoreStates } from '@/enums'
 import {
+  ILayerElement,
   ILayerId,
   ILayerVisibility,
   IMapboxOption,
@@ -16,6 +17,7 @@ import {
 } from '@/interfaces'
 import {
   AppService,
+  LayerElementService,
   LayerService,
   LayerVisibilityService,
   MapboxStyleService,
@@ -61,6 +63,7 @@ export default class MapboxService {
     this._map = new Map({ ...this.#mapboxOptions, ...this.#mapboxSettingsState })
       .addControl(this.#mapboxDraw)
       .addControl(new NavigationControl({ visualizePitch }), <NavigationControlPosition>position)
+      .on('draw.modechange', (): void => this.#drawModeChange())
       .on('idle', (): void => this.#setMapboxSettingsState())
       .on('load', (): void => {
         this.#setMapLayers()
@@ -86,19 +89,28 @@ export default class MapboxService {
   }
 
   setLayerVisibility(id: string): void {
-    const { BIOSPHERE } = this.#layerId,
-      appService = Container.get(AppService),
+    const appService = Container.get(AppService),
       /* prettier-ignore */
       { appState: { isMobile }} = appService,
       { layerVisibilityState } = this.#layerVisibilityService
 
     if (layerVisibilityState[id as keyof ILayerVisibility].isActive) {
       this.#setMapLayoutProperty(id, 'visible')
-      id === BIOSPHERE && !isMobile && this.#addLayerVisibilityEventListeners(id)
+      id === this.#layerId.BIOSPHERE && !isMobile && this.#addLayerVisibilityEventListeners(id)
     }
     if (!layerVisibilityState[id as keyof ILayerVisibility].isActive) {
       this.#setMapLayoutProperty(id, 'none')
-      id === BIOSPHERE && !isMobile && this.#removeLayerVisibilityEventListeners(id)
+      id === this.#layerId.BIOSPHERE && !isMobile && this.#removeLayerVisibilityEventListeners(id)
+    }
+  }
+
+  #drawModeChange(): void {
+    const layerElementService = Container.get(LayerElementService),
+      { layerElementsState } = layerElementService,
+      layerElement = (layerElement: ILayerElement): boolean => layerElement.id === this.#layerId.BIOSPHERE,
+      idx = layerElementsState.findIndex(layerElement)
+    if (idx >= 0 && layerElementsState[idx].isActive) {
+      layerElementService.displayLayerElement(<LayerId>this.#layerId.BIOSPHERE)
     }
   }
 
