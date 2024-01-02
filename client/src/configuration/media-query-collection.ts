@@ -16,7 +16,8 @@ export default {
     trail: 0.85
   },
   // iPhone 6+ / 7+ / 8+ / X / XR / XS Max / 11 / 11 Pro / 11 Pro Max / 12 / 12 Pro / 12 Pro Max / 13 / 13 Pro / 13 Pro Max / 14 / 14 Plus / 14 Pro / 14 Pro Max / 15 / 15 Plus / 15 Pro / 15 Pro Max
-  // Samsung S10 Lite / S10+ / S20+ / S20 Ultra / S21 Ultra 5G / Z Flip // Samsung Note 10 / 10+ / 20 / 20 Ultra
+  // Samsung S10+/ S10Lite / S10+ / S20 FE / S20+ / S20 Ultra / S21 Ultra 5G / S23 / S23 FE / S23+ / S23 Ultra / Z Flip
+  // Samsung Note 10 / 10+ / 20 / 20+ / 20 Ultra / S23
   // OnePlus 6 / 6T / 7 / 7 Pro / 7T / 7T Pro / 8 / 8 Pro / 8T / 9 / 9 Pro / Nord // Sony Xperia 1 / 5 / 10 / 10+ / L4
   // Google Pixel / XL / 2 / 2XL / 3 / 3a / 3XL / 4 / 4a / 4XL / 5 / 6 / 6 Pro / 7 / 7 Pro / 8 / 8 Pro
   '(max-width: 430px) and (max-height: 1024px)': {
@@ -50,7 +51,8 @@ export default {
     trail: 0.85
   },
   // iPhone 6+ / 7+ / 8+ / X / XR / XS Max / 11 / 11 Pro / 11 Pro Max / 12 / 12 Pro / 12 Pro Max / 13 / 13 Pro / 13 Pro Max / 14 / 14 Plus / 14 Pro / 14 Pro Max / 15 / 15 Plus / 15 Pro / 15 Pro Max
-  // Samsung S10 Lite / S10+ / S20+ / S20 Ultra / S21 Ultra 5G / Z Flip // Samsung Note 10 / 10+ / 20 / 20 Ultra
+  // Samsung S10+/ S10Lite / S10+ / S20 FE / S20+ / S20 Ultra / S21 Ultra 5G / S23 / S23 FE / S23+ / S23 Ultra / Z Flip
+  // Samsung Note 10 / 10+ / 20 / 20+ / 20 Ultra / S23
   // OnePlus 6 / 6T / 7 / 7 Pro / 7T / 7T Pro / 8 / 8 Pro / 8T / 9 / 9 Pro / Nord // Sony Xperia 1 / 5 / 10 / 10+ / L4
   // Google Pixel / XL / 2 / 2XL / 3 / 3a / 3XL / 4 / 4a / 4XL / 5 / 6 / 6 Pro / 7 / 7 Pro / 8 / 8 Pro
   '(max-width: 1024px) and (max-height: 430px)': {
