@@ -6,7 +6,7 @@ use salvo::logging::Logger;
 use salvo::prelude::Router;
 
 use super::auth::auth;
-use super::env::Config;
+use super::env::Env;
 use super::handler;
 
 pub fn cors() -> CorsHandler {
@@ -32,7 +32,7 @@ pub fn cors() -> CorsHandler {
 }
 
 pub fn new() -> Router {
-    let env: Config = Default::default();
+    let env: Env = Default::default();
     Router::new()
         .hoop(cors())
         .hoop(Logger::new())

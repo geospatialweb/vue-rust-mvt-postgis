@@ -1,7 +1,8 @@
+use envy;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
-pub struct Config {
+pub struct Env {
     pub api_path_prefix: String,
     pub app_mode: String,
     pub app_mode_dev: String,
@@ -10,9 +11,9 @@ pub struct Config {
     pub delete_user_endpoint: String,
     pub geojson_endpoint: String,
     pub get_user_endpoint: String,
-    pub jwt_domain: String,
-    pub jwt_expiry: String,
-    pub jwt_secret: String,
+    pub jwt_claims_expiry: String,
+    pub jwt_claims_issuer: String,
+    pub jwt_claims_secret: String,
     pub login_endpoint: String,
     pub mapbox_access_token: String,
     pub mapbox_access_token_endpoint: String,
@@ -20,12 +21,13 @@ pub struct Config {
     pub register_endpoint: String,
     pub server_host: String,
     pub server_port: String,
+    pub server_sleep_duration: String,
     pub ssl_cert: String,
     pub ssl_key: String,
     pub update_password_endpoint: String,
     pub validate_user_endpoint: String,
 }
-impl Default for Config {
+impl Default for Env {
     fn default() -> Self {
         envy::from_env::<Self>().unwrap()
     }

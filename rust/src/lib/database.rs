@@ -2,7 +2,7 @@ use once_cell::sync::OnceCell;
 use sqlx::{Error, PgPool};
 use tracing::info;
 
-use super::env::Config;
+use super::env::Env;
 
 pub static PG_POOL: OnceCell<PgPool> = OnceCell::new();
 
@@ -26,7 +26,7 @@ pub async fn set_pool() -> Result<(), Error> {
 
 #[tracing::instrument]
 async fn connect_pool() -> Result<PgPool, Error> {
-    let env: Config = Default::default();
+    let env: Env = Default::default();
     let pool = PgPool::connect(&env.postgres_uri).await;
     match pool {
         Ok(pool) => {
