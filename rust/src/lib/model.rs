@@ -1,9 +1,9 @@
 use garde::Validate;
 use salvo::macros::Extractible;
-use serde::{Deserialize,Serialize};
+use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
-#[derive(Debug, Extractible, FromRow, Deserialize, Serialize, Validate)]
+#[derive(Debug, Deserialize, Extractible, FromRow, Serialize, Validate)]
 #[salvo(extract(default_source(from = "query"), default_source(from = "body")))]
 pub struct User {
     #[garde(email)]
