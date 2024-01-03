@@ -45,9 +45,9 @@ pub fn generate_hash_from_password(password: &str) -> Result<String, BcryptError
     Ok(hash)
 }
 
-pub fn verify_password_and_hash(password: &str, hash: &str) -> Result<bool, BcryptError> {
-    let verify = bcrypt::verify(password, hash)?;
-    Ok(verify)
+pub fn verify_password_and_hash(password: &str, hash: &str) -> Result<(), BcryptError> {
+    bcrypt::verify(password, hash)?;
+    Ok(())
 }
 
 pub fn get_jwt(username: &str) -> Result<Jwt, Error> {
