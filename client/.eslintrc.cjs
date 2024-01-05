@@ -11,7 +11,7 @@ module.exports = {
     'plugin:jest-dom/recommended',
     'plugin:prettier/recommended'
   ],
-  ignorePatterns: ['.*', '*.html', '*.js', '*.json', 'node_modules', 'static'],
+  ignorePatterns: ['.*', '*.html', '*.*js*', 'node_modules', 'static'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
