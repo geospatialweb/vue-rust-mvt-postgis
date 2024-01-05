@@ -1,6 +1,4 @@
 {
-  "css.validate": false,
-  "stylelint.enable": true,
   "eslint.validate": ["typescript", "typescriptreact"],
   "lldb.launch.terminal": "integrated",
   "rust-analyzer.debug.engine": "vadimcn.vscode-lldb",
