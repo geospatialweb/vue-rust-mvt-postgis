@@ -1,9 +1,9 @@
 use bcrypt::{BcryptError, DEFAULT_COST};
 use chrono::{Duration, Utc};
-use jsonwebtoken::errors::Error;
-use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation};
+use jsonwebtoken::errors::Error as JwtError;
+use jsonwebtoken::{EncodingKey, Header};
 use salvo::jwt_auth::{ConstDecoder, HeaderFinder};
-use salvo::prelude::{Depot, JwtAuth, JwtAuthDepotExt};
+use salvo::prelude::JwtAuth;
 use serde::{Deserialize, Serialize};
 
 use super::env::Env;
@@ -45,12 +45,7 @@ pub fn generate_hash_from_password(password: &str) -> Result<String, BcryptError
     Ok(hash)
 }
 
-pub fn verify_password_and_hash(password: &str, hash: &str) -> Result<(), BcryptError> {
-    bcrypt::verify(password, hash)?;
-    Ok(())
-}
-
-pub fn get_jwt(username: &str) -> Result<Jwt, Error> {
+pub fn get_jwt(username: &str) -> Result<Jwt, JwtError> {
     let env: Env = Default::default();
     let minutes = env.jwt_claims_expiry.parse::<i64>().unwrap();
     let expiry = (Utc::now() + Duration::minutes(minutes)).timestamp();
@@ -67,21 +62,7 @@ pub fn get_jwt(username: &str) -> Result<Jwt, Error> {
     Ok(Jwt { token, expiry })
 }
 
-#[rustfmt::skip]
-pub fn validate_jwt_claims_issuer(depot: &mut Depot) -> bool {
-    match depot.jwt_auth_token() {
-        Some(token) => {
-            let env: Env = Default::default();
-            let jwt_claims = jsonwebtoken::decode::<JwtClaims>(
-                token,
-                &DecodingKey::from_secret(env.jwt_claims_secret.as_ref()),
-                &Validation::default(), // HS256
-            ).unwrap();
-            if jwt_claims.claims.iss != env.jwt_claims_issuer {
-                return false;
-            }
-            true
-        }
-        None => false,
-    }
+pub fn verify_password_and_hash(password: &str, hash: &str) -> Result<(), BcryptError> {
+    bcrypt::verify(password, hash)?;
+    Ok(())
 }

@@ -3,12 +3,12 @@
 use bcrypt::BcryptError;
 use jsonwebtoken::errors::Error as JwtError;
 use salvo::http::{ParseError, StatusCode};
-use salvo::prelude::{async_trait, Depot, Request, Response, Writer};
+use salvo::prelude::{Response, Scribe};
 use serde_json::json;
 use sqlx::Error as QueryError;
 use thiserror::Error;
 
-use AppError::{Bcrypt, Jwt, JwtClaimsValidation, LayerParamsValidation, Parse, Query, UserValidation};
+use AppError::{Bcrypt, Jwt, Parse, Query, JwtForbidden, JwtUnauthorized, LayerParamsValidation, UserValidation};
 
 #[derive(Debug, Error)]
 pub enum AppError {
@@ -24,18 +24,20 @@ pub enum AppError {
     #[error("query error: {0}")]
     Query(#[from] QueryError),
 
-    #[error("jwt claims validation error")]
-    JwtClaimsValidation,
+    #[error("jwt forbidden")]
+    JwtForbidden,
 
-    #[error("layer params validation error")]
+    #[error("jwt unauthorized")]
+    JwtUnauthorized,
+
+    #[error("layer query params validation error")]
     LayerParamsValidation,
 
-    #[error("user validation error")]
+    #[error("user query params validation error")]
     UserValidation,
 }
-#[async_trait]
-impl Writer for AppError {
-    async fn write(mut self, _req: &mut Request, _depot: &mut Depot, res: &mut Response) {
+impl Scribe for AppError {
+    fn render(self, res: &mut Response) {
         match self {
             Bcrypt(_) => {
                 res.status_code(StatusCode::UNAUTHORIZED)
@@ -53,7 +55,11 @@ impl Writer for AppError {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            JwtClaimsValidation => {
+            JwtForbidden => {
+                res.status_code(StatusCode::FORBIDDEN)
+                   .render(json!(format!("{}", &self)).to_string());
+            }
+            JwtUnauthorized => {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
             }
