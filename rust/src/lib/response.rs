@@ -11,15 +11,15 @@ use thiserror::Error;
 
 #[derive(Debug, Serialize)]
 #[serde(untagged)]
-pub enum AppType<T> {
+pub enum ResponseType<T> {
     Type(T),
 }
-impl<T> From<T> for AppType<T> {
-    fn from(r#type: T) -> Self {
-        AppType::Type(r#type)
+impl<T> From<T> for ResponseType<T> {
+    fn from(res: T) -> Self {
+        ResponseType::Type(res)
     }
 }
-impl<T: Serialize> Scribe for AppType<T> {
+impl<T: Serialize> Scribe for ResponseType<T> {
     fn render(self, res: &mut Response) {
         res.status_code(StatusCode::OK)
            .render(json!(&self).to_string());
@@ -27,7 +27,7 @@ impl<T: Serialize> Scribe for AppType<T> {
 }
 
 #[derive(Debug, Error)]
-pub enum AppError {
+pub enum ResponseError {
     #[error("bcrypt error: {0}")]
     Bcrypt(#[from] BcryptError),
 
@@ -52,38 +52,38 @@ pub enum AppError {
     #[error("user query params validation error")]
     UserValidation,
 }
-impl Scribe for AppError {
+impl Scribe for ResponseError {
     fn render(self, res: &mut Response) {
         match self {
-            AppError::Bcrypt(_) => {
+            ResponseError::Bcrypt(_) => {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            AppError::Jwt(_) => {
+            ResponseError::Jwt(_) => {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            AppError::Parse(_) => {
+            ResponseError::Parse(_) => {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            AppError::Query(_) => {
+            ResponseError::Query(_) => {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            AppError::JwtForbidden => {
+            ResponseError::JwtForbidden => {
                 res.status_code(StatusCode::FORBIDDEN)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            AppError::JwtUnauthorized => {
+            ResponseError::JwtUnauthorized => {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            AppError::LayerParamsValidation => {
+            ResponseError::LayerParamsValidation => {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            AppError::UserValidation => {
+            ResponseError::UserValidation => {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
