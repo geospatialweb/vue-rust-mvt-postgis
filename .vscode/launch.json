@@ -5,15 +5,8 @@
       "name": "Rust",
       "type": "lldb",
       "request": "launch",
-      "cargo": {
-        "args": [
-          "build",
-          "--bin",
-          "main",
-          "--manifest-path",
-          "${workspaceFolder}/rust/Cargo.toml"
-        ]
-      }
+      "program": "${workspaceFolder}/rust/target/debug/main",
+      "preLaunchTask": "build"
     },
     {
       "name": "Debug Vitest Current File",
