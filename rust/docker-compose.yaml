@@ -18,14 +18,11 @@ services:
   #     - client/static:/var/www/geospatialweb.ca/static:ro
   #     - logs:/var/log/nginx:rw
 
-  # not working yet
   # rust:
   #   container_name: rust
-  #   build:
-  #     context: ./rust
-  #     target: app
+  #   build: .
   #   # image: geospatialweb/rust-mvt-postgis:latest
-  #   command: /app/main
+  #   # command: /app/main
   #   restart: unless-stopped
   #   depends_on:
   #     postgis:
@@ -34,8 +31,8 @@ services:
   #     - app-network
   #   ports:
   #     - "8000:8000"
-  #   # volumes:
-  #   #   - /etc/letsencrypt:/etc/letsencrypt:ro
+    # volumes:
+    #   - /etc/letsencrypt:/etc/letsencrypt:ro
 
   mvt:
     container_name: martin
@@ -52,7 +49,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./mvt:/config:ro
+      - ../mvt:/config:ro
       # - /etc/letsencrypt:/etc/letsencrypt:ro
 
   postgis:
@@ -63,15 +60,14 @@ services:
       - .env
     healthcheck:
       test: pg_isready -d $POSTGRES_URI
-      interval: 10s
+      interval: 15s
       timeout: 5s
     networks:
       - app-network
     ports:
       - "5432:5432"
     volumes:
-      - ./postgis/data:/var/lib/postgresql/data:rw
-      - ./postgis/migration.sql:/docker-entrypoint-initdb.d/migration.sql:ro
+      - ../postgis:/docker-entrypoint-initdb.d:ro
       # - /etc/letsencrypt:/etc/letsencrypt:ro
 
 networks:
