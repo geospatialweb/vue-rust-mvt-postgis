@@ -5,11 +5,11 @@ use salvo::http::Method;
 use salvo::logging::Logger;
 use salvo::prelude::Router;
 
-use super::auth::auth;
+use super::auth;
 use super::env::Env;
 use super::handler;
 
-pub fn cors() -> CorsHandler {
+pub fn handle_cors() -> CorsHandler {
     Cors::new()
         .allow_origin(vec![
             "https://www.geospatialweb.ca",
@@ -34,37 +34,37 @@ pub fn cors() -> CorsHandler {
 pub fn new() -> Router {
     let env: Env = Default::default();
     Router::new()
-        .hoop(cors())
+        .hoop(handle_cors())
         .hoop(Logger::new())
         .push(
             Router::with_path(env.api_path_prefix)
-                .hoop(auth())
+                .hoop(auth::handle_auth())
                 .push(
                     Router::with_path(env.geojson_endpoint)
-                        .get(handler::get_geojson_feature_collection))
+                        .get(handler::handle_get_geojson_feature_collection))
                 .push(
                     Router::with_path(env.mapbox_access_token_endpoint)
-                        .get(handler::get_mapbox_access_token))
+                        .get(handler::handle_get_mapbox_access_token))
                 .push(
                     Router::with_path(env.get_user_endpoint)
-                        .get(handler::get_user))
+                        .get(handler::handle_get_user))
                 .push(
                     Router::with_path(env.delete_user_endpoint)
-                        .delete(handler::delete_user))
+                        .delete(handler::handle_delete_user))
                 .push(
                     Router::with_path(env.update_password_endpoint)
-                        .patch(handler::update_password)),
+                        .patch(handler::handle_update_password)),
         )
         .push(
             Router::with_path(env.credentials_path_prefix)
                 .push(
                     Router::with_path(env.validate_user_endpoint)
-                        .get(handler::validate_user))
+                        .get(handler::handle_validate_user))
                 .push(
                     Router::with_path(env.login_endpoint)
-                        .get(handler::login))
+                        .get(handler::handle_login))
                 .push(
                     Router::with_path(env.register_endpoint)
-                        .post(handler::register)),
+                        .post(handler::handle_register)),
         )
 }

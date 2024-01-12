@@ -4,11 +4,27 @@ use bcrypt::BcryptError;
 use jsonwebtoken::errors::Error as JwtError;
 use salvo::http::{ParseError, StatusCode};
 use salvo::prelude::{Response, Scribe};
+use serde::Serialize;
 use serde_json::json;
 use sqlx::Error as QueryError;
 use thiserror::Error;
 
-use AppError::{Bcrypt, Jwt, Parse, Query, JwtForbidden, JwtUnauthorized, LayerParamsValidation, UserValidation};
+#[derive(Debug, Serialize)]
+#[serde(untagged)]
+pub enum AppType<T> {
+    Type(T),
+}
+impl<T> From<T> for AppType<T> {
+    fn from(r#type: T) -> Self {
+        AppType::Type(r#type)
+    }
+}
+impl<T: Serialize> Scribe for AppType<T> {
+    fn render(self, res: &mut Response) {
+        res.status_code(StatusCode::OK)
+           .render(json!(&self).to_string());
+    }
+}
 
 #[derive(Debug, Error)]
 pub enum AppError {
@@ -39,35 +55,35 @@ pub enum AppError {
 impl Scribe for AppError {
     fn render(self, res: &mut Response) {
         match self {
-            Bcrypt(_) => {
+            AppError::Bcrypt(_) => {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            Jwt(_) => {
+            AppError::Jwt(_) => {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            Parse(_) => {
+            AppError::Parse(_) => {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            Query(_) => {
+            AppError::Query(_) => {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            JwtForbidden => {
+            AppError::JwtForbidden => {
                 res.status_code(StatusCode::FORBIDDEN)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            JwtUnauthorized => {
+            AppError::JwtUnauthorized => {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            LayerParamsValidation => {
+            AppError::LayerParamsValidation => {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            UserValidation => {
+            AppError::UserValidation => {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }

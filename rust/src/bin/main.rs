@@ -1,18 +1,19 @@
-use dotenvy::dotenv;
+use std::path::Path;
 use tracing::error;
 
-use lib::database::set_pool;
-use lib::server::start_server;
+use lib::database;
+use lib::server;
 
 #[tokio::main]
 #[tracing::instrument]
 async fn main() {
     tracing_subscriber::fmt().init();
-    if let Err(err) = dotenv() {
+    let env_path = Path::new("./rust/.env");
+    if let Err(err) = dotenvy::from_path(env_path) {
         return error!("dotenv error: {}", &err);
     }
-    if let Err(err) = set_pool().await {
-        return error!("set_pool database error: {}", &err);
+    if let Err(err) = database::set_pool().await {
+        return error!("database set_pool error: {}", &err);
     }
-    start_server().await;
+    server::start().await;
 }

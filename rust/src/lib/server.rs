@@ -9,12 +9,12 @@ use super::env::Env;
 use super::router;
 
 #[tracing::instrument]
-pub async fn start_server() {
+pub async fn start() {
     let env: Env = Default::default();
     let host = format!("{}:{}", &env.server_host, &env.server_port);
     let service = Service::new(router::new())
         .catcher(Catcher::default()
-            .hoop(router::cors())
+            .hoop(router::handle_cors())
     );
     if env.app_mode == env.app_mode_dev {
         Server::new(TcpListener::new(&host)

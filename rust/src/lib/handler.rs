@@ -1,7 +1,7 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
 use garde::Validate;
-use salvo::http::StatusCode;
+use geojson::FeatureCollection;
 use salvo::macros::Extractible;
 use salvo::prelude::{
     handler,
@@ -14,17 +14,13 @@ use salvo::prelude::{
     Response,
 };
 use serde::Deserialize;
-use serde_json::json;
 use tracing::error;
 
 use super::auth;
 use super::env::Env;
-use super::error::AppError;
-use super::geojson;
 use super::model::User;
 use super::query;
-
-use AppError::{JwtForbidden, JwtUnauthorized, LayerParamsValidation, UserValidation};
+use super::response::{AppError, AppType};
 
 #[derive(Debug, Deserialize, Extractible, Validate)]
 #[salvo(extract(default_source(from = "query")))]
@@ -37,145 +33,127 @@ pub struct LayerParams {
 
 #[handler]
 #[tracing::instrument]
-pub async fn get_geojson_feature_collection(
-    depot: &mut Depot,
-    req: &mut Request,
-    res: &mut Response,
-) -> Result<(), AppError> {
+pub async fn handle_get_geojson_feature_collection(depot: &mut Depot, req: &mut Request
+) -> Result<AppType<FeatureCollection>, AppError> {
     match depot.jwt_auth_state() {
         Authorized => {
             let params: LayerParams = req.extract().await?;
             if let Err(err) = params.validate(&()) {
-                error!("layer query params validation error: {}", err);
-                return Err(LayerParamsValidation);
+                error!("layer query params validation error: {}", &err);
+                return Err(AppError::LayerParamsValidation);
             }
             let features = query::get_features(&params).await?;
-            let fc = geojson::create_feature_collection(&features);
-            res.status_code(StatusCode::OK)
-               .render(json!(&fc).to_string());
+            let fc = super::geojson::create_feature_collection(&features);
+            return Ok(fc.into());
         }
-        Unauthorized => return Err(JwtUnauthorized),
-        Forbidden => return Err(JwtForbidden),
+        Unauthorized => return Err(AppError::JwtUnauthorized),
+        Forbidden => return Err(AppError::JwtForbidden),
     }
-    Ok(())
 }
 
 #[handler]
 #[tracing::instrument]
-pub async fn get_mapbox_access_token(depot: &mut Depot, res: &mut Response) -> Result<(), AppError> {
+pub async fn handle_get_mapbox_access_token(depot: &mut Depot, res: &mut Response) -> Result<AppType<String>, AppError> {
     match depot.jwt_auth_state() {
         Authorized => {
             let env: Env = Default::default();
-            res.status_code(StatusCode::OK)
-               .render(json!(&env.mapbox_access_token).to_string());
+            return Ok(env.mapbox_access_token.into());
         }
-        Unauthorized => return Err(JwtUnauthorized),
-        Forbidden => return Err(JwtForbidden),
+        Unauthorized => return Err(AppError::JwtUnauthorized),
+        Forbidden => return Err(AppError::JwtForbidden),
     }
-    Ok(())
-}
-#[handler]
-#[tracing::instrument]
-pub async fn get_user(depot: &mut Depot, req: &mut Request, res: &mut Response) -> Result<(), AppError> {
-    match depot.jwt_auth_state() {
-        Authorized => {
-            let user: User = req.extract().await?;
-            if let Err(err) = user.validate(&()) {
-                error!("user query params validation error: {}", err);
-                return Err(UserValidation);
-            }
-            let user = query::get_user(&user.username).await?;
-            res.status_code(StatusCode::OK)
-               .render(json!(&user.username).to_string());
-        }
-        Unauthorized => return Err(JwtUnauthorized),
-        Forbidden => return Err(JwtForbidden),
-    }
-    Ok(())
 }
 
 #[handler]
 #[tracing::instrument]
-pub async fn delete_user(depot: &mut Depot, req: &mut Request, res: &mut Response) -> Result<(), AppError> {
+pub async fn handle_get_user(depot: &mut Depot, req: &mut Request) -> Result<AppType<String>, AppError> {
     match depot.jwt_auth_state() {
         Authorized => {
             let user: User = req.extract().await?;
             if let Err(err) = user.validate(&()) {
                 error!("user query params validation error: {}", &err);
-                return Err(UserValidation);
+                return Err(AppError::UserValidation);
             }
-            let user = query::delete_user(&user.username).await?;
-            res.status_code(StatusCode::OK)
-               .render(json!(&user.username).to_string());
+            let user = query::get_user(&user.username).await?;
+            return Ok(user.username.into());
         }
-        Unauthorized => return Err(JwtUnauthorized),
-        Forbidden => return Err(JwtForbidden),
+        Unauthorized => return Err(AppError::JwtUnauthorized),
+        Forbidden => return Err(AppError::JwtForbidden),
     }
-    Ok(())
 }
 
 #[handler]
 #[tracing::instrument]
-pub async fn login(req: &mut Request, res: &mut Response) -> Result<(), AppError> {
+pub async fn handle_delete_user(depot: &mut Depot, req: &mut Request) -> Result<AppType<String>, AppError> {
+    match depot.jwt_auth_state() {
+        Authorized => {
+            let user: User = req.extract().await?;
+            if let Err(err) = user.validate(&()) {
+                error!("user query params validation error: {}", &err);
+                return Err(AppError::UserValidation);
+            }
+            let user = query::delete_user(&user.username).await?;
+            return Ok(user.username.into());
+        }
+        Unauthorized => return Err(AppError::JwtUnauthorized),
+        Forbidden => return Err(AppError::JwtForbidden),
+    }
+}
+
+#[handler]
+#[tracing::instrument]
+pub async fn handle_login(req: &mut Request) -> Result<AppType<auth::Jwt>, AppError> {
     let user: User = req.extract().await?;
     if let Err(err) = user.validate(&()) {
         error!("user query params validation error: {}", &err);
-        return Err(UserValidation);
+        return Err(AppError::UserValidation);
     }
     let password = query::get_password(&user.username).await?;
     auth::verify_password_and_hash(&user.password.unwrap(), &password.hash)?;
     let jwt = auth::get_jwt(&user.username)?;
-    res.status_code(StatusCode::OK)
-       .render(json!(&jwt).to_string());
-    Ok(())
+    return Ok(jwt.into());
 }
 
 #[handler]
 #[tracing::instrument]
-pub async fn register(req: &mut Request, res: &mut Response) -> Result<(), AppError> {
+pub async fn handle_register(req: &mut Request) -> Result<AppType<String>, AppError> {
     let user: User = req.extract().await?;
     if let Err(err) = user.validate(&()) {
         error!("user query params validation error: {}", &err);
-        return Err(UserValidation);
+        return Err(AppError::UserValidation);
     }
     let hash = auth::generate_hash_from_password(&user.password.unwrap())?;
     let user = query::insert_user(&User::new(&user.username, &Some(hash))).await?;
-    res.status_code(StatusCode::CREATED)
-       .render(json!(&user.username).to_string());
-    Ok(())
+    return Ok(user.username.into());
 }
 
 #[handler]
 #[tracing::instrument]
-pub async fn update_password(depot: &mut Depot, req: &mut Request, res: &mut Response) -> Result<(), AppError> {
+pub async fn handle_update_password(depot: &mut Depot, req: &mut Request) -> Result<AppType<String>, AppError> {
     match depot.jwt_auth_state() {
         Authorized => {
             let user: User = req.extract().await?;
             if let Err(err) = user.validate(&()) {
                 error!("user query params validation error: {}", &err);
-                return Err(UserValidation);
+                return Err(AppError::UserValidation);
             }
             let hash = auth::generate_hash_from_password(&user.password.unwrap())?;
             let user = query::update_password(&User::new(&user.username, &Some(hash))).await?;
-            res.status_code(StatusCode::OK)
-               .render(json!(&user.username).to_string());
+            return Ok(user.username.into());
         }
-        Unauthorized => return Err(JwtUnauthorized),
-        Forbidden => return Err(JwtForbidden),
+        Unauthorized => return Err(AppError::JwtUnauthorized),
+        Forbidden => return Err(AppError::JwtForbidden),
     }
-    Ok(())
 }
 
 #[handler]
 #[tracing::instrument]
-pub async fn validate_user(req: &mut Request, res: &mut Response) -> Result<(), AppError> {
+pub async fn handle_validate_user(req: &mut Request) -> Result<AppType<String>, AppError> {
     let user: User = req.extract().await?;
     if let Err(err) = user.validate(&()) {
         error!("user query params validation error: {}", &err);
-        return Err(UserValidation);
+        return Err(AppError::UserValidation);
     }
     let user = query::get_user(&user.username).await?;
-    res.status_code(StatusCode::OK)
-       .render(json!(&user.username).to_string());
-    Ok(())
+    return Ok(user.username.into());
 }

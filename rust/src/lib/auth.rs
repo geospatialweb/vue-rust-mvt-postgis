@@ -33,13 +33,6 @@ pub struct JwtClaims {
     exp: i64,
 }
 
-pub fn auth() -> JwtAuth<JwtClaims, ConstDecoder> {
-    let env: Env = Default::default();
-    JwtAuth::new(ConstDecoder::from_secret(env.jwt_claims_secret.as_bytes()))
-        .finders(vec![Box::new(HeaderFinder::new())])
-        .force_passed(true)
-}
-
 pub fn generate_hash_from_password(password: &str) -> Result<String, BcryptError> {
     let hash = bcrypt::hash(password, DEFAULT_COST)?;
     Ok(hash)
@@ -60,6 +53,13 @@ pub fn get_jwt(username: &str) -> Result<Jwt, JwtError> {
         &EncodingKey::from_secret(env.jwt_claims_secret.as_ref()),
     )?;
     Ok(Jwt { token, expiry })
+}
+
+pub fn handle_auth() -> JwtAuth<JwtClaims, ConstDecoder> {
+    let env: Env = Default::default();
+    JwtAuth::new(ConstDecoder::from_secret(env.jwt_claims_secret.as_bytes()))
+        .finders(vec![Box::new(HeaderFinder::new())])
+        .force_passed(true)
 }
 
 pub fn verify_password_and_hash(password: &str, hash: &str) -> Result<(), BcryptError> {
