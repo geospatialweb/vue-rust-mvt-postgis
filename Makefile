@@ -1,6 +1,3 @@
-compose:
-	@docker-compose up -d --build
-
 start:
-	@make compose
+	@cd rust; docker-compose up -d
 	@cd client; make start

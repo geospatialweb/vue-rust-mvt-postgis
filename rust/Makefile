@@ -8,7 +8,7 @@ clippy:
 	@cargo clippy
 
 release:
-	@cargo build --bin main --release --offline
+	@cargo build --bin main --release
 
 run:
 	@cargo run --bin main

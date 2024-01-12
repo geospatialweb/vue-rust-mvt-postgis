@@ -1,7 +1,6 @@
 .dockerignore
 .gitignore
 .rustfmt.toml
-Cargo.lock
 Dockerfile
 Makefile
 target
