@@ -1,3 +1,6 @@
+compose:
+	@docker-compose up -d
+
 start:
-	@cd rust; docker-compose up -d
+	@make compose
 	@cd client; make start
