@@ -1,4 +1,4 @@
-use std::path::Path;
+use dotenvy::dotenv;
 use tracing::error;
 
 use lib::database;
@@ -8,8 +8,7 @@ use lib::server;
 #[tracing::instrument]
 async fn main() {
     tracing_subscriber::fmt().init();
-    let env_path = Path::new("./rust/.env");
-    if let Err(err) = dotenvy::from_path(env_path) {
+    if let Err(err) = dotenv() {
         return error!("dotenv error: {}", &err);
     }
     if let Err(err) = database::set_pool().await {
