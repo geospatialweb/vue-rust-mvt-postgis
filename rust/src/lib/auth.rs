@@ -33,11 +33,13 @@ pub struct JwtClaims {
     exp: i64,
 }
 
+/// Generate HS256 password hash from text password.
 pub fn generate_hash_from_password(password: &str) -> Result<String, BcryptError> {
     let hash = bcrypt::hash(password, DEFAULT_COST)?;
     Ok(hash)
 }
 
+/// Return JWT token and expiry.
 pub fn get_jwt(username: &str) -> Result<Jwt, JwtError> {
     let env: Env = Default::default();
     let minutes = env.jwt_claims_expiry.parse::<i64>().unwrap();
@@ -55,6 +57,7 @@ pub fn get_jwt(username: &str) -> Result<Jwt, JwtError> {
     Ok(Jwt { token, expiry })
 }
 
+/// Router authentication middleware.
 pub fn handle_auth() -> JwtAuth<JwtClaims, ConstDecoder> {
     let env: Env = Default::default();
     JwtAuth::new(ConstDecoder::from_secret(env.jwt_claims_secret.as_bytes()))
@@ -62,6 +65,7 @@ pub fn handle_auth() -> JwtAuth<JwtClaims, ConstDecoder> {
         .force_passed(true)
 }
 
+/// Verify HS256 password hash stored in db with text password submitted by user.
 pub fn verify_password_and_hash(password: &str, hash: &str) -> Result<(), BcryptError> {
     bcrypt::verify(password, hash)?;
     Ok(())

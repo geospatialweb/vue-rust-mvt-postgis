@@ -9,6 +9,7 @@ use super::env::Env;
 use super::router;
 
 #[tracing::instrument]
+/// Start Http/Https server.
 pub async fn start() {
     let env: Env = Default::default();
     let host = format!("{}:{}", &env.server_host, &env.server_port);

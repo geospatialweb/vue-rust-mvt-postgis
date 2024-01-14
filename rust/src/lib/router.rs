@@ -9,6 +9,7 @@ use super::auth;
 use super::env::Env;
 use super::handler;
 
+/// Create new CORS handler.
 pub fn handle_cors() -> CorsHandler {
     Cors::new()
         .allow_origin(vec![
@@ -31,6 +32,7 @@ pub fn handle_cors() -> CorsHandler {
         .into_handler()
 }
 
+/// Create new Router.
 pub fn new() -> Router {
     let env: Env = Default::default();
     Router::new()

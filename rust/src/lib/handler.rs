@@ -35,6 +35,7 @@ pub struct LayerParams {
 
 #[handler]
 #[tracing::instrument]
+/// Return GeoJSON feature collection.
 pub async fn handle_get_geojson_feature_collection(
     depot: &mut Depot,
     req: &mut Request,
@@ -57,6 +58,7 @@ pub async fn handle_get_geojson_feature_collection(
 
 #[handler]
 #[tracing::instrument]
+/// Return Mapbox Access Token.
 pub async fn handle_get_mapbox_access_token(depot: &mut Depot) -> Result<ResponseType<String>, ResponseError> {
     match depot.jwt_auth_state() {
         Authorized => {
@@ -70,6 +72,7 @@ pub async fn handle_get_mapbox_access_token(depot: &mut Depot) -> Result<Respons
 
 #[handler]
 #[tracing::instrument]
+/// Return User.
 pub async fn handle_get_user(depot: &mut Depot, req: &mut Request) -> Result<ResponseType<String>, ResponseError> {
     match depot.jwt_auth_state() {
         Authorized => {
@@ -88,6 +91,7 @@ pub async fn handle_get_user(depot: &mut Depot, req: &mut Request) -> Result<Res
 
 #[handler]
 #[tracing::instrument]
+/// Delete user returning username.
 pub async fn handle_delete_user(depot: &mut Depot, req: &mut Request) -> Result<ResponseType<String>, ResponseError> {
     match depot.jwt_auth_state() {
         Authorized => {
@@ -106,6 +110,7 @@ pub async fn handle_delete_user(depot: &mut Depot, req: &mut Request) -> Result<
 
 #[handler]
 #[tracing::instrument]
+/// Login user. User submitted password is verified against HS256 password hash stored in db.
 pub async fn handle_login(req: &mut Request) -> Result<ResponseType<auth::Jwt>, ResponseError> {
     let user: User = req.extract().await?;
     if let Err(err) = user.validate(&()) {
@@ -120,6 +125,7 @@ pub async fn handle_login(req: &mut Request) -> Result<ResponseType<auth::Jwt>, 
 
 #[handler]
 #[tracing::instrument]
+/// Register user. User submitted password is converted into HS256 password hash stored in db.
 pub async fn handle_register(req: &mut Request, res: &mut Response) -> Result<(), ResponseError> {
     let user: User = req.extract().await?;
     if let Err(err) = user.validate(&()) {
@@ -135,6 +141,7 @@ pub async fn handle_register(req: &mut Request, res: &mut Response) -> Result<()
 
 #[handler]
 #[tracing::instrument]
+/// Update user password returning username. User submitted password is converted into HS256 password hash stored in db.
 pub async fn handle_update_password(
     depot: &mut Depot,
     req: &mut Request,
@@ -157,6 +164,7 @@ pub async fn handle_update_password(
 
 #[handler]
 #[tracing::instrument]
+/// Validate user exists in db returning username.
 pub async fn handle_validate_user(req: &mut Request) -> Result<ResponseType<String>, ResponseError> {
     let user: User = req.extract().await?;
     if let Err(err) = user.validate(&()) {

@@ -11,6 +11,7 @@ use thiserror::Error;
 
 #[derive(Debug, Serialize)]
 #[serde(untagged)]
+/// Handler response data types.
 pub enum ResponseType<T> {
     Type(T),
 }
@@ -27,6 +28,7 @@ impl<T: Serialize> Scribe for ResponseType<T> {
 }
 
 #[derive(Debug, Error)]
+/// Handler response error types.
 pub enum ResponseError {
     #[error("bcrypt error: {0}")]
     Bcrypt(#[from] BcryptError),

@@ -9,6 +9,7 @@ use super::handler::LayerParams;
 use super::model::User;
 
 #[tracing::instrument]
+/// Return vector of json strings formatted as GeoJSON features.
 pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Error> {
     let query = format!("
         SELECT ST_AsGeoJSON(feature.*)
@@ -24,6 +25,7 @@ pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Erro
 }
 
 #[tracing::instrument]
+/// Return user password.
 pub async fn get_password(username: &str) -> Result<Credential, Error> {
     let query = "
         SELECT password
@@ -37,6 +39,7 @@ pub async fn get_password(username: &str) -> Result<Credential, Error> {
 }
 
 #[tracing::instrument]
+/// Return user.
 pub async fn get_user(username: &str) -> Result<User, Error> {
     let query = "
         SELECT username
@@ -50,6 +53,7 @@ pub async fn get_user(username: &str) -> Result<User, Error> {
 }
 
 #[tracing::instrument]
+/// Delete user returning username.
 pub async fn delete_user(username: &str) -> Result<User, Error> {
     let query = "
         DELETE FROM users
@@ -63,6 +67,7 @@ pub async fn delete_user(username: &str) -> Result<User, Error> {
 }
 
 #[tracing::instrument]
+/// Insert user returning username.
 pub async fn insert_user(user: &User) -> Result<User, Error> {
     let query = "
         INSERT INTO users (username, password)
@@ -77,6 +82,7 @@ pub async fn insert_user(user: &User) -> Result<User, Error> {
 }
 
 #[tracing::instrument]
+/// Update user password returning username and hashed password.
 pub async fn update_password(user: &User) -> Result<User, Error> {
     let query = "
         UPDATE users

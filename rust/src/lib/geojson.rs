@@ -9,6 +9,7 @@ pub struct JsonFeature {
 }
 
 #[rustfmt::skip]
+/// Create GeoJSON feature collection from a vector of GeoJSON features.
 pub fn create_feature_collection(json_features: &[JsonFeature]) -> FeatureCollection {
     let features = create_geojson_features(json_features);
     match features {
@@ -30,6 +31,7 @@ pub fn create_feature_collection(json_features: &[JsonFeature]) -> FeatureCollec
     }
 }
 
+/// Create vector of GeoJSON features from a vector of json strings formatted as GeoJSON features from PostGIS query.
 fn create_geojson_features(json_features: &[JsonFeature]) -> Result<Vec<Feature>, Error> {
     json_features
         .iter()

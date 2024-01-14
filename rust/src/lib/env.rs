@@ -1,6 +1,7 @@
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
+/// Deserialize .env file into Env struct.
 pub struct Env {
     pub api_path_prefix: String,
     pub app_mode: String,
