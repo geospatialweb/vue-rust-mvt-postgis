@@ -20,7 +20,7 @@ export default defineComponent({
     return (): JSX.Element => (
       <label>
         Select Trail
-        <select class={trail} onChange={(evt): void => onChangeHandler(evt)}>
+        <select class={trail} name="trails" onChange={(evt): void => onChangeHandler(evt)}>
           <option>Select Trail</option>
           {trails.map(
             ({ name }): JSX.Element => (
