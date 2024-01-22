@@ -9,7 +9,7 @@ export default defineComponent({
     const { header, name, title } = styles
     return (): JSX.Element => (
       <header class={header}>
-        <img src="/assets/icons/logo.png" alt="Geospatial Web Logo" />
+        <img src="/assets/icons/logo.webp" alt="Geospatial Web Logo" />
         <div id="header-name" class={name} aria-labelledby="header-name">
           Geospatial Web
         </div>
