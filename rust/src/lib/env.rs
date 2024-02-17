@@ -1,4 +1,9 @@
+use envy::Error;
+use once_cell::sync::OnceCell;
 use serde::Deserialize;
+use tracing::info;
+
+static ENV: OnceCell<Env> = OnceCell::new();
 
 #[derive(Debug, Deserialize)]
 /// Deserialize .env file into Env struct.
@@ -27,8 +32,18 @@ pub struct Env {
     pub update_password_endpoint: String,
     pub validate_user_endpoint: String,
 }
-impl Default for Env {
-    fn default() -> Self {
-        envy::from_env::<Self>().unwrap()
+impl Env {
+    #[inline]
+    /// Get environment variables from .env file.
+    pub fn get_env() -> &'static Env {
+        ENV.get().unwrap()
+    }
+
+    /// Set environment variables from .env file.
+    pub fn set_env() -> Result<(), Error> {
+        let env = envy::from_env::<Self>()?;
+        let _ = ENV.set(env);
+        info!("set_env ok");
+        Ok(())
     }
 }

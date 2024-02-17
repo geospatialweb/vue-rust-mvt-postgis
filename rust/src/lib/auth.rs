@@ -1,6 +1,6 @@
 use bcrypt::{BcryptError, DEFAULT_COST};
 use chrono::{Duration, Utc};
-use jsonwebtoken::errors::Error as JwtError;
+use jsonwebtoken::errors::Error;
 use jsonwebtoken::{EncodingKey, Header};
 use salvo::jwt_auth::{ConstDecoder, HeaderFinder};
 use salvo::prelude::JwtAuth;
@@ -10,12 +10,13 @@ use super::env::Env;
 
 #[derive(Debug)]
 pub struct Credential {
-    pub hash: String,
+    pub password: String,
 }
 impl Credential {
+    /// Create new Credential.
     pub fn new(password: &str) -> Self {
         Self {
-            hash: password.to_owned(),
+            password: password.to_owned(),
         }
     }
 }
@@ -40,27 +41,29 @@ pub fn generate_hash_from_password(password: &str) -> Result<String, BcryptError
 }
 
 /// Return JWT token and expiry.
-pub fn get_jwt(username: &str) -> Result<Jwt, JwtError> {
-    let env: Env = Default::default();
+pub fn get_jwt(username: &str) -> Result<Jwt, Error> {
+    let env = Env::get_env();
     let minutes = env.jwt_claims_expiry.parse::<i64>().unwrap();
     let expiry = (Utc::now() + Duration::minutes(minutes)).timestamp();
     let jwt_claims = JwtClaims {
         iss: env.jwt_claims_issuer.to_owned(),
         sub: username.to_owned(),
-        exp: expiry.to_owned(),
+        exp: expiry,
     };
+    let secret = env.jwt_claims_secret.as_bytes();
     let token = jsonwebtoken::encode(
         &Header::default(), // HS256
         &jwt_claims,
-        &EncodingKey::from_secret(env.jwt_claims_secret.as_ref()),
+        &EncodingKey::from_secret(secret),
     )?;
     Ok(Jwt { token, expiry })
 }
 
 /// Router authentication middleware.
 pub fn handle_auth() -> JwtAuth<JwtClaims, ConstDecoder> {
-    let env: Env = Default::default();
-    JwtAuth::new(ConstDecoder::from_secret(env.jwt_claims_secret.as_bytes()))
+    let env = Env::get_env();
+    let secret = env.jwt_claims_secret.as_bytes();
+    JwtAuth::new(ConstDecoder::from_secret(secret))
         .finders(vec![Box::new(HeaderFinder::new())])
         .force_passed(true)
 }

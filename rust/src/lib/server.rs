@@ -8,10 +8,9 @@ use tokio::time::{sleep, Duration};
 use super::env::Env;
 use super::router;
 
-#[tracing::instrument]
 /// Start Http/Https server.
 pub async fn start() {
-    let env: Env = Default::default();
+    let env = Env::get_env();
     let host = format!("{}:{}", &env.server_host, &env.server_port);
     let service = Service::new(router::new())
         .catcher(Catcher::default()
@@ -27,8 +26,8 @@ pub async fn start() {
     } else if env.app_mode == env.app_mode_prod {
         let config = RustlsConfig::new(
             Keycert::new()
-                .cert(env.ssl_cert)
-                .key(env.ssl_key)
+                .cert(env.ssl_cert.as_str())
+                .key(env.ssl_key.as_str())
         );
         let server = Server::new(TcpListener::new(&host)
             .rustls(config)
