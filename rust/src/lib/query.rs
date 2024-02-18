@@ -1,15 +1,16 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
-use sqlx::{Error, Row};
+use sqlx::Row;
 
 use super::auth::Credential;
 use super::database::get_pool;
 use super::geojson::JsonFeature;
 use super::handler::LayerParams;
 use super::model::User;
+use super::response::ResponseError;
 
 /// Return vector of json strings formatted as GeoJSON features.
-pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Error> {
+pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, ResponseError> {
     let query = format!("
         SELECT ST_AsGeoJSON(feature.*)
         AS feature
@@ -24,7 +25,7 @@ pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Erro
 }
 
 /// Return user password.
-pub async fn get_password(username: &str) -> Result<Credential, Error> {
+pub async fn get_password(username: &str) -> Result<Credential, ResponseError> {
     let query = "
         SELECT password
         FROM users
@@ -37,7 +38,7 @@ pub async fn get_password(username: &str) -> Result<Credential, Error> {
 }
 
 /// Return user.
-pub async fn get_user(username: &str) -> Result<User, Error> {
+pub async fn get_user(username: &str) -> Result<User, ResponseError> {
     let query = "
         SELECT username
         FROM users
@@ -50,7 +51,7 @@ pub async fn get_user(username: &str) -> Result<User, Error> {
 }
 
 /// Delete user returning username.
-pub async fn delete_user(username: &str) -> Result<User, Error> {
+pub async fn delete_user(username: &str) -> Result<User, ResponseError> {
     let query = "
         DELETE FROM users
         WHERE username = $1
@@ -63,7 +64,7 @@ pub async fn delete_user(username: &str) -> Result<User, Error> {
 }
 
 /// Insert user returning username.
-pub async fn insert_user(user: &User) -> Result<User, Error> {
+pub async fn insert_user(user: &User) -> Result<User, ResponseError> {
     let query = "
         INSERT INTO users (username, password)
         VALUES ($1, $2)
@@ -77,7 +78,7 @@ pub async fn insert_user(user: &User) -> Result<User, Error> {
 }
 
 /// Update user password returning username and hashed password.
-pub async fn update_password(user: &User) -> Result<User, Error> {
+pub async fn update_password(user: &User) -> Result<User, ResponseError> {
     let query = "
         UPDATE users
         SET password = $2
