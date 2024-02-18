@@ -7,45 +7,46 @@ use salvo::Scribe;
 use serde::Serialize;
 use serde_json::json;
 use sqlx::Error as QueryError;
+use std::num::ParseIntError;
 use thiserror::Error;
 
 #[derive(Debug, Serialize)]
 #[serde(untagged)]
-/// Handler response data type.
-pub enum HandlerResponseType<T> {
+/// Response generic types.
+pub enum ResponseType<T> {
     Type(T),
 }
-impl<T> From<T> for HandlerResponseType<T> {
+impl<T> From<T> for ResponseType<T> {
     fn from(r#type: T) -> Self {
-        HandlerResponseType::Type(r#type)
+        ResponseType::Type(r#type)
     }
 }
 
 #[derive(Debug)]
-pub struct HandlerResponse<T> {
-    response: HandlerResponseType<T>,
+pub struct ResponsePayload<T> {
+    payload: ResponseType<T>,
     status_code: StatusCode,
 }
-impl<T> HandlerResponse<T> {
-    /// Create new HandlerResponse.
-    pub fn new(response: HandlerResponseType<T>, status_code: &StatusCode) -> Self {
+impl<T> ResponsePayload<T> {
+    /// Create new ResponsePayload.
+    pub fn new(payload: ResponseType<T>, status_code: &StatusCode) -> Self {
         Self {
-            response,
+            payload,
             status_code: status_code.to_owned(),
         }
     }
 }
-impl<T: Serialize> Scribe for HandlerResponse<T> {
-    /// Write handler response and status code.
+impl<T: Serialize> Scribe for ResponsePayload<T> {
+    /// Write response payload and status code.
     fn render(self, res: &mut Response) {
         res.status_code(self.status_code)
-           .render(json!(&self.response).to_string());
+           .render(json!(&self.payload).to_string());
     }
 }
 
 #[derive(Debug, Error)]
-/// Handler response error types.
-pub enum HandlerError {
+/// Response error types.
+pub enum ResponseError {
     #[error("bcrypt error: {0}")]
     Bcrypt(#[from] BcryptError),
 
@@ -54,6 +55,9 @@ pub enum HandlerError {
 
     #[error("parse error: {0}")]
     Parse(#[from] ParseError),
+
+    #[error("parse int error: {0}")]
+    ParseInt(#[from] ParseIntError),
 
     #[error("query error: {0}")]
     Query(#[from] QueryError),
@@ -70,39 +74,43 @@ pub enum HandlerError {
     #[error("user query params validation error")]
     UserValidation,
 }
-impl Scribe for HandlerError {
-    /// Write handler error and status code.
+impl Scribe for ResponseError {
+    /// Write response error and status code.
     fn render(self, res: &mut Response) {
         match self {
-            HandlerError::Bcrypt(_) => {
+            ResponseError::Bcrypt(_) => {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            HandlerError::Jwt(_) => {
+            ResponseError::Jwt(_) => {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            HandlerError::Parse(_) => {
+            ResponseError::Parse(_) => {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            HandlerError::Query(_) => {
+            ResponseError::ParseInt(_) => {
+                res.status_code(StatusCode::INTERNAL_SERVER_ERROR)
+                   .render(json!(format!("{}", &self)).to_string());
+            }
+            ResponseError::Query(_) => {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            HandlerError::JwtForbidden => {
+            ResponseError::JwtForbidden => {
                 res.status_code(StatusCode::FORBIDDEN)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            HandlerError::JwtUnauthorized => {
+            ResponseError::JwtUnauthorized => {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            HandlerError::LayerParamsValidation => {
+            ResponseError::LayerParamsValidation => {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            HandlerError::UserValidation => {
+            ResponseError::UserValidation => {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }

@@ -1,12 +1,11 @@
-use bcrypt::{BcryptError, DEFAULT_COST};
 use chrono::{Duration, Utc};
-use jsonwebtoken::errors::Error;
 use jsonwebtoken::{EncodingKey, Header};
 use salvo::jwt_auth::{ConstDecoder, HeaderFinder};
 use salvo::prelude::JwtAuth;
 use serde::{Deserialize, Serialize};
 
 use super::env::Env;
+use super::response::ResponseError;
 
 #[derive(Debug)]
 pub struct Credential {
@@ -35,15 +34,15 @@ pub struct JwtClaims {
 }
 
 /// Generate HS256 password hash from text password.
-pub fn generate_hash_from_password(password: &str) -> Result<String, BcryptError> {
-    let hash = bcrypt::hash(password, DEFAULT_COST)?;
+pub fn generate_hash_from_password(password: &str) -> Result<String, ResponseError> {
+    let hash = bcrypt::hash(password, bcrypt::DEFAULT_COST)?;
     Ok(hash)
 }
 
 /// Return JWT token and expiry.
-pub fn get_jwt(username: &str) -> Result<Jwt, Error> {
+pub fn get_jwt(username: &str) -> Result<Jwt, ResponseError> {
     let env = Env::get_env();
-    let minutes = env.jwt_claims_expiry.parse::<i64>().unwrap();
+    let minutes = env.jwt_claims_expiry.parse::<i64>()?;
     let expiry = (Utc::now() + Duration::minutes(minutes)).timestamp();
     let jwt_claims = JwtClaims {
         iss: env.jwt_claims_issuer.to_owned(),
@@ -69,7 +68,7 @@ pub fn handle_auth() -> JwtAuth<JwtClaims, ConstDecoder> {
 }
 
 /// Verify HS256 password hash stored in db with text password submitted by user.
-pub fn verify_password_and_hash(password: &str, hash: &str) -> Result<(), BcryptError> {
+pub fn verify_password_and_hash(password: &str, hash: &str) -> Result<(), ResponseError> {
     bcrypt::verify(password, hash)?;
     Ok(())
 }
