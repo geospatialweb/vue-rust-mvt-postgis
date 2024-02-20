@@ -7,7 +7,7 @@ use salvo::prelude::{Listener, Server, Service, TcpListener};
 use super::env::Env;
 use super::router;
 
-/// Start Http/Https server.
+/// Start development HTTP/1.1 / production HTTPS/1.1 server.
 pub async fn start() {
     let env = Env::get_env();
     let host = format!("{}:{}", &env.server_host, &env.server_port);
