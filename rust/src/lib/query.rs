@@ -24,7 +24,7 @@ pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Resp
     Ok(features)
 }
 
-/// Return user password.
+/// Return hashed password.
 pub async fn get_password(username: &str) -> Result<Credential, ResponseError> {
     let query = "
         SELECT password
@@ -38,7 +38,7 @@ pub async fn get_password(username: &str) -> Result<Credential, ResponseError> {
 }
 
 /// Return user.
-pub async fn get_user(username: &str) -> Result<User, ResponseError> {
+pub async fn get_user(username: &str) -> Result<String, ResponseError> {
     let query = "
         SELECT username
         FROM users
@@ -47,11 +47,11 @@ pub async fn get_user(username: &str) -> Result<User, ResponseError> {
         .bind(username)
         .fetch_one(get_pool())
         .await?;
-    Ok(User::new(row.get("username"), &None))
+    Ok(row.get("username"))
 }
 
 /// Delete user returning username.
-pub async fn delete_user(username: &str) -> Result<User, ResponseError> {
+pub async fn delete_user(username: &str) -> Result<String, ResponseError> {
     let query = "
         DELETE FROM users
         WHERE username = $1
@@ -60,11 +60,11 @@ pub async fn delete_user(username: &str) -> Result<User, ResponseError> {
         .bind(username)
         .fetch_one(get_pool())
         .await?;
-    Ok(User::new(row.get("username"), &None))
+    Ok(row.get("username"))
 }
 
 /// Insert user returning username.
-pub async fn insert_user(user: &User) -> Result<User, ResponseError> {
+pub async fn insert_user(user: &User) -> Result<String, ResponseError> {
     let query = "
         INSERT INTO users (username, password)
         VALUES ($1, $2)
@@ -74,10 +74,10 @@ pub async fn insert_user(user: &User) -> Result<User, ResponseError> {
         .bind(&user.password)
         .fetch_one(get_pool())
         .await?;
-    Ok(User::new(row.get("username"), &None))
+    Ok(row.get("username"))
 }
 
-/// Update user password returning username and hashed password.
+/// Update password returning username and hashed password.
 pub async fn update_password(user: &User) -> Result<User, ResponseError> {
     let query = "
         UPDATE users
