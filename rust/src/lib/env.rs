@@ -33,7 +33,7 @@ pub struct Env {
 impl Env {
     #[inline]
     /// Get environment variables.
-    pub fn get_env() -> &'static Env {
+    pub fn get_env() -> &'static Self {
         ENV.get().unwrap()
     }
 
