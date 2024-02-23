@@ -2,18 +2,17 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build",
+      "label": "debug rust test",
       "type": "cargo",
-      "command": "build",
+      "command": "test",
       "args": [
-        "--bin",
-        "main",
+        "--lib",
         "--manifest-path",
         "${workspaceFolder}/rust/Cargo.toml"
       ],
       "problemMatcher": ["$rustc"],
       "group": {
-        "kind": "build",
+        "kind": "test",
         "isDefault": true
       }
     }

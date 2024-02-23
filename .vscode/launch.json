@@ -2,19 +2,43 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Rust",
+      "name": "Debug Rust",
       "type": "lldb",
       "request": "launch",
-      "program": "${workspaceFolder}/rust/target/debug/main",
-      "preLaunchTask": "build"
+      "cargo": {
+        "args": [
+          "build",
+          "--bin",
+          "main",
+          "--manifest-path",
+          "${workspaceFolder}/rust/Cargo.toml"
+        ]
+      },
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug Rust Test",
+      "type": "lldb",
+      "request": "launch",
+      "cargo": {
+        "args": [
+          "test",
+          "--lib",
+          "--no-run",
+          "--manifest-path",
+          "${workspaceFolder}/rust/Cargo.toml"
+        ]
+      },
+      "console": "integratedTerminal",
+      "postDebugTask": "debug rust test"
     },
     {
       "name": "Debug Vitest Current File",
       "type": "node",
       "request": "launch",
-      "cwd": "${workspaceRoot}/vue",
+      "cwd": "${workspaceRoot}/client",
       "program": "node_modules/vitest/vitest.mjs",
-      "args": ["run", "${relativeFile}"],
+      "args": ["run", "${file}"],
       "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
       "console": "integratedTerminal",
       "autoAttachChildProcesses": true,
