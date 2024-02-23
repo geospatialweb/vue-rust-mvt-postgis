@@ -8,6 +8,7 @@ use serde::Deserialize;
 use super::auth;
 use super::auth::Jwt;
 use super::env::Env;
+use super::helpers;
 use super::model::User;
 use super::query;
 use super::response::{ResponseError, ResponsePayload};
@@ -20,20 +21,6 @@ pub struct LayerParams {
     pub table: String,
 }
 
-fn validate_layer_params(params: &LayerParams) -> Result<(), ResponseError> {
-    if params.validate(&()).is_err() {
-        return Err(ResponseError::LayerParamsValidation);
-    }
-    Ok(())
-}
-
-fn validate_user(user: &User) -> Result<(), ResponseError> {
-    if user.validate(&()).is_err() {
-        return Err(ResponseError::UserValidation);
-    }
-    Ok(())
-}
-
 #[handler]
 /// Return GeoJSON feature collection.
 pub async fn handle_get_geojson_feature_collection(
@@ -43,7 +30,7 @@ pub async fn handle_get_geojson_feature_collection(
     match depot.jwt_auth_state() {
         Authorized => {
             let params = req.parse_queries::<LayerParams>()?;
-            validate_layer_params(&params)?;
+            helpers::validate_layer_params(&params)?;
             let features = query::get_features(&params).await?;
             let fc = super::geojson::create_feature_collection(&features)?;
             let res = ResponsePayload::new(fc.into(), &StatusCode::OK);
@@ -72,7 +59,7 @@ pub async fn handle_get_mapbox_access_token(depot: &mut Depot) -> Result<Respons
 /// Login user. User submitted password is verified against HS256 password hash stored in db.
 pub async fn handle_login(req: &mut Request) -> Result<ResponsePayload<Jwt>, ResponseError> {
     let user = req.parse_queries::<User>()?;
-    validate_user(&user)?;
+    helpers::validate_user(&user)?;
     let credential = query::get_password(&user.username).await?;
     auth::verify_password_and_hash(&user.password.unwrap(), &credential.password)?;
     let jwt = auth::get_jwt(&user.username)?;
@@ -84,7 +71,7 @@ pub async fn handle_login(req: &mut Request) -> Result<ResponsePayload<Jwt>, Res
 /// Register user. User submitted password is converted into HS256 password hash stored in db.
 pub async fn handle_register(req: &mut Request) -> Result<ResponsePayload<String>, ResponseError> {
     let user = req.parse_body::<User>().await?;
-    validate_user(&user)?;
+    helpers::validate_user(&user)?;
     let hash = auth::generate_hash_from_password(&user.password.unwrap())?;
     let username = query::insert_user(&User::new(&user.username, &Some(hash))).await?;
     let res = ResponsePayload::new(username.into(), &StatusCode::CREATED);
@@ -97,7 +84,7 @@ pub async fn handle_get_user(depot: &mut Depot, req: &mut Request) -> Result<Res
     match depot.jwt_auth_state() {
         Authorized => {
             let user = req.parse_queries::<User>()?;
-            validate_user(&user)?;
+            helpers::validate_user(&user)?;
             let username = query::get_user(&user.username).await?;
             let res = ResponsePayload::new(username.into(), &StatusCode::OK);
             Ok(res)
@@ -116,7 +103,7 @@ pub async fn handle_delete_user(
     match depot.jwt_auth_state() {
         Authorized => {
             let user = req.parse_queries::<User>()?;
-            validate_user(&user)?;
+            helpers::validate_user(&user)?;
             let username = query::delete_user(&user.username).await?;
             let res = ResponsePayload::new(username.into(), &StatusCode::OK);
             Ok(res)
@@ -130,7 +117,7 @@ pub async fn handle_delete_user(
 /// Validate user exists in db returning username.
 pub async fn handle_validate_user(req: &mut Request) -> Result<ResponsePayload<String>, ResponseError> {
     let user = req.parse_queries::<User>()?;
-    validate_user(&user)?;
+    helpers::validate_user(&user)?;
     let username = query::get_user(&user.username).await?;
     let res = ResponsePayload::new(username.into(), &StatusCode::OK);
     Ok(res)
@@ -145,7 +132,7 @@ pub async fn handle_update_password(
     match depot.jwt_auth_state() {
         Authorized => {
             let user = req.parse_body::<User>().await?;
-            validate_user(&user)?;
+            helpers::validate_user(&user)?;
             let hash = auth::generate_hash_from_password(&user.password.unwrap())?;
             let user = query::update_password(&User::new(&user.username, &Some(hash))).await?;
             let res = ResponsePayload::new(user.username.into(), &StatusCode::OK);

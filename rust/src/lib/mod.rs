@@ -3,6 +3,7 @@ pub mod database;
 pub mod env;
 pub mod geojson;
 pub mod handler;
+pub mod helpers;
 pub mod model;
 pub mod query;
 pub mod response;
