@@ -1,16 +1,15 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
-use sqlx::Row;
+use sqlx::{Error, Row};
 
 use super::auth::Credential;
 use super::database::get_pool;
 use super::geojson::JsonFeature;
 use super::handler::LayerParams;
 use super::model::User;
-use super::response::ResponseError;
 
 /// Return vector of json strings formatted as GeoJSON features.
-pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, ResponseError> {
+pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Error> {
     let query = format!("
         SELECT ST_AsGeoJSON(feature.*)
         AS feature
@@ -18,14 +17,14 @@ pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Resp
         AS feature",
         params.columns,
         params.table);
-    let features = sqlx::query_as::<_, JsonFeature>(&query)
+    let features = sqlx::query_as(&query)
         .fetch_all(get_pool())
         .await?;
     Ok(features)
 }
 
 /// Return hashed password.
-pub async fn get_password(username: &str) -> Result<Credential, ResponseError> {
+pub async fn get_password(username: &str) -> Result<Credential, Error> {
     let query = "
         SELECT password
         FROM users
@@ -38,7 +37,7 @@ pub async fn get_password(username: &str) -> Result<Credential, ResponseError> {
 }
 
 /// Return user.
-pub async fn get_user(username: &str) -> Result<String, ResponseError> {
+pub async fn get_user(username: &str) -> Result<String, Error> {
     let query = "
         SELECT username
         FROM users
@@ -51,7 +50,7 @@ pub async fn get_user(username: &str) -> Result<String, ResponseError> {
 }
 
 /// Delete user returning username.
-pub async fn delete_user(username: &str) -> Result<String, ResponseError> {
+pub async fn delete_user(username: &str) -> Result<String, Error> {
     let query = "
         DELETE FROM users
         WHERE username = $1
@@ -64,7 +63,7 @@ pub async fn delete_user(username: &str) -> Result<String, ResponseError> {
 }
 
 /// Insert user returning username.
-pub async fn insert_user(user: &User) -> Result<String, ResponseError> {
+pub async fn insert_user(user: &User) -> Result<String, Error> {
     let query = "
         INSERT INTO users (username, password)
         VALUES ($1, $2)
@@ -78,7 +77,7 @@ pub async fn insert_user(user: &User) -> Result<String, ResponseError> {
 }
 
 /// Update password returning username and hashed password.
-pub async fn update_password(user: &User) -> Result<User, ResponseError> {
+pub async fn update_password(user: &User) -> Result<User, Error> {
     let query = "
         UPDATE users
         SET password = $2
