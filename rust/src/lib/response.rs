@@ -1,13 +1,13 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
 use bcrypt::BcryptError;
+use geojson::Error as GeoJsonError;
 use jsonwebtoken::errors::Error as JwtError;
 use salvo::http::{ParseError, Response, StatusCode};
 use salvo::Scribe;
 use serde::Serialize;
 use serde_json::json;
 use sqlx::Error as QueryError;
-use std::num::ParseIntError;
 use thiserror::Error;
 
 #[derive(Debug, Serialize)]
@@ -50,14 +50,14 @@ pub enum ResponseError {
     #[error("bcrypt error: {0}")]
     Bcrypt(#[from] BcryptError),
 
+    #[error("geojson error: {0}")]
+    GeoJson(#[from] GeoJsonError),
+
     #[error("jwt error: {0}")]
     Jwt(#[from] JwtError),
 
     #[error("parse error: {0}")]
     Parse(#[from] ParseError),
-
-    #[error("parse int error: {0}")]
-    ParseInt(#[from] ParseIntError),
 
     #[error("query error: {0}")]
     Query(#[from] QueryError),
@@ -82,6 +82,10 @@ impl Scribe for ResponseError {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
             }
+            ResponseError::GeoJson(_) => {
+                res.status_code(StatusCode::INTERNAL_SERVER_ERROR)
+                   .render(json!(format!("{}", &self)).to_string());
+            }
             ResponseError::Jwt(_) => {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
@@ -90,12 +94,8 @@ impl Scribe for ResponseError {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            ResponseError::ParseInt(_) => {
-                res.status_code(StatusCode::INTERNAL_SERVER_ERROR)
-                   .render(json!(format!("{}", &self)).to_string());
-            }
             ResponseError::Query(_) => {
-                res.status_code(StatusCode::BAD_REQUEST)
+                res.status_code(StatusCode::INTERNAL_SERVER_ERROR)
                    .render(json!(format!("{}", &self)).to_string());
             }
             ResponseError::JwtForbidden => {
