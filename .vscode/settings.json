@@ -3,6 +3,9 @@
   "lldb.launch.terminal": "integrated",
   "rust-analyzer.debug.engine": "vadimcn.vscode-lldb",
   "rust-analyzer.linkedProjects": ["./rust/Cargo.toml"],
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust-analyzer"
   },
