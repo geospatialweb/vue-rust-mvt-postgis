@@ -13,7 +13,8 @@ export default class AuthenticationService {
   #routes: IRoutes = routes
 
   async login(credentials: ICredential): Promise<void> {
-    const username = await this.#validateUser(credentials)
+    let { username } = credentials
+    username = await this.#validateUser(<string>username)
     if (!username) {
       return this.#setCredentialsState({ isCorrect: true, isValid: false })
     }
@@ -42,8 +43,8 @@ export default class AuthenticationService {
     await this.#routerService.setRoute(name)
   }
 
-  async #validateUser(credentials: ICredential): Promise<string> {
-    return this.#credentialsService.validateUser(credentials)
+  async #validateUser(username: string): Promise<string> {
+    return this.#credentialsService.validateUser(username)
   }
 
   #setCredentialsState(state: ICredential): void {

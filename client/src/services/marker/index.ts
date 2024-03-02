@@ -46,7 +46,9 @@ export default class MarkerService {
     for (const params of this.#markerParams) {
       const { id } = params,
         { features } = await this.#getMarkerFeatureCollection(token, params)
-      this.#setMarkers(id, cloneDeep(features))
+      features?.length
+        ? this.#setMarkers(id, cloneDeep(features))
+        : this.#consoleError(`No ${id.toUpperCase()} Features Found`)
     }
   }
 
