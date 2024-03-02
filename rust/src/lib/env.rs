@@ -6,6 +6,7 @@ use tracing::info;
 static ENV: OnceCell<Env> = OnceCell::new();
 
 #[derive(Debug, Deserialize)]
+/// Env config struct containing environment variables parsed from .env file.
 pub struct Env {
     pub api_path_prefix: String,
     pub app_mode: String,
@@ -17,11 +18,12 @@ pub struct Env {
     pub get_user_endpoint: String,
     pub jwt_claims_expiry: String,
     pub jwt_claims_issuer: String,
-    pub jwt_claims_secret: String,
+    pub jwt_secret: String,
     pub login_endpoint: String,
     pub mapbox_access_token: String,
     pub mapbox_access_token_endpoint: String,
     pub postgres_uri: String,
+    pub postgres_test_uri: String,
     pub register_endpoint: String,
     pub server_host: String,
     pub server_port: String,
@@ -31,17 +33,28 @@ pub struct Env {
     pub validate_user_endpoint: String,
 }
 impl Env {
-    #[inline]
-    /// Get environment variables.
+    /// Get env variables from static ENV and return Env config struct static lifetime reference.
     pub fn get_env() -> &'static Self {
         ENV.get().unwrap()
     }
 
-    /// Deserialize .env file into Env struct.
+    /// Deserialize .env file in root dir into Env config struct and set static ENV.
     pub fn set_env() -> Result<(), Error> {
         let env = envy::from_env::<Self>()?;
-        let _ = ENV.set(env);
-        info!("set_env ok");
+        ENV.set(env).ok();
+        info!("env ok");
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn set_env_ok() {
+        let result = Env::set_env();
+        assert_eq!(result.is_ok(), true, "should be true");
+        assert!(matches!(result.unwrap(), ()));
     }
 }

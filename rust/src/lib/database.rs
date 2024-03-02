@@ -1,28 +1,44 @@
-use once_cell::sync::OnceCell;
 use sqlx::{Error, PgPool};
 use tracing::info;
 
 use super::env::Env;
 
-static PG_POOL: OnceCell<PgPool> = OnceCell::new();
-
-#[inline]
-/// Get database connection pool.
-pub fn get_pool() -> &'static PgPool {
-    PG_POOL.get().unwrap()
-}
-
-/// Set database connection pool.
-pub async fn set_pool() -> Result<(), Error> {
-    let pool = connect_pool().await?;
-    let _ = PG_POOL.set(pool);
-    info!("set_pool ok");
-    Ok(())
-}
-
-/// Create database pool connection.
-async fn connect_pool() -> Result<PgPool, Error> {
-    let env = Env::get_env();
-    let pool = PgPool::connect(&env.postgres_uri).await?;
+/// Get postgres connection pool.
+pub async fn get_pool() -> Result<PgPool, Error> {
+    let pool = set_pool().await?;
     Ok(pool)
+}
+
+/// Set uri for postgres connection pool.
+pub async fn set_pool() -> Result<PgPool, Error> {
+    let env = Env::get_env();
+    let uri = env.postgres_uri.as_str();
+    let pool = connect(uri).await?;
+    Ok(pool)
+}
+
+/// Create postgres pool connection.
+pub async fn connect(uri: &str) -> Result<PgPool, Error> {
+    let pool = PgPool::connect(uri).await?;
+    info!("pool connection ok");
+    Ok(pool)
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[tokio::test]
+    async fn get_pool_ok() {
+        let result = set_pool().await;
+        assert_eq!(result.is_ok(), true, "should be true");
+    }
+
+    #[tokio::test]
+    async fn get_pool_err() {
+        let env = Env::get_env();
+        let uri = env.postgres_test_uri.as_str();
+        let result = connect(uri).await;
+        assert_eq!(result.is_err(), true, "should be true");
+    }
 }

@@ -1,15 +1,16 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
-use sqlx::{Error, Row};
+use sqlx::Row;
 
 use super::auth::Credential;
 use super::database::get_pool;
 use super::geojson::JsonFeature;
 use super::handler::LayerParams;
 use super::model::User;
+use super::response::ResponseError;
 
-/// Return vector of json strings formatted as GeoJSON features.
-pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Error> {
+/// Return vector of JsonFeature structs.
+pub async fn get_json_features(params: &LayerParams) -> Result<Vec<JsonFeature>, ResponseError> {
     let query = format!("
         SELECT ST_AsGeoJSON(feature.*)
         AS feature
@@ -17,76 +18,158 @@ pub async fn get_features(params: &LayerParams) -> Result<Vec<JsonFeature>, Erro
         AS feature",
         params.columns,
         params.table);
-    let features = sqlx::query_as(&query)
-        .fetch_all(get_pool())
+    let json_features = sqlx::query_as(&query)
+        .fetch_all(&get_pool().await?)
         .await?;
-    Ok(features)
-}
-
-/// Return hashed password.
-pub async fn get_password(username: &str) -> Result<Credential, Error> {
-    let query = "
-        SELECT password
-        FROM users
-        WHERE username = $1";
-    let row = sqlx::query(query)
-        .bind(username)
-        .fetch_one(get_pool())
-        .await?;
-    Ok(Credential::new(row.get("password")))
+    Ok(json_features)
 }
 
 /// Return user.
-pub async fn get_user(username: &str) -> Result<String, Error> {
+pub async fn get_user(username: &str) -> Result<String, ResponseError> {
     let query = "
         SELECT username
         FROM users
         WHERE username = $1";
     let row = sqlx::query(query)
         .bind(username)
-        .fetch_one(get_pool())
+        .fetch_one(&get_pool().await?)
         .await?;
-    Ok(row.get("username"))
+    let username = row.get("username");
+    Ok(username)
 }
 
 /// Delete user returning username.
-pub async fn delete_user(username: &str) -> Result<String, Error> {
+pub async fn delete_user(username: &str) -> Result<String, ResponseError> {
     let query = "
         DELETE FROM users
         WHERE username = $1
         RETURNING username";
     let row = sqlx::query(query)
         .bind(username)
-        .fetch_one(get_pool())
+        .fetch_one(&get_pool().await?)
         .await?;
-    Ok(row.get("username"))
+    let username = row.get("username");
+    Ok(username)
 }
 
 /// Insert user returning username.
-pub async fn insert_user(user: &User) -> Result<String, Error> {
+pub async fn insert_user(user: &User) -> Result<String, ResponseError> {
     let query = "
         INSERT INTO users (username, password)
         VALUES ($1, $2)
         RETURNING username";
+    let password = user.password.clone().unwrap();
     let row = sqlx::query(query)
         .bind(&user.username)
-        .bind(&user.password)
-        .fetch_one(get_pool())
+        .bind(&password)
+        .fetch_one(&get_pool().await?)
         .await?;
-    Ok(row.get("username"))
+    let username = row.get("username");
+    Ok(username)
 }
 
-/// Update password returning username and hashed password.
-pub async fn update_password(user: &User) -> Result<User, Error> {
+/// Return HS256 password hash.
+pub async fn get_password(username: &str) -> Result<Credential, ResponseError> {
+    let query = "
+        SELECT password
+        FROM users
+        WHERE username = $1";
+    let row = sqlx::query(query)
+        .bind(username)
+        .fetch_one(&get_pool().await?)
+        .await?;
+    let credential = Credential::new(row.get("password"));
+    Ok(credential)
+}
+
+/// Update password returning username.
+pub async fn update_password(user: &User) -> Result<String, ResponseError> {
     let query = "
         UPDATE users
         SET password = $2
         WHERE username = $1
-        RETURNING username, password";
+        RETURNING username";
+    let password = user.password.clone().unwrap();
     let row = sqlx::query(query)
         .bind(&user.username)
-        .bind(&user.password)
-        .fetch_one(get_pool())
+        .bind(&password)
+        .fetch_one(&get_pool().await?)
         .await?;
-    Ok(User::new(row.get("username"), &Some(row.get("password"))))
+    let username = row.get("username");
+    Ok(username)
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[tokio::test]
+    async fn a_insert_user_ok() {
+        let username = "foo@bar.com";
+        let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
+        let user = User::new(&username, &Some(password.to_string()));
+        let result = insert_user(&user).await;
+        assert_eq!(result.is_ok(), true, "should be true");
+        assert_eq!(result.unwrap(), username.to_string());
+    }
+
+    #[tokio::test]
+    async fn b_insert_user_err() {
+        let username = "foo@bar.com";
+        let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
+        let user = User::new(&username, &Some(password.to_string()));
+        let result = insert_user(&user).await;
+        assert_eq!(result.is_err(), true, "should be true");
+        assert!(matches!(result, Err(ResponseError::Database(..))));
+    }
+
+    #[tokio::test]
+    async fn c_get_user_ok() {
+        let username = "foo@bar.com";
+        let result = get_user(&username).await;
+        assert_eq!(result.is_ok(), true, "should be true");
+        assert_eq!(result.unwrap(), username.to_string());
+    }
+
+    #[tokio::test]
+    async fn d_delete_user_ok_get_password_ok() {
+        let username = "foo@bar.com";
+        let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
+        let result = get_password(&username).await;
+        assert_eq!(result.is_ok(), true, "should be true");
+        assert_eq!(result.unwrap(), Credential::new(password));
+    }
+
+    #[tokio::test]
+    async fn e_update_password_ok() {
+        let username = "foo@bar.com";
+        let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
+        let user = User::new(&username, &Some(password.to_string()));
+        let result = update_password(&user).await;
+        assert_eq!(result.is_ok(), true, "should be true");
+        assert_eq!(result.unwrap(), username.to_string());
+    }
+
+    #[tokio::test]
+    async fn f_delete_user_ok() {
+        let username = "foo@bar.com";
+        let result = delete_user(&username).await;
+        assert_eq!(result.is_ok(), true, "should be true");
+        assert_eq!(result.unwrap(), username.to_string());
+    }
+
+    #[tokio::test]
+    async fn get_json_features_ok() {
+        let feature = r#"{"type": "Feature", "geometry": {"type":"Point","coordinates":[-76.011422,44.384362]}, "properties": {"name": "Frontenac Arch Biosphere Office", "description": "19 Reynolds Road, Lansdowne, ON. Open Monday to Friday 8:30am - 4:30pm"}}"#;
+        let json_features = vec![JsonFeature { feature: feature.to_owned() }];
+        let columns = "name,description,geom";
+        let table = "office";
+        let params = LayerParams {
+            columns:  columns.to_owned(),
+            table: table.to_owned(),
+        };
+        let result = get_json_features(&params).await;
+        assert_eq!(result.is_ok(), true, "should be true");
+        assert_eq!(result.unwrap(), json_features);
+    }
 }
