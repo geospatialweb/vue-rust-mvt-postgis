@@ -7,7 +7,8 @@ use salvo::http::{ParseError, Response, StatusCode};
 use salvo::Scribe;
 use serde::Serialize;
 use serde_json::json;
-use sqlx::Error as QueryError;
+use sqlx::Error as DatabaseError;
+use std::num::ParseIntError;
 use thiserror::Error;
 
 #[derive(Debug, Serialize)]
@@ -23,6 +24,7 @@ impl<T> From<T> for ResponseType<T> {
 }
 
 #[derive(Debug)]
+/// Response struct containing ResponseType<T> payload and response status code fields.
 pub struct ResponsePayload<T> {
     payload: ResponseType<T>,
     status_code: StatusCode,
@@ -50,6 +52,9 @@ pub enum ResponseError {
     #[error("bcrypt error: {0}")]
     Bcrypt(#[from] BcryptError),
 
+    #[error("database error: {0}")]
+    Database(#[from] DatabaseError),
+
     #[error("geojson error: {0}")]
     GeoJson(#[from] GeoJsonError),
 
@@ -59,8 +64,8 @@ pub enum ResponseError {
     #[error("parse error: {0}")]
     Parse(#[from] ParseError),
 
-    #[error("query error: {0}")]
-    Query(#[from] QueryError),
+    #[error("parse int error: {0}")]
+    ParseInt(#[from] ParseIntError),
 
     #[error("jwt forbidden")]
     JwtForbidden,
@@ -82,6 +87,10 @@ impl Scribe for ResponseError {
                 res.status_code(StatusCode::UNAUTHORIZED)
                    .render(json!(format!("{}", &self)).to_string());
             }
+            ResponseError::Database(_) => {
+                res.status_code(StatusCode::INTERNAL_SERVER_ERROR)
+                   .render(json!(format!("{}", &self)).to_string());
+            }
             ResponseError::GeoJson(_) => {
                 res.status_code(StatusCode::INTERNAL_SERVER_ERROR)
                    .render(json!(format!("{}", &self)).to_string());
@@ -94,7 +103,7 @@ impl Scribe for ResponseError {
                 res.status_code(StatusCode::BAD_REQUEST)
                    .render(json!(format!("{}", &self)).to_string());
             }
-            ResponseError::Query(_) => {
+            ResponseError::ParseInt(_) => {
                 res.status_code(StatusCode::INTERNAL_SERVER_ERROR)
                    .render(json!(format!("{}", &self)).to_string());
             }
