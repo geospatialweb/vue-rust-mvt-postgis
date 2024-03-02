@@ -73,12 +73,11 @@ pub fn new() -> Router {
 
 #[cfg(test)]
 mod test {
-    use salvo::http::{Method, StatusCode};
+    use salvo::http::StatusCode;
     use salvo::test::RequestBuilder;
     use salvo::Service;
 
     use super::*;
-    use crate::router;
 
     fn get_base_url() -> String {
         let env = Env::get_env();
@@ -102,7 +101,7 @@ mod test {
     }
 
     fn get_service() -> Service {
-        let router = router::new();
+        let router = new();
         Service::new(router)
     }
 
