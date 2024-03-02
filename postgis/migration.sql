@@ -7,6 +7,7 @@ CREATE TABLE users (
   password CHAR(60) NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE users ADD CONSTRAINT users_username_unique UNIQUE (username);
 CREATE INDEX users_username_idx ON users (username);
 INSERT into users (username, password)
 VALUES (
@@ -20,6 +21,7 @@ CREATE TABLE biosphere (
   description TEXT NOT NULL,
   geom GEOMETRY NOT NULL
 );
+ALTER TABLE biosphere ADD CONSTRAINT biosphere_name_unique UNIQUE (name);
 INSERT into biosphere (name, description, geom)
 VALUES (
   'Frontenac Arch Biosphere',
@@ -38,6 +40,7 @@ CREATE TABLE office (
   description TEXT NOT NULL,
   geom GEOMETRY NOT NULL
 );
+ALTER TABLE office ADD CONSTRAINT office_name_unique UNIQUE (name);
 INSERT into office (name, description, geom)
 VALUES (
   'Frontenac Arch Biosphere Office',
@@ -51,6 +54,7 @@ CREATE TABLE places (
   description TEXT NOT NULL,
   geom GEOMETRY NOT NULL
 );
+ALTER TABLE places ADD CONSTRAINT places_name_unique UNIQUE (name);
 INSERT into places (name, description, geom)
 VALUES (
   'Brockville',
@@ -331,6 +335,7 @@ CREATE TABLE trails (
   geom GEOMETRY NOT NULL
 
 );
+ALTER TABLE trails ADD CONSTRAINT trails_name_unique UNIQUE (name);
 INSERT into trails (name, description, lng, lat, geom)
 VALUES (
   'Blue Mountain Trail',
