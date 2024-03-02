@@ -33,12 +33,12 @@ services:
     ports:
       - "8000:8000"
     # volumes:
-    #   - /etc/letsencrypt:/etc/letsencrypt
+    #   - /etc/letsencrypt:/etc/letsencrypt:ro
 
   mvt:
     container_name: martin
     image: ghcr.io/maplibre/martin:latest
-    command: ["--config", "./config/martin.yml"]
+    command: ["--config", "./config/martin.yaml"]
     restart: unless-stopped
     depends_on:
       postgis:
@@ -51,7 +51,7 @@ services:
       - "3000:3000"
     volumes:
       - ./mvt:/config:ro
-      # - /etc/letsencrypt:/etc/letsencrypt
+      # - /etc/letsencrypt:/etc/letsencrypt:ro
 
   postgis:
     container_name: postgis
@@ -68,9 +68,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./postgis/data:/var/lib/postgresql/data:rw
-      - ./postgis/migration.sql:/docker-entrypoint-initdb.d/migration.sql:ro
-      # - /etc/letsencrypt:/etc/letsencrypt
+      - ./postgis:/docker-entrypoint-initdb.d:ro
+      # - /etc/letsencrypt:/etc/letsencrypt:ro
 
 networks:
   app-network:

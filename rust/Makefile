@@ -12,3 +12,6 @@ release:
 
 run:
 	@cargo run --bin main
+
+test:
+	@cargo test --lib -- --test-threads=1

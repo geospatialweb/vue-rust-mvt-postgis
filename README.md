@@ -16,6 +16,6 @@ In essence, this implementation is a Proof of Concept and MVP Prototype that emb
 
 To that end, this custom _hybrid_ front-end framework experiment has been an overwhelming success. Everything coalesces perfectly.
 
-Further, Vite is super fast for HMR development compilation (without Webpack and Babel). Tooling is simplified and cohesive throughout. And the new Jest-compatible Vitest unit test framework performs to expectations.
+Further, Vite is super fast for HMR development compilation (without Webpack and Babel). Tooling is simplified and cohesive throughout. And the Jest-compatible Vitest unit test framework performs to expectations.
 
 You be the judge...
