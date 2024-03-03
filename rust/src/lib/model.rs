@@ -29,21 +29,21 @@ mod test {
         let username = "foobar.com";
         let password = "secretPassword";
         let user = User {
-            username: username.to_owned(),
-            password: Some(password.to_string()),
+            username: String::from(username),
+            password: Some(String::from(password)),
         };
-        let result = User::new(username, &Some(password.to_string()));
-        assert_eq!(result, user, "should be the same field values");
+        let result = User::new(username, &Some(String::from(password)));
+        assert_eq!(&result, &user, "should be the same field values");
     }
 
     #[test]
     fn new_user_no_password() {
         let username = "foobar.com";
         let user = User {
-            username: username.to_owned(),
+            username: String::from(username),
             password: None,
         };
         let result = User::new(username, &None);
-        assert_eq!(result, user, "should be the same field values");
+        assert_eq!(&result, &user, "should be the same field values");
     }
 }

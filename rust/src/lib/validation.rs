@@ -29,31 +29,31 @@ mod test {
         let columns = "name,description,geom";
         let table = "office";
         let params = LayerParams {
-            columns: columns.to_owned(),
-            table: table.to_owned(),
+            columns: String::from(columns),
+            table: String::from(table),
         };
         let result = validate_layer_params(&params);
-        assert_eq!(result.is_ok(), true, "should be true");
-        assert!(matches!(result.unwrap(), ()));
+        assert_eq!(&result.is_ok(), &true, "should be true");
+        assert!(matches!(&result.unwrap(), &()));
     }
 
     #[test]
     fn validate_user_ok() {
         let username = "foo@bar.com";
-        let password = String::from("secretPassword");
-        let user = User::new(username, &Some(password));
+        let password = "secretPassword";
+        let user = User::new(username, &Some(String::from(password)));
         let result = validate_user(&user);
-        assert_eq!(result.is_ok(), true, "should be true");
-        assert!(matches!(result.unwrap(), ()));
+        assert_eq!(&result.is_ok(), &true, "should be true");
+        assert!(matches!(&result.unwrap(), &()));
     }
 
     #[test]
     fn validate_user_err() {
         let username = "foobar.com"; // must be email format
-        let password = String::from("secretPassword");
-        let user = User::new(username, &Some(password));
+        let password = "secretPassword";
+        let user = User::new(username, &Some(String::from(password)));
         let result = validate_user(&user);
-        assert_eq!(result.is_err(), true, "should be true");
-        assert!(matches!(result, Err(ResponseError::UserValidation)));
+        assert_eq!(&result.is_err(), &true, "should be true");
+        assert!(matches!(&result, &Err(ResponseError::UserValidation)));
     }
 }
