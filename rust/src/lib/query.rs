@@ -107,69 +107,69 @@ mod test {
     async fn a_insert_user_ok() {
         let username = "foo@bar.com";
         let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
-        let user = User::new(&username, &Some(password.to_string()));
+        let user = User::new(username, &Some(String::from(password)));
         let result = insert_user(&user).await;
-        assert_eq!(result.is_ok(), true, "should be true");
-        assert_eq!(result.unwrap(), username.to_string());
+        assert_eq!(&result.is_ok(), &true, "should be true");
+        assert_eq!(&result.unwrap(), username);
     }
 
     #[tokio::test]
     async fn b_insert_user_err() {
         let username = "foo@bar.com";
         let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
-        let user = User::new(&username, &Some(password.to_string()));
+        let user = User::new(username, &Some(String::from(password)));
         let result = insert_user(&user).await;
-        assert_eq!(result.is_err(), true, "should be true");
-        assert!(matches!(result, Err(ResponseError::Database(..))));
+        assert_eq!(&result.is_err(), &true, "should be true");
+        assert!(matches!(&result, &Err(ResponseError::Database(..))));
     }
 
     #[tokio::test]
     async fn c_get_user_ok() {
         let username = "foo@bar.com";
-        let result = get_user(&username).await;
-        assert_eq!(result.is_ok(), true, "should be true");
-        assert_eq!(result.unwrap(), username.to_string());
+        let result = get_user(username).await;
+        assert_eq!(&result.is_ok(), &true, "should be true");
+        assert_eq!(&result.unwrap(), username);
     }
 
     #[tokio::test]
     async fn d_delete_user_ok_get_password_ok() {
         let username = "foo@bar.com";
         let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
-        let result = get_password(&username).await;
-        assert_eq!(result.is_ok(), true, "should be true");
-        assert_eq!(result.unwrap(), Credential::new(password));
+        let result = get_password(username).await;
+        assert_eq!(&result.is_ok(), &true, "should be true");
+        assert_eq!(&result.unwrap(), &Credential::new(password));
     }
 
     #[tokio::test]
     async fn e_update_password_ok() {
         let username = "foo@bar.com";
         let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
-        let user = User::new(&username, &Some(password.to_string()));
+        let user = User::new(username, &Some(String::from(password)));
         let result = update_password(&user).await;
-        assert_eq!(result.is_ok(), true, "should be true");
-        assert_eq!(result.unwrap(), username.to_string());
+        assert_eq!(&result.is_ok(), &true, "should be true");
+        assert_eq!(&result.unwrap(), &username);
     }
 
     #[tokio::test]
     async fn f_delete_user_ok() {
         let username = "foo@bar.com";
-        let result = delete_user(&username).await;
-        assert_eq!(result.is_ok(), true, "should be true");
-        assert_eq!(result.unwrap(), username.to_string());
+        let result = delete_user(username).await;
+        assert_eq!(&result.is_ok(), &true, "should be true");
+        assert_eq!(&result.unwrap(), &username);
     }
 
     #[tokio::test]
     async fn get_json_features_ok() {
         let feature = r#"{"type": "Feature", "geometry": {"type":"Point","coordinates":[-76.011422,44.384362]}, "properties": {"name": "Frontenac Arch Biosphere Office", "description": "19 Reynolds Road, Lansdowne, ON. Open Monday to Friday 8:30am - 4:30pm"}}"#;
-        let json_features = vec![JsonFeature { feature: feature.to_owned() }];
+        let json_features = vec![JsonFeature { feature: String::from(feature) }];
         let columns = "name,description,geom";
         let table = "office";
         let params = LayerParams {
-            columns:  columns.to_owned(),
-            table: table.to_owned(),
+            columns:  String::from(columns),
+            table: String::from(table),
         };
         let result = get_json_features(&params).await;
-        assert_eq!(result.is_ok(), true, "should be true");
-        assert_eq!(result.unwrap(), json_features);
+        assert_eq!(&result.is_ok(), &true, "should be true");
+        assert_eq!(&result.unwrap(), &json_features);
     }
 }
