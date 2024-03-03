@@ -14,7 +14,7 @@ export default class LayerService {
     import.meta.env.PROD && this.#setBaseURL()
   }
 
-  get layers(): ILayer[] {
+  get layers() {
     return this.#layers
   }
 

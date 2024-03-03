@@ -19,7 +19,7 @@ export default class AppService {
     this.#setAppState()
   }
 
-  get appState(): IApp {
+  get appState() {
     return <IApp>this.#storeService.getState(this.#storeStates.APP)
   }
 

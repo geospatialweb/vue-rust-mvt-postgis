@@ -16,7 +16,7 @@ export default class HexagonLayerDataService {
     void this.#loadHexagonLayerData()
   }
 
-  get hexagonLayerData(): HexagonLayerData {
+  get hexagonLayerData() {
     return this.#hexagonLayerData
   }
 

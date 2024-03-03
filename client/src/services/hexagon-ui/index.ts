@@ -9,7 +9,7 @@ export default class HexagonUIService {
   #storeService = Container.get(StoreService)
   #storeStates: IStoreStates = StoreStates
 
-  get hexagonUILabelElementState(): IHexagonUILabelElement {
+  get hexagonUILabelElementState() {
     return <IHexagonUILabelElement>this.#storeService.getState(this.#storeStates.HEXAGON_UI_LAYER_ELEMENT)
   }
 

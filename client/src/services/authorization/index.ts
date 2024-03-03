@@ -11,11 +11,11 @@ export default class AuthorizationService {
   #storeService = Container.get(StoreService)
   #storeStates: IStoreStates = StoreStates
 
-  get jwtState(): IJWT {
+  get jwtState() {
     return <IJWT>this.#storeService.getState(this.#storeStates.JWT)
   }
 
-  get mapboxAccessToken(): string {
+  get mapboxAccessToken() {
     const { accessToken } = mapboxgl
     return accessToken
   }

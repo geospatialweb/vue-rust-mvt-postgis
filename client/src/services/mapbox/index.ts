@@ -46,11 +46,11 @@ export default class MapboxService {
 
   constructor(private _map: Map) {}
 
-  get map(): Map {
+  get map() {
     return this._map
   }
 
-  get #mapboxSettingsState(): IMapboxSetting {
+  get #mapboxSettingsState() {
     return <IMapboxSetting>this.#storeService.getState(this.#storeStates.MAPBOX_SETTINGS)
   }
 

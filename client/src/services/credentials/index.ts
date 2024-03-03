@@ -12,7 +12,7 @@ export default class CredentialsService {
   #endpoint: IEndpoint = Endpoint
   #storeStates: IStoreStates = StoreStates
 
-  get credentialsState(): ICredential {
+  get credentialsState() {
     return <ICredential>this.#storeService.getState(this.#storeStates.CREDENTIALS)
   }
 

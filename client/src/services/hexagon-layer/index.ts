@@ -21,7 +21,7 @@ export default class HexagonLayerService {
   #staticProps: IHexagonLayerStaticProp = hexagonLayer.staticProps
   #storeStates: IStoreStates = StoreStates
 
-  get hexagonLayerPropsState(): IHexagonLayerProp {
+  get hexagonLayerPropsState() {
     return <IHexagonLayerProp>this.#storeService.getState(this.#storeStates.HEXAGON_LAYER_PROPS)
   }
 

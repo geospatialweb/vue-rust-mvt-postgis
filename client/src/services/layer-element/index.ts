@@ -21,7 +21,7 @@ export default class LayerElementService {
     this.#createLayerElementsHashmap()
   }
 
-  get layerElementsState(): ILayerElement[] {
+  get layerElementsState() {
     return <ILayerElement[]>this.#storeService.getState(this.#storeStates.LAYER_ELEMENTS)
   }
 

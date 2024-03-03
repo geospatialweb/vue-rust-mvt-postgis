@@ -9,7 +9,7 @@ export default class ModalService {
   #storeService = Container.get(StoreService)
   #storeStates: IStoreStates = StoreStates
 
-  get modalState(): IModal {
+  get modalState() {
     return <IModal>this.#storeService.getState(this.#storeStates.MODAL)
   }
 

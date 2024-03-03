@@ -21,15 +21,15 @@ export default class DeckglService {
     private _map: Map
   ) {}
 
-  get deck(): any {
+  get deck() {
     return this._deck
   }
 
-  get map(): Map {
+  get map(){
     return this._map
   }
 
-  get #deckglSettingsState(): IDeckglSetting {
+  get #deckglSettingsState() {
     return <IDeckglSetting>this.#storeService.getState(this.#storeStates.DECKGL_SETTINGS)
   }
 

@@ -10,7 +10,7 @@ export default class LayerVisibilityService {
   #layerId: ILayerId = LayerId
   #storeStates: IStoreStates = StoreStates
 
-  get layerVisibilityState(): ILayerVisibility {
+  get layerVisibilityState() {
     return <ILayerVisibility>this.#storeService.getState(this.#storeStates.LAYER_VISIBILITY)
   }
 

@@ -19,7 +19,7 @@ export default class MarkerService {
   #reverseMarkersHashmap: Map<number, string> = new Map()
   #storeStates: IStoreStates = StoreStates
 
-  get #markerVisibilityState(): IMarkerVisibility {
+  get #markerVisibilityState() {
     return <IMarkerVisibility>this.#storeService.getState(this.#storeStates.MARKER_VISIBILITY)
   }
 

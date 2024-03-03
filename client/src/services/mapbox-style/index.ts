@@ -14,11 +14,11 @@ export default class MapboxStyleService {
     this.setActiveMapboxStyle()
   }
 
-  get activeMapboxStyle(): string {
+  get activeMapboxStyle() {
     return this.#activeMapboxStyle
   }
 
-  get mapboxStylesState(): IMapboxStyle {
+  get mapboxStylesState() {
     return <IMapboxStyle>this.#storeService.getState(this.#storeStates.MAPBOX_STYLES)
   }
 
