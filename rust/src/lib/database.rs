@@ -12,7 +12,7 @@ pub async fn get_pool() -> Result<PgPool, Error> {
 /// Set uri for postgres connection pool.
 pub async fn set_pool() -> Result<PgPool, Error> {
     let env = Env::get_env();
-    let uri = env.postgres_uri.as_str();
+    let uri = &env.postgres_uri;
     let pool = connect(uri).await?;
     Ok(pool)
 }
@@ -31,14 +31,14 @@ mod test {
     #[tokio::test]
     async fn get_pool_ok() {
         let result = set_pool().await;
-        assert_eq!(result.is_ok(), true, "should be true");
+        assert_eq!(&result.is_ok(), &true, "should be true");
     }
 
     #[tokio::test]
     async fn get_pool_err() {
         let env = Env::get_env();
-        let uri = env.postgres_test_uri.as_str();
+        let uri = &env.postgres_test_uri;
         let result = connect(uri).await;
-        assert_eq!(result.is_err(), true, "should be true");
+        assert_eq!(&result.is_err(), &true, "should be true");
     }
 }
