@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios'
+import axios from 'axios'
 import { Service } from 'typedi'
 
 import { Url } from '@/enums'
@@ -14,7 +14,7 @@ export default class AxiosService {
     this.#createHttpClient()
   }
 
-  get httpClient(): AxiosInstance {
+  get httpClient() {
     return this.#httpClient
   }
 
