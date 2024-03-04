@@ -14,7 +14,7 @@ use super::response::{ResponseError, ResponsePayload};
 use super::validation;
 
 #[derive(Debug, Deserialize, Validate)]
-/// LayerParams struct containing url query params.
+/// Struct containing url query params.
 pub struct LayerParams {
     #[garde(ascii)]
     pub columns: String,

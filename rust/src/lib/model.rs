@@ -4,7 +4,7 @@ use sqlx::FromRow;
 use std::fmt::{Debug, Formatter, Result};
 
 #[derive(Deserialize, FromRow, PartialEq, Serialize, Validate)]
-/// User struct containing username and password fields.
+/// Struct containing username and password fields.
 pub struct User {
     #[garde(email)]
     pub username: String,

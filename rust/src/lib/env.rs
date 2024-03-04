@@ -6,7 +6,7 @@ use tracing::info;
 static ENV: OnceCell<Env> = OnceCell::new();
 
 #[derive(Debug, Deserialize)]
-/// Env config struct containing environment variables parsed from .env file.
+/// Struct containing environment variables parsed from .env file.
 pub struct Env {
     pub api_path_prefix: String,
     pub app_mode: String,
@@ -33,12 +33,12 @@ pub struct Env {
     pub validate_user_endpoint: String,
 }
 impl Env {
-    /// Get env variables from static ENV and return Env config struct static lifetime reference.
+    /// Get env variables from static ENV and return Env struct static lifetime reference.
     pub fn get_env() -> &'static Self {
         ENV.get().unwrap()
     }
 
-    /// Deserialize .env file in root dir into Env config struct and set static ENV.
+    /// Deserialize .env file in root dir into Env struct and set static ENV.
     pub fn set_env() -> Result<(), Error> {
         let env = envy::from_env::<Self>()?;
         ENV.set(env).ok();

@@ -9,7 +9,7 @@ use super::env::Env;
 use super::response::ResponseError;
 
 #[derive(PartialEq)]
-/// Credential struct containg password field.
+/// Struct containg password field.
 pub struct Credential {
     /// HS256 password hash.
     pub password: String,
@@ -29,14 +29,14 @@ impl Debug for Credential {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-/// Jwt struct containing auth token and expiry fields.
+/// Struct containing auth token and expiry fields.
 pub struct Jwt {
     pub token: String,
     expiry: i64,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-/// Jwt claims struct containing issuer, subject and expiry fields.
+/// Struct containing issuer, subject and expiry fields.
 pub struct JwtClaims {
     iss: String,
     sub: String,
