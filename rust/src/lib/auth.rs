@@ -3,11 +3,12 @@ use jsonwebtoken::{EncodingKey, Header};
 use salvo::jwt_auth::{ConstDecoder, HeaderFinder};
 use salvo::prelude::JwtAuth;
 use serde::{Deserialize, Serialize};
+use std::fmt::{Debug, Formatter};
 
 use super::env::Env;
 use super::response::ResponseError;
 
-#[derive(Debug, PartialEq)]
+#[derive(PartialEq)]
 /// Credential struct containg password field.
 pub struct Credential {
     /// HS256 password hash.
@@ -20,6 +21,13 @@ impl Credential {
             password: password.to_owned(),
         }
     }
+}
+impl Debug for Credential {
+  fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+      f.debug_struct("Credential")
+        .field("password", &"<hidden>")
+        .finish()
+  }
 }
 
 #[derive(Debug, Deserialize, Serialize)]
