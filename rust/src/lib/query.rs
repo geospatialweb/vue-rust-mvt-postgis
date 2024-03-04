@@ -109,8 +109,8 @@ mod test {
         let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
         let user = User::new(username, &Some(String::from(password)));
         let result = insert_user(&user).await;
-        assert_eq!(&result.is_ok(), &true, "should be true");
-        assert_eq!(&result.unwrap(), username);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), username);
     }
 
     #[tokio::test]
@@ -119,16 +119,15 @@ mod test {
         let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
         let user = User::new(username, &Some(String::from(password)));
         let result = insert_user(&user).await;
-        assert_eq!(&result.is_err(), &true, "should be true");
-        assert!(matches!(&result, &Err(ResponseError::Database(..))));
+        assert!(matches!(result, Err(ResponseError::Database(..))));
     }
 
     #[tokio::test]
     async fn c_get_user_ok() {
         let username = "foo@bar.com";
         let result = get_user(username).await;
-        assert_eq!(&result.is_ok(), &true, "should be true");
-        assert_eq!(&result.unwrap(), username);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), username);
     }
 
     #[tokio::test]
@@ -136,8 +135,8 @@ mod test {
         let username = "foo@bar.com";
         let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
         let result = get_password(username).await;
-        assert_eq!(&result.is_ok(), &true, "should be true");
-        assert_eq!(&result.unwrap(), &Credential::new(password));
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), Credential::new(password));
     }
 
     #[tokio::test]
@@ -146,16 +145,16 @@ mod test {
         let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
         let user = User::new(username, &Some(String::from(password)));
         let result = update_password(&user).await;
-        assert_eq!(&result.is_ok(), &true, "should be true");
-        assert_eq!(&result.unwrap(), &username);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), username);
     }
 
     #[tokio::test]
     async fn f_delete_user_ok() {
         let username = "foo@bar.com";
         let result = delete_user(username).await;
-        assert_eq!(&result.is_ok(), &true, "should be true");
-        assert_eq!(&result.unwrap(), &username);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), username);
     }
 
     #[tokio::test]
@@ -169,7 +168,7 @@ mod test {
             table: String::from(table),
         };
         let result = get_json_features(&params).await;
-        assert_eq!(&result.is_ok(), &true, "should be true");
-        assert_eq!(&result.unwrap(), &json_features);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), json_features);
     }
 }

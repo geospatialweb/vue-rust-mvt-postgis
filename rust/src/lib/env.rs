@@ -54,7 +54,6 @@ mod test {
     #[test]
     fn set_env_ok() {
         let result = Env::set_env();
-        assert_eq!(&result.is_ok(), &true, "should be true");
-        assert!(matches!(&result.unwrap(), &()));
+        assert!(result.is_ok());
     }
 }

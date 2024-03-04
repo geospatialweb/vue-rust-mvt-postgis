@@ -31,7 +31,7 @@ mod test {
     #[tokio::test]
     async fn get_pool_ok() {
         let result = set_pool().await;
-        assert_eq!(&result.is_ok(), &true, "should be true");
+        assert!(result.is_ok());
     }
 
     #[tokio::test]
@@ -39,6 +39,6 @@ mod test {
         let env = Env::get_env();
         let uri = &env.postgres_test_uri;
         let result = connect(uri).await;
-        assert_eq!(&result.is_err(), &true, "should be true");
+        assert!(result.is_err());
     }
 }

@@ -52,7 +52,7 @@ mod test {
         let result = create_feature_collection(&json_features);
         let fc = r#"{"features":[{"geometry":{"coordinates":[-76.011422,44.384362],"type":"Point"},"properties":{"description":"19 Reynolds Road, Lansdowne, ON. Open Monday to Friday 8:30am - 4:30pm","name":"Frontenac Arch Biosphere Office"},"type":"Feature"}],"type":"FeatureCollection"}"#;
         let expected_fc = FeatureCollection::from_str(fc).unwrap();
-        assert_eq!(&result.unwrap(), &expected_fc);
+        assert_eq!(result.unwrap(), expected_fc);
     }
 
     #[test]
@@ -60,8 +60,7 @@ mod test {
         let feature = create_feature().replace("Feature", "FeatureCollection");
         let json_features = create_json_features(&feature);
         let result = create_feature_collection(&json_features);
-        assert_eq!(&result.is_err(), &true, "should be true");
-        assert!(matches!(&result, &Err(ResponseError::GeoJson(..))));
+        assert!(matches!(result, Err(ResponseError::GeoJson(..))));
     }
 
     #[test]
@@ -71,8 +70,8 @@ mod test {
         let result = create_geojson_features(&json_features);
         let expected_geojson_feature = Feature::from_str(&feature).unwrap();
         let expected_geojson_features = vec![expected_geojson_feature];
-        assert_eq!(&result.is_ok(), &true, "should be true");
-        assert_eq!(&result.unwrap(), &expected_geojson_features);
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), expected_geojson_features);
     }
 
     #[test]
@@ -80,7 +79,6 @@ mod test {
         let feature = create_feature().replace("Feature", "FeatureCollection");
         let json_features = create_json_features(&feature);
         let result = create_geojson_features(&json_features);
-        assert_eq!(&result.is_err(), &true, "should be true");
-        assert!(matches!(&result, &Err(..)));
+        assert!(matches!(result, Err(..)));
     }
 }

@@ -105,10 +105,6 @@ mod test {
         Service::new(router)
     }
 
-    fn set_message(status_code: &StatusCode, expected_status_code: &StatusCode) -> String {
-        format!("response status code {}, expected status code {}", status_code, expected_status_code)
-    }
-
     #[tokio::test]
 
     async fn a_register_endpoint_ok() {
@@ -119,9 +115,7 @@ mod test {
             .raw_json(body)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::CREATED;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::CREATED);
     }
 
     #[tokio::test]
@@ -133,9 +127,7 @@ mod test {
             .raw_json(body)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::INTERNAL_SERVER_ERROR;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::INTERNAL_SERVER_ERROR);
     }
 
     #[tokio::test]
@@ -147,9 +139,7 @@ mod test {
             .query("username", username)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::OK;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::OK);
     }
 
     #[tokio::test]
@@ -161,9 +151,7 @@ mod test {
             .query("username", username)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::INTERNAL_SERVER_ERROR;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::INTERNAL_SERVER_ERROR);
     }
 
     #[tokio::test]
@@ -176,9 +164,7 @@ mod test {
             .queries(&[("username", username), ("password", password)])
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::OK;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::OK);
     }
 
     #[tokio::test]
@@ -191,9 +177,7 @@ mod test {
             .queries(&[("username", username), ("password", password)])
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::INTERNAL_SERVER_ERROR;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::INTERNAL_SERVER_ERROR);
     }
 
     #[tokio::test]
@@ -207,9 +191,7 @@ mod test {
             .queries(&[("columns", columns), ("table", table)])
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::OK;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::OK);
     }
 
     #[tokio::test]
@@ -223,9 +205,7 @@ mod test {
             .queries(&[("columns", columns), ("table", table)])
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::INTERNAL_SERVER_ERROR;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::INTERNAL_SERVER_ERROR);
     }
 
     #[tokio::test]
@@ -236,9 +216,7 @@ mod test {
             .bearer_auth(&get_jwt_token())
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::OK;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::OK);
     }
 
     #[tokio::test]
@@ -248,9 +226,7 @@ mod test {
         let res = RequestBuilder::new(&url, Method::GET)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::UNAUTHORIZED;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::UNAUTHORIZED);
     }
 
     #[tokio::test]
@@ -262,9 +238,7 @@ mod test {
             .bearer_auth(expired_token)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::FORBIDDEN;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::FORBIDDEN);
     }
 
     #[tokio::test]
@@ -276,9 +250,7 @@ mod test {
             .bearer_auth(invalid_token)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::FORBIDDEN;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::FORBIDDEN);
     }
 
     #[tokio::test]
@@ -291,9 +263,7 @@ mod test {
             .query("username", username)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::OK;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::OK);
     }
 
     #[tokio::test]
@@ -306,9 +276,7 @@ mod test {
             .query("username", username)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::INTERNAL_SERVER_ERROR;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::INTERNAL_SERVER_ERROR);
     }
 
     #[tokio::test]
@@ -321,9 +289,7 @@ mod test {
             .raw_json(body)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::OK;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::OK);
     }
 
     #[tokio::test]
@@ -336,9 +302,7 @@ mod test {
             .raw_json(body)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::INTERNAL_SERVER_ERROR;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::INTERNAL_SERVER_ERROR);
     }
 
     #[tokio::test]
@@ -351,9 +315,7 @@ mod test {
             .query("username", username)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::OK;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::OK);
     }
 
     #[tokio::test]
@@ -366,8 +328,6 @@ mod test {
             .query("username", username)
             .send(&get_service())
             .await;
-        let status_code = &res.status_code.unwrap();
-        let expected_status_code = &StatusCode::INTERNAL_SERVER_ERROR;
-        assert_eq!(status_code, expected_status_code, "{}", &set_message(status_code, expected_status_code));
+        assert_eq!(res.status_code.unwrap(), StatusCode::INTERNAL_SERVER_ERROR);
     }
 }

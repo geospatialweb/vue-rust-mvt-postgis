@@ -23,11 +23,9 @@ impl Credential {
     }
 }
 impl Debug for Credential {
-  fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-      f.debug_struct("Credential")
-        .field("password", &"<hidden>")
-        .finish()
-  }
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Credential").field("password", &"<hidden>").finish()
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -99,14 +97,14 @@ mod test {
         test_init();
         let username = "foo@bar.com";
         let result = get_jwt(username);
-        assert_eq!(&result.is_ok(), &true, "should be true");
+        assert!(result.is_ok());
     }
 
     #[test]
     fn generate_hash_from_password_ok() {
         let password = "secretPassword";
         let result = generate_hash_from_password(password);
-        assert_eq!(&result.is_ok(), &true, "should be true");
+        assert!(result.is_ok());
     }
 
     #[test]
@@ -114,8 +112,7 @@ mod test {
         let password = "secretPassword";
         let hash = generate_hash_from_password(password).unwrap();
         let result = verify_password_and_hash(password, &hash);
-        assert_eq!(result.is_ok(), true, "should be true");
-        assert!(matches!(&result.unwrap(), &()));
+        assert!(result.is_ok());
     }
 
     #[test]
@@ -123,7 +120,6 @@ mod test {
         let password = "secretPassword";
         let hash = "$2a$12$BSul3QNaH9FahdqlxfnejuM7Y0Ptm8q9kcBSpuJqWjS0j4DCwTdzb";
         let result = verify_password_and_hash(password, hash);
-        assert_eq!(result.is_err(), true, "should be true");
-        assert!(matches!(&result, &Err(ResponseError::Bcrypt(..))));
+        assert!(matches!(result, Err(ResponseError::Bcrypt(..))));
     }
 }

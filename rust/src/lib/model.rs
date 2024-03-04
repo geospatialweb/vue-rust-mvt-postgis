@@ -41,17 +41,17 @@ mod test {
             password: Some(String::from(password)),
         };
         let result = User::new(username, &Some(String::from(password)));
-        assert_eq!(&result, &user, "should be the same field values");
+        assert_eq!(result, user);
     }
 
-    // #[test]
-    // fn new_user_no_password() {
-    //     let username = "foobar.com";
-    //     let user = User {
-    //         username: String::from(username),
-    //         password: None,
-    //     };
-    //     let result = User::new(username, &None);
-    //     assert_eq!(&result, &user, "should be the same field values");
-    // }
+    #[test]
+    fn new_user_no_password() {
+        let username = "foobar.com";
+        let user = User {
+            username: String::from(username),
+            password: None,
+        };
+        let result = User::new(username, &None);
+        assert_eq!(result, user);
+    }
 }

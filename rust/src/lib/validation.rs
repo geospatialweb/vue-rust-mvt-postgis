@@ -33,8 +33,7 @@ mod test {
             table: String::from(table),
         };
         let result = validate_layer_params(&params);
-        assert_eq!(&result.is_ok(), &true, "should be true");
-        assert!(matches!(&result.unwrap(), &()));
+        assert!(result.is_ok());
     }
 
     #[test]
@@ -43,8 +42,7 @@ mod test {
         let password = "secretPassword";
         let user = User::new(username, &Some(String::from(password)));
         let result = validate_user(&user);
-        assert_eq!(&result.is_ok(), &true, "should be true");
-        assert!(matches!(&result.unwrap(), &()));
+        assert!(result.is_ok());
     }
 
     #[test]
@@ -53,7 +51,6 @@ mod test {
         let password = "secretPassword";
         let user = User::new(username, &Some(String::from(password)));
         let result = validate_user(&user);
-        assert_eq!(&result.is_err(), &true, "should be true");
-        assert!(matches!(&result, &Err(ResponseError::UserValidation)));
+        assert!(matches!(result, Err(ResponseError::UserValidation)));
     }
 }
