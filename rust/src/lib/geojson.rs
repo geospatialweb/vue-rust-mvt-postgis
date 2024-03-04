@@ -4,8 +4,8 @@ use std::str::FromStr;
 
 use super::response::ResponseError;
 
+/// Json string formatted as a GeoJSON feature from PostGIS query.
 #[derive(Debug, FromRow, PartialEq)]
-/// Struct containing json string formatted as a GeoJSON feature from PostGIS query.
 pub struct JsonFeature {
     pub feature: String,
 }

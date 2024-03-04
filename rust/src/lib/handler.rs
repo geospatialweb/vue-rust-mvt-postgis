@@ -13,8 +13,8 @@ use super::query;
 use super::response::{ResponseError, ResponsePayload};
 use super::validation;
 
+/// URL query params.
 #[derive(Debug, Deserialize, Validate)]
-/// Struct containing url query params.
 pub struct LayerParams {
     #[garde(ascii)]
     pub columns: String,

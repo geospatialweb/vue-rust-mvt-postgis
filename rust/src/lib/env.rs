@@ -5,8 +5,8 @@ use tracing::info;
 
 static ENV: OnceCell<Env> = OnceCell::new();
 
+/// Environment variables parsed from .env file.
 #[derive(Debug, Deserialize)]
-/// Struct containing environment variables parsed from .env file.
 pub struct Env {
     pub api_path_prefix: String,
     pub app_mode: String,

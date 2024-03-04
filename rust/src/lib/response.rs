@@ -23,8 +23,8 @@ impl<T> From<T> for ResponseType<T> {
     }
 }
 
+/// ResponseType<T> payload and response status code.
 #[derive(Debug)]
-/// Struct containing ResponseType<T> payload and response status code fields.
 pub struct ResponsePayload<T> {
     payload: ResponseType<T>,
     status_code: StatusCode,

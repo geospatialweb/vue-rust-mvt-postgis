@@ -8,10 +8,9 @@ use std::fmt::{Debug, Formatter};
 use super::env::Env;
 use super::response::ResponseError;
 
+/// HS256 password hash.
 #[derive(PartialEq)]
-/// Struct containg password field.
 pub struct Credential {
-    /// HS256 password hash.
     pub password: String,
 }
 impl Credential {
@@ -28,15 +27,15 @@ impl Debug for Credential {
     }
 }
 
+/// Auth jwt token and expiry.
 #[derive(Debug, Deserialize, Serialize)]
-/// Struct containing auth token and expiry fields.
 pub struct Jwt {
     pub token: String,
     expiry: i64,
 }
 
+/// Jwt claims issuer, subject and expiry.
 #[derive(Debug, Deserialize, Serialize)]
-/// Struct containing issuer, subject and expiry fields.
 pub struct JwtClaims {
     iss: String,
     sub: String,

@@ -3,8 +3,8 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use std::fmt::{Debug, Formatter, Result};
 
+/// Username and password.
 #[derive(Deserialize, FromRow, PartialEq, Serialize, Validate)]
-/// Struct containing username and password fields.
 pub struct User {
     #[garde(email)]
     pub username: String,
