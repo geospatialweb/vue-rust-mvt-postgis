@@ -34,11 +34,11 @@ mod test {
         assert_eq!(&result.is_ok(), &true, "should be true");
     }
 
-    // #[tokio::test]
-    // async fn get_pool_err() {
-    //     let env = Env::get_env();
-    //     let uri = &env.postgres_test_uri;
-    //     let result = connect(uri).await;
-    //     assert_eq!(&result.is_err(), &true, "should be true");
-    // }
+    #[tokio::test]
+    async fn get_pool_err() {
+        let env = Env::get_env();
+        let uri = &env.postgres_test_uri;
+        let result = connect(uri).await;
+        assert_eq!(&result.is_err(), &true, "should be true");
+    }
 }
