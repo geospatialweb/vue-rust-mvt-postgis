@@ -33,14 +33,14 @@ pub struct User {
     #[garde(email)]
     pub username: String,
     #[garde(skip)]
-    pub plain_text_password: Option<PlainTextPassword>,
+    pub password: Option<PlainTextPassword>,
 }
 impl User {
     /// Create new User.
     pub fn new(username: &str, plain_text_password: &Option<PlainTextPassword>) -> Self {
         Self {
             username: username.to_owned(),
-            plain_text_password: plain_text_password.to_owned(),
+            password: plain_text_password.to_owned(),
         }
     }
 }
@@ -63,7 +63,7 @@ mod test {
         let plain_text_password = PlainTextPassword::new(password);
         let user = User {
             username: String::from(username),
-            plain_text_password: Some(plain_text_password.clone()),
+            password: Some(plain_text_password.clone()),
         };
         let result = User::new(username, &Some(plain_text_password.clone()));
         assert_eq!(result, user);
@@ -74,7 +74,7 @@ mod test {
         let username = "foobar.com";
         let user = User {
             username: String::from(username),
-            plain_text_password: None,
+            password: None,
         };
         let result = User::new(username, &None);
         assert_eq!(result, user);

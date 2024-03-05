@@ -62,7 +62,7 @@ pub async fn handle_login(req: &mut Request) -> Result<ResponsePayload<Jwt>, Res
     let user = req.parse_queries::<User>()?;
     validation::validate_user(&user)?;
     let credential = query::get_password(&user.username).await?;
-    let plain_text_password = user.plain_text_password.unwrap().as_string();
+    let plain_text_password = user.password.unwrap().as_string();
     auth::verify_plain_text_password_and_hashed_password(&plain_text_password, &credential.hashed_password)?;
     let jwt = auth::get_jwt(&user.username)?;
     let res = ResponsePayload::new(jwt.into(), &StatusCode::OK);
@@ -74,7 +74,7 @@ pub async fn handle_login(req: &mut Request) -> Result<ResponsePayload<Jwt>, Res
 pub async fn handle_register(req: &mut Request) -> Result<ResponsePayload<String>, ResponseError> {
     let user = req.parse_body::<User>().await?;
     validation::validate_user(&user)?;
-    let plain_text_password = user.plain_text_password.unwrap().as_string();
+    let plain_text_password = user.password.unwrap().as_string();
     let hashed_password = auth::generate_hashed_password_from_plain_text_password(&plain_text_password)?;
     let username = query::insert_user(&user.username, &hashed_password).await?;
     let res = ResponsePayload::new(username.into(), &StatusCode::CREATED);
@@ -136,7 +136,7 @@ pub async fn handle_update_password(
         Authorized => {
             let user = req.parse_body::<User>().await?;
             validation::validate_user(&user)?;
-            let plain_text_password = user.plain_text_password.unwrap().as_string();
+            let plain_text_password = user.password.unwrap().as_string();
             let hashed_password = auth::generate_hashed_password_from_plain_text_password(&plain_text_password)?;
             let username = query::update_password(&user.username, &hashed_password).await?;
             let res = ResponsePayload::new(username.into(), &StatusCode::OK);
