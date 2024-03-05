@@ -23,6 +23,8 @@
       "command": "test",
       "args": [
         "--lib",
+        "--",
+        "--test-threads=1",
         "--manifest-path",
         "${workspaceFolder}/rust/Cargo.toml"
       ],
