@@ -11,9 +11,9 @@ use sqlx::Error as DatabaseError;
 use std::num::ParseIntError;
 use thiserror::Error;
 
+/// Response generic types.
 #[derive(Debug, Serialize)]
 #[serde(untagged)]
-/// Response generic types.
 pub enum ResponseType<T> {
     Type(T),
 }
@@ -46,8 +46,8 @@ impl<T: Serialize> Scribe for ResponsePayload<T> {
     }
 }
 
-#[derive(Debug, Error)]
 /// Response error types.
+#[derive(Debug, Error)]
 pub enum ResponseError {
     #[error("bcrypt error: {0}")]
     Bcrypt(#[from] BcryptError),
@@ -79,50 +79,27 @@ pub enum ResponseError {
     #[error("user query params validation error")]
     UserValidation,
 }
-impl Scribe for ResponseError {
-    /// Write response error and status code.
-    fn render(self, res: &mut Response) {
+impl ResponseError {
+    /// Set response status code for each response error type.
+    fn as_status_code(&self) -> StatusCode {
         match self {
-            ResponseError::Bcrypt(_) => {
-                res.status_code(StatusCode::UNAUTHORIZED)
-                   .render(json!(format!("{}", &self)).to_string());
-            }
-            ResponseError::Database(_) => {
-                res.status_code(StatusCode::INTERNAL_SERVER_ERROR)
-                   .render(json!(format!("{}", &self)).to_string());
-            }
-            ResponseError::GeoJson(_) => {
-                res.status_code(StatusCode::INTERNAL_SERVER_ERROR)
-                   .render(json!(format!("{}", &self)).to_string());
-            }
-            ResponseError::Jwt(_) => {
-                res.status_code(StatusCode::UNAUTHORIZED)
-                   .render(json!(format!("{}", &self)).to_string());
-            }
-            ResponseError::Parse(_) => {
-                res.status_code(StatusCode::BAD_REQUEST)
-                   .render(json!(format!("{}", &self)).to_string());
-            }
-            ResponseError::ParseInt(_) => {
-                res.status_code(StatusCode::INTERNAL_SERVER_ERROR)
-                   .render(json!(format!("{}", &self)).to_string());
-            }
-            ResponseError::JwtForbidden => {
-                res.status_code(StatusCode::FORBIDDEN)
-                   .render(json!(format!("{}", &self)).to_string());
-            }
-            ResponseError::JwtUnauthorized => {
-                res.status_code(StatusCode::UNAUTHORIZED)
-                   .render(json!(format!("{}", &self)).to_string());
-            }
-            ResponseError::LayerParamsValidation => {
-                res.status_code(StatusCode::BAD_REQUEST)
-                   .render(json!(format!("{}", &self)).to_string());
-            }
-            ResponseError::UserValidation => {
-                res.status_code(StatusCode::BAD_REQUEST)
-                   .render(json!(format!("{}", &self)).to_string());
-            }
+            Self::Bcrypt(_) => StatusCode::UNAUTHORIZED,
+            Self::Database(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::GeoJson(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::Jwt(_) => StatusCode::UNAUTHORIZED,
+            Self::Parse(_) => StatusCode::BAD_REQUEST,
+            Self::ParseInt(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::JwtForbidden => StatusCode::FORBIDDEN,
+            Self::JwtUnauthorized => StatusCode::UNAUTHORIZED,
+            Self::LayerParamsValidation => StatusCode::BAD_REQUEST,
+            Self::UserValidation => StatusCode::BAD_REQUEST,
         }
+    }
+}
+impl Scribe for ResponseError {
+    /// Write response status code and response error message.
+    fn render(self, res: &mut Response) {
+        res.status_code(self.as_status_code())
+           .render(json!(format!("{}", self)).to_string());
     }
 }
