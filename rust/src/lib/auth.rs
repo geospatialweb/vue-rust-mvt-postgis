@@ -1,3 +1,5 @@
+#![cfg_attr(rustfmt, rustfmt_skip)]
+
 use chrono::{Duration, Utc};
 use jsonwebtoken::{EncodingKey, Header};
 use salvo::jwt_auth::{ConstDecoder, HeaderFinder};
@@ -8,22 +10,46 @@ use std::fmt::{Debug, Formatter};
 use super::env::Env;
 use super::response::ResponseError;
 
+/// HS256 hashed password.
+#[derive(Clone, PartialEq)]
+pub struct HashedPassword(String);
+impl HashedPassword {
+    /// Create new HashedPassword.
+    pub fn new(password: &str) -> Self {
+        Self(password.to_owned())
+    }
+
+    // Return the string slice representation of HashedPassword.
+    pub fn as_str(&self) -> &str {
+        self.0.as_str()
+    }
+}
+impl Debug for HashedPassword {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("HashedPassword")
+         .field("password", &"<hidden>")
+         .finish()
+    }
+}
+
 /// HS256 password hash.
 #[derive(PartialEq)]
 pub struct Credential {
-    pub password: String,
+    pub hashed_password: HashedPassword,
 }
 impl Credential {
     /// Create new Credential.
-    pub fn new(password: &str) -> Self {
+    pub fn new(hashed_password: &HashedPassword) -> Self {
         Self {
-            password: password.to_owned(),
+            hashed_password: hashed_password.to_owned(),
         }
     }
 }
 impl Debug for Credential {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("Credential").field("password", &"<hidden>").finish()
+        f.debug_struct("Credential")
+         .field("password", &"<hidden>")
+         .finish()
     }
 }
 
@@ -43,9 +69,9 @@ pub struct JwtClaims {
 }
 
 /// Generate HS256 password hash from text password.
-pub fn generate_hash_from_password(password: &str) -> Result<String, ResponseError> {
-    let hash = bcrypt::hash(password, bcrypt::DEFAULT_COST)?;
-    Ok(hash)
+pub fn generate_hashed_password_from_plain_text_password(password: &str) -> Result<HashedPassword, ResponseError> {
+    let hashed_password = bcrypt::hash(password, bcrypt::DEFAULT_COST)?;
+    Ok(HashedPassword(hashed_password))
 }
 
 /// Return JWT token and expiry.
@@ -53,12 +79,13 @@ pub fn get_jwt(username: &str) -> Result<Jwt, ResponseError> {
     let env = Env::get_env();
     let minutes = env.jwt_claims_expiry.parse::<i64>()?;
     let expiry = (Utc::now() + Duration::minutes(minutes)).timestamp();
+    let issuer = &env.jwt_claims_issuer;
+    let secret = env.jwt_secret.as_bytes();
     let jwt_claims = JwtClaims {
-        iss: env.jwt_claims_issuer.to_owned(),
+        iss: issuer.to_owned(),
         sub: username.to_owned(),
         exp: expiry,
     };
-    let secret = env.jwt_secret.as_bytes();
     let token = jsonwebtoken::encode(
         &Header::default(), // HS256
         &jwt_claims,
@@ -76,9 +103,10 @@ pub fn handle_auth() -> JwtAuth<JwtClaims, ConstDecoder> {
         .force_passed(true)
 }
 
-/// Verify HS256 password hash stored in db with text password submitted by user.
-pub fn verify_password_and_hash(password: &str, hash: &str) -> Result<(), ResponseError> {
-    bcrypt::verify(password, hash)?;
+/// Verify HS256 hashed password stored in db with plain text password submitted by user at login.
+pub fn verify_plain_text_password_and_hashed_password(plain_text_password: &str, hashed_password: &HashedPassword
+) -> Result<(), ResponseError> {
+    bcrypt::verify(plain_text_password, hashed_password.as_str())?;
     Ok(())
 }
 
@@ -100,25 +128,25 @@ mod test {
     }
 
     #[test]
-    fn generate_hash_from_password_ok() {
-        let password = "secretPassword";
-        let result = generate_hash_from_password(password);
+    fn generate_hashed_password_from_plain_text_password_ok() {
+        let plain_text_password = "secretPassword";
+        let result = generate_hashed_password_from_plain_text_password(plain_text_password);
         assert!(result.is_ok());
     }
 
     #[test]
     fn verify_password_and_hash_ok() {
-        let password = "secretPassword";
-        let hash = generate_hash_from_password(password).unwrap();
-        let result = verify_password_and_hash(password, &hash);
+        let plain_text_password = "secretPassword";
+        let hashed_password = generate_hashed_password_from_plain_text_password(plain_text_password).unwrap();
+        let result = verify_plain_text_password_and_hashed_password(plain_text_password, &hashed_password);
         assert!(result.is_ok());
     }
 
     #[test]
     fn verify_password_and_hash_err() {
-        let password = "secretPassword";
-        let hash = "$2a$12$BSul3QNaH9FahdqlxfnejuM7Y0Ptm8q9kcBSpuJqWjS0j4DCwTdzb";
-        let result = verify_password_and_hash(password, hash);
-        assert!(matches!(result, Err(ResponseError::Bcrypt(..))));
+        let plain_text_password = "secretPassword";
+        let hashed_password = "$2a$12$BSul3QNaH9FahdqlxfnejuM7Y0Ptm8q9kcBSpuJqWjS0j4DCwTdzb";
+        let result = verify_plain_text_password_and_hashed_password(plain_text_password, &HashedPassword(String::from(hashed_password)));
+        assert!(matches!(result, Err(ResponseError::Bcrypt(_))));
     }
 }

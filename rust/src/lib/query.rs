@@ -2,11 +2,10 @@
 
 use sqlx::Row;
 
-use super::auth::Credential;
+use super::auth::{Credential, HashedPassword};
 use super::database::get_pool;
 use super::geojson::JsonFeature;
 use super::handler::LayerParams;
-use super::model::User;
 use super::response::ResponseError;
 
 /// Return vector of JsonFeature structs.
@@ -53,22 +52,21 @@ pub async fn delete_user(username: &str) -> Result<String, ResponseError> {
 }
 
 /// Insert user returning username.
-pub async fn insert_user(user: &User) -> Result<String, ResponseError> {
+pub async fn insert_user(username: &str, password: &HashedPassword) -> Result<String, ResponseError> {
     let query = "
         INSERT INTO users (username, password)
         VALUES ($1, $2)
         RETURNING username";
-    let password = user.password.clone().unwrap();
     let row = sqlx::query(query)
-        .bind(&user.username)
-        .bind(&password)
+        .bind(username)
+        .bind(password.as_str())
         .fetch_one(&get_pool().await?)
         .await?;
     let username = row.get("username");
     Ok(username)
 }
 
-/// Return HS256 password hash.
+/// Return HS256 hashed password.
 pub async fn get_password(username: &str) -> Result<Credential, ResponseError> {
     let query = "
         SELECT password
@@ -78,21 +76,21 @@ pub async fn get_password(username: &str) -> Result<Credential, ResponseError> {
         .bind(username)
         .fetch_one(&get_pool().await?)
         .await?;
-    let credential = Credential::new(row.get("password"));
+    let hashed_password = HashedPassword::new(row.get("password"));
+    let credential = Credential::new(&hashed_password);
     Ok(credential)
 }
 
-/// Update password returning username.
-pub async fn update_password(user: &User) -> Result<String, ResponseError> {
+/// Update HS256 hashed password returning username.
+pub async fn update_password(username: &str, password: &HashedPassword) -> Result<String, ResponseError> {
     let query = "
         UPDATE users
         SET password = $2
         WHERE username = $1
         RETURNING username";
-    let password = user.password.clone().unwrap();
     let row = sqlx::query(query)
-        .bind(&user.username)
-        .bind(&password)
+        .bind(username)
+        .bind(password.as_str())
         .fetch_one(&get_pool().await?)
         .await?;
     let username = row.get("username");
@@ -107,8 +105,8 @@ mod test {
     async fn a_insert_user_ok() {
         let username = "foo@bar.com";
         let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
-        let user = User::new(username, &Some(String::from(password)));
-        let result = insert_user(&user).await;
+        let hashed_password = HashedPassword::new(&String::from(password));
+        let result = insert_user(username, &hashed_password).await;
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), username);
     }
@@ -117,9 +115,9 @@ mod test {
     async fn b_insert_user_err() {
         let username = "foo@bar.com";
         let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
-        let user = User::new(username, &Some(String::from(password)));
-        let result = insert_user(&user).await;
-        assert!(matches!(result, Err(ResponseError::Database(..))));
+        let hashed_password = HashedPassword::new(&String::from(password));
+        let result = insert_user(username, &hashed_password).await;
+        assert!(matches!(result, Err(ResponseError::Database(_))));
     }
 
     #[tokio::test]
@@ -131,20 +129,22 @@ mod test {
     }
 
     #[tokio::test]
-    async fn d_delete_user_ok_get_password_ok() {
+    async fn d_get_password_ok() {
         let username = "foo@bar.com";
         let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
+        let hashed_password = HashedPassword::new(&String::from(password));
+        let credential = Credential::new(&hashed_password);
         let result = get_password(username).await;
         assert!(result.is_ok());
-        assert_eq!(result.unwrap(), Credential::new(password));
+        assert_eq!(result.unwrap(), credential);
     }
 
     #[tokio::test]
     async fn e_update_password_ok() {
         let username = "foo@bar.com";
         let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
-        let user = User::new(username, &Some(String::from(password)));
-        let result = update_password(&user).await;
+        let hashed_password = HashedPassword::new(&String::from(password));
+        let result = update_password(username, &hashed_password).await;
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), username);
     }
