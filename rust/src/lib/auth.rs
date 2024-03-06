@@ -1,5 +1,3 @@
-#![cfg_attr(rustfmt, rustfmt_skip)]
-
 use chrono::{Duration, Utc};
 use jsonwebtoken::{EncodingKey, Header};
 use salvo::jwt_auth::{ConstDecoder, HeaderFinder};
@@ -8,32 +6,10 @@ use serde::{Deserialize, Serialize};
 use std::fmt::{Debug, Formatter};
 
 use super::env::Env;
-use super::model::TextPassword;
+use super::password::{HashedPassword, TextPassword};
 use super::response::ResponseError;
 
-/// HS256 hashed password.
-#[derive(Clone, PartialEq)]
-pub struct HashedPassword(String);
-impl HashedPassword {
-    /// Create new HashedPassword.
-    pub fn new(password: &str) -> Self {
-        Self(password.to_owned())
-    }
-
-    // Return the string slice representation of HashedPassword.
-    pub fn as_str(&self) -> &str {
-        self.0.as_str()
-    }
-}
-impl Debug for HashedPassword {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_struct("HashedPassword")
-         .field("password", &"<hidden>")
-         .finish()
-    }
-}
-
-/// HS256 password hash.
+/// HS256 hashed password credential.
 #[derive(PartialEq)]
 pub struct Credential {
     pub hashed_password: HashedPassword,
@@ -46,6 +22,8 @@ impl Credential {
         }
     }
 }
+// Manually implement Debug to prevent password leakage into logs.
+#[rustfmt::skip]
 impl Debug for Credential {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Credential")
@@ -72,7 +50,7 @@ pub struct JwtClaims {
 /// Generate HS256 hashed password from text password.
 pub fn generate_hashed_password_from_password(password: &TextPassword) -> Result<HashedPassword, ResponseError> {
     let hashed_password = bcrypt::hash(password.as_str(), bcrypt::DEFAULT_COST)?;
-    Ok(HashedPassword(hashed_password))
+    Ok(HashedPassword::new(&hashed_password))
 }
 
 /// Return JWT token and expiry.
@@ -105,7 +83,9 @@ pub fn handle_auth() -> JwtAuth<JwtClaims, ConstDecoder> {
 }
 
 /// Verify password submitted by user at login with HS256 hashed password stored in db.
-pub fn verify_password_and_hashed_password(password: &TextPassword, hashed_password: &HashedPassword
+pub fn verify_password_and_hashed_password(
+    password: &TextPassword,
+    hashed_password: &HashedPassword,
 ) -> Result<(), ResponseError> {
     bcrypt::verify(password.as_str(), hashed_password.as_str())?;
     Ok(())
@@ -149,8 +129,8 @@ mod test {
     fn verify_password_and_hashed_password_err() {
         let password = "secretPassword";
         let text_password = TextPassword::new(password);
-        let hashed_password = String::from("$2a$12$BSul3QNaH9FahdqlxfnejuM7Y0Ptm8q9kcBSpuJqWjS0j4DCwTdzb");
-        let result = verify_password_and_hashed_password(&text_password, &HashedPassword(hashed_password));
+        let hashed_password = "$2a$12$BSul3QNaH9FahdqlxfnejuM7Y0Ptm8q9kcBSpuJqWjS0j4DCwTdzb";
+        let result = verify_password_and_hashed_password(&text_password, &HashedPassword::new(hashed_password));
         assert!(matches!(result, Err(ResponseError::Bcrypt(_))));
     }
 }

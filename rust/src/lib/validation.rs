@@ -23,7 +23,7 @@ pub fn validate_user(user: &User) -> Result<(), ResponseError> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::model::TextPassword;
+    use crate::password::TextPassword;
 
     #[test]
     fn validate_layer_params_ok() {

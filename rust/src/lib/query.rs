@@ -2,10 +2,11 @@
 
 use sqlx::Row;
 
-use super::auth::{Credential, HashedPassword};
+use super::auth::Credential;
 use super::database::get_pool;
 use super::geojson::JsonFeature;
 use super::handler::LayerParams;
+use super::password::HashedPassword;
 use super::response::ResponseError;
 
 /// Return vector of JsonFeature structs.
