@@ -7,21 +7,21 @@ use std::fmt::{Debug, Formatter, Result};
 
 /// Plain text password.
 #[derive(Clone, Deserialize, PartialEq, Serialize, Validate)]
-pub struct PlainTextPassword(#[garde(ascii)] String);
-impl PlainTextPassword {
-    /// Create new PlainTextPassword.
+pub struct TextPassword(#[garde(ascii)] String);
+impl TextPassword {
+    /// Create new TextPassword.
     pub fn new(password: &str) -> Self {
         Self(password.to_owned())
     }
 
-    // Return the string representation of PlainTextPassword.
-    pub fn as_string(&self) -> String {
-        self.0.to_string()
+    // Return the string slice representation of TextPassword.
+    pub fn as_str(&self) -> &str {
+        self.0.as_str()
     }
 }
-impl Debug for PlainTextPassword {
+impl Debug for TextPassword {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-        f.debug_struct("PlainTextPassword")
+        f.debug_struct("TextPassword")
          .field("password", &"<hidden>")
          .finish()
     }
@@ -33,14 +33,14 @@ pub struct User {
     #[garde(email)]
     pub username: String,
     #[garde(skip)]
-    pub password: Option<PlainTextPassword>,
+    pub password: Option<TextPassword>,
 }
 impl User {
     /// Create new User.
-    pub fn new(username: &str, plain_text_password: &Option<PlainTextPassword>) -> Self {
+    pub fn new(username: &str, password: &Option<TextPassword>) -> Self {
         Self {
             username: username.to_owned(),
-            password: plain_text_password.to_owned(),
+            password: password.to_owned(),
         }
     }
 }
@@ -60,12 +60,12 @@ mod test {
     fn new_user_password() {
         let username = "foobar.com";
         let password = "secretPassword";
-        let plain_text_password = PlainTextPassword::new(password);
+        let text_password = TextPassword::new(password);
         let user = User {
             username: String::from(username),
-            password: Some(plain_text_password.clone()),
+            password: Some(text_password.clone()),
         };
-        let result = User::new(username, &Some(plain_text_password.clone()));
+        let result = User::new(username, &Some(text_password.clone()));
         assert_eq!(result, user);
     }
 

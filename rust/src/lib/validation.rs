@@ -23,7 +23,7 @@ pub fn validate_user(user: &User) -> Result<(), ResponseError> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::model::PlainTextPassword;
+    use crate::model::TextPassword;
 
     #[test]
     fn validate_layer_params_ok() {
@@ -41,8 +41,8 @@ mod test {
     fn validate_user_ok() {
         let username = "foo@bar.com";
         let password = "secretPassword";
-        let plain_text_password = PlainTextPassword::new(&String::from(password));
-        let user = User::new(username, &Some(plain_text_password));
+        let text_password = TextPassword::new(&String::from(password));
+        let user = User::new(username, &Some(text_password));
         let result = validate_user(&user);
         assert!(result.is_ok());
     }
@@ -51,8 +51,8 @@ mod test {
     fn validate_user_err() {
         let username = "foobar.com"; // must be email format
         let password = "secretPassword";
-        let plain_text_password = PlainTextPassword::new(&String::from(password));
-        let user = User::new(username, &Some(plain_text_password));
+        let text_password = TextPassword::new(&String::from(password));
+        let user = User::new(username, &Some(text_password));
         let result = validate_user(&user);
         assert!(matches!(result, Err(ResponseError::UserValidation)));
     }
