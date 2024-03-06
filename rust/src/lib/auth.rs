@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt::{Debug, Formatter};
 
 use super::env::Env;
+use super::model::TextPassword;
 use super::response::ResponseError;
 
 /// HS256 hashed password.
@@ -68,9 +69,9 @@ pub struct JwtClaims {
     exp: i64,
 }
 
-/// Generate HS256 password hash from text password.
-pub fn generate_hashed_password_from_plain_text_password(password: &str) -> Result<HashedPassword, ResponseError> {
-    let hashed_password = bcrypt::hash(password, bcrypt::DEFAULT_COST)?;
+/// Generate HS256 hashed password from text password.
+pub fn generate_hashed_password_from_password(password: &TextPassword) -> Result<HashedPassword, ResponseError> {
+    let hashed_password = bcrypt::hash(password.as_str(), bcrypt::DEFAULT_COST)?;
     Ok(HashedPassword(hashed_password))
 }
 
@@ -103,10 +104,10 @@ pub fn handle_auth() -> JwtAuth<JwtClaims, ConstDecoder> {
         .force_passed(true)
 }
 
-/// Verify HS256 hashed password stored in db with plain text password submitted by user at login.
-pub fn verify_plain_text_password_and_hashed_password(plain_text_password: &str, hashed_password: &HashedPassword
+/// Verify password submitted by user at login with HS256 hashed password stored in db.
+pub fn verify_password_and_hashed_password(password: &TextPassword, hashed_password: &HashedPassword
 ) -> Result<(), ResponseError> {
-    bcrypt::verify(plain_text_password, hashed_password.as_str())?;
+    bcrypt::verify(password.as_str(), hashed_password.as_str())?;
     Ok(())
 }
 
@@ -128,25 +129,28 @@ mod test {
     }
 
     #[test]
-    fn generate_hashed_password_from_plain_text_password_ok() {
-        let plain_text_password = "secretPassword";
-        let result = generate_hashed_password_from_plain_text_password(plain_text_password);
+    fn generate_hashed_password_from_password_ok() {
+        let password = "secretPassword";
+        let text_password = TextPassword::new(password);
+        let result = generate_hashed_password_from_password(&text_password);
         assert!(result.is_ok());
     }
 
     #[test]
-    fn verify_password_and_hash_ok() {
-        let plain_text_password = "secretPassword";
-        let hashed_password = generate_hashed_password_from_plain_text_password(plain_text_password).unwrap();
-        let result = verify_plain_text_password_and_hashed_password(plain_text_password, &hashed_password);
+    fn verify_password_and_hashed_password_ok() {
+        let password = "secretPassword";
+        let text_password = TextPassword::new(password);
+        let hashed_password = generate_hashed_password_from_password(&text_password).unwrap();
+        let result = verify_password_and_hashed_password(&text_password, &hashed_password);
         assert!(result.is_ok());
     }
 
     #[test]
-    fn verify_password_and_hash_err() {
-        let plain_text_password = "secretPassword";
-        let hashed_password = "$2a$12$BSul3QNaH9FahdqlxfnejuM7Y0Ptm8q9kcBSpuJqWjS0j4DCwTdzb";
-        let result = verify_plain_text_password_and_hashed_password(plain_text_password, &HashedPassword(String::from(hashed_password)));
+    fn verify_password_and_hashed_password_err() {
+        let password = "secretPassword";
+        let text_password = TextPassword::new(password);
+        let hashed_password = String::from("$2a$12$BSul3QNaH9FahdqlxfnejuM7Y0Ptm8q9kcBSpuJqWjS0j4DCwTdzb");
+        let result = verify_password_and_hashed_password(&text_password, &HashedPassword(hashed_password));
         assert!(matches!(result, Err(ResponseError::Bcrypt(_))));
     }
 }
