@@ -39,6 +39,6 @@ mod test {
         let env = Env::get_env();
         let uri = &env.postgres_test_uri;
         let result = connect(uri).await;
-        assert!(result.is_err());
+        assert!(matches!(result, Err(_)));
     }
 }
