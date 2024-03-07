@@ -61,7 +61,7 @@ services:
       - .env
     healthcheck:
       test: pg_isready -d $POSTGRES_URI
-      interval: 15s
+      interval: 20s
       timeout: 5s
     networks:
       - app-network
