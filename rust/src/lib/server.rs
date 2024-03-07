@@ -6,7 +6,7 @@ use salvo::prelude::{Listener, TcpListener};
 use salvo::server::ServerHandle;
 use salvo::{Server, Service};
 use tokio::signal;
-use tracing::info;
+use tracing::{error, info};
 
 use super::env::Env;
 use super::router;
@@ -20,15 +20,27 @@ pub async fn set_server() {
         start_development_http_server(&host, service).await;
     } else if env.app_mode == env.app_mode_prod {
         start_production_https_server(&host, service).await;
+    } else {
+        return error!("app mode set incorrctly: {}", &env.app_mode);
     }
 }
 
-/// Instantiate router and cors service to handle http requests.
+/// Instantiate router and CORS service to handle http requests.
 fn get_service() -> Service {
     Service::new(router::new())
         .catcher(Catcher::default()
             .hoop(router::handle_cors())
         )
+}
+
+/// Return configuration for the tls server.
+fn get_tls_config() -> RustlsConfig {
+    let env = Env::get_env();
+    RustlsConfig::new(
+        Keycert::new()
+            .cert(env.ssl_cert.as_bytes())
+            .key(env.ssl_key.as_bytes())
+    )
 }
 
 // Start development HTTP/1.1 server.
@@ -39,25 +51,24 @@ async fn start_development_http_server(host: &str, service: Service) {
     let server = Server::new(acceptor);
     let handle = server.handle();
     tokio::spawn(listen_shutdown_signal(handle));
-    server.serve(service).await;
+    server
+        .serve(service)
+        .await;
 }
 
 // Start production HTTPS/1.1 server.
 async fn start_production_https_server(host: &str, service: Service) {
-    let env = Env::get_env();
-    let config = RustlsConfig::new(
-        Keycert::new()
-            .cert(env.ssl_cert.as_bytes())
-            .key(env.ssl_key.as_bytes())
-    );
+    let tls_config = get_tls_config();
     let acceptor = TcpListener::new(host)
-        .rustls(config)
+        .rustls(tls_config)
         .bind()
         .await;
     let server = Server::new(acceptor);
     let handle = server.handle();
     tokio::spawn(listen_shutdown_signal(handle));
-    server.serve(service).await;
+    server
+        .serve(service)
+        .await;
 }
 
 /// Listen for shutdown signal.
