@@ -1,5 +1,3 @@
-#![cfg_attr(rustfmt, rustfmt_skip)]
-
 use bcrypt::BcryptError;
 use geojson::Error as GeoJsonError;
 use jsonwebtoken::errors::Error as JwtError;
@@ -38,6 +36,7 @@ impl<T> ResponsePayload<T> {
         }
     }
 }
+#[rustfmt::skip]
 impl<T: Serialize> Scribe for ResponsePayload<T> {
     /// Write response payload and status code.
     fn render(self, res: &mut Response) {
@@ -96,6 +95,7 @@ impl ResponseError {
         }
     }
 }
+#[rustfmt::skip]
 impl Scribe for ResponseError {
     /// Write response status code and response error message.
     fn render(self, res: &mut Response) {
