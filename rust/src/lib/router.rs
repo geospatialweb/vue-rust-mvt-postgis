@@ -106,7 +106,6 @@ mod test {
     }
 
     #[tokio::test]
-
     async fn a_register_endpoint_ok() {
         let env = Env::get_env();
         let body = r#"{"username":"foo@bar.com","password":"secretPassword"}"#;
