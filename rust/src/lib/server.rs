@@ -1,17 +1,19 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
-use salvo::catcher::Catcher;
-use salvo::conn::rustls::{Keycert, RustlsConfig};
-use salvo::prelude::{Listener, TcpListener};
-use salvo::server::ServerHandle;
-use salvo::{Server, Service};
-use tokio::signal;
+use salvo::{
+    catcher::Catcher,
+    conn::rustls::{Keycert, RustlsConfig},
+    prelude::{Listener, TcpListener},
+    server::{Server, ServerHandle},
+    Service,
+};
+use tokio::signal::{self, unix};
 use tracing::{error, info};
 
 use super::env::Env;
 use super::router;
 
-/// Set server to service http requests.
+/// Set server host to service http requests.
 pub async fn set_server() {
     let env = Env::get_env();
     let host = format!("{}:{}", &env.server_host, &env.server_port);
@@ -79,7 +81,7 @@ async fn listen_shutdown_signal(handle: ServerHandle) {
             .expect("failed to install Ctrl+C handler");
     };
     let terminate = async {
-        signal::unix::signal(signal::unix::SignalKind::terminate())
+        unix::signal(unix::SignalKind::terminate())
             .expect("failed to install signal handler")
             .recv()
             .await;

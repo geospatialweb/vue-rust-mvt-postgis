@@ -1,12 +1,17 @@
 use garde::Validate;
 use geojson::FeatureCollection;
-use salvo::http::{Request, StatusCode};
-use salvo::prelude::{JwtAuthDepotExt, JwtAuthState::Authorized, JwtAuthState::Forbidden, JwtAuthState::Unauthorized};
-use salvo::{handler, Depot};
+use salvo::{
+    handler,
+    http::{Request, StatusCode},
+    prelude::{
+        JwtAuthDepotExt,
+        JwtAuthState::{Authorized, Forbidden, Unauthorized},
+    },
+    Depot,
+};
 use serde::Deserialize;
 
-use super::auth;
-use super::auth::Jwt;
+use super::auth::{self, Jwt};
 use super::env::Env;
 use super::model::User;
 use super::query;

@@ -1,9 +1,11 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
-use salvo::cors::{Cors, CorsHandler};
-use salvo::http::Method;
-use salvo::logging::Logger;
-use salvo::Router;
+use salvo::{
+    cors::{Cors, CorsHandler},
+    http::Method,
+    logging::Logger,
+    routing::Router,
+};
 
 use super::auth;
 use super::env::Env;

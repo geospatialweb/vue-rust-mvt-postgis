@@ -1,7 +1,9 @@
 use chrono::{Duration, Utc};
 use jsonwebtoken::{EncodingKey, Header};
-use salvo::jwt_auth::{ConstDecoder, HeaderFinder};
-use salvo::prelude::JwtAuth;
+use salvo::{
+    jwt_auth::{ConstDecoder, HeaderFinder},
+    prelude::JwtAuth,
+};
 use serde::{Deserialize, Serialize};
 use std::fmt::{Debug, Formatter};
 

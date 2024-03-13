@@ -1,8 +1,10 @@
 use bcrypt::BcryptError;
 use geojson::Error as GeoJsonError;
 use jsonwebtoken::errors::Error as JwtError;
-use salvo::http::{ParseError, Response, StatusCode};
-use salvo::Scribe;
+use salvo::{
+    http::{ParseError, Response, StatusCode},
+    Scribe,
+};
 use serde::Serialize;
 use serde_json::json;
 use sqlx::Error as DatabaseError;
