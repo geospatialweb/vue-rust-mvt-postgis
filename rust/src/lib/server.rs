@@ -13,19 +13,27 @@ use tracing::{error, info};
 use super::env::Env;
 use super::router;
 
-/// Start server host with http request service.
-pub async fn start() -> Result<(), Error> {
-    let env = Env::get_env();
-    let service = Service::new(router::new())
+/// Set http request service.
+pub async fn set_service() -> Result<(), Error> {
+    let router = router::new();
+    let handle_cors = router::handle_cors();
+    let service = Service::new(router)
         .catcher(Catcher::default()
-            .hoop(router::handle_cors())
+            .hoop(handle_cors)
         );
+    set_server_host(service). await?;
+    Ok(())
+}
+
+/// Set server host with http request service.
+async fn set_server_host(service: Service) -> Result<(), Error> {
+    let env = Env::get_env();
     if env.app_mode == env.app_mode_dev {
         let host = format!("{}:{}", &env.server_host_dev, &env.server_port);
         start_http_server(&host, service).await;
     } else if env.app_mode == env.app_mode_prod {
         let host = format!("{}:{}", &env.server_host_prod, &env.server_port);
-        start_https_server(&host, service, &env.server_tls_cert, &env.server_tls_key).await?;
+        start_https_server(&host, service).await?;
     } else {
         error!("app mode set incorrctly: {}", &env.app_mode);
     }
@@ -38,27 +46,28 @@ async fn start_http_server(host: &str, service: Service) {
         .bind()
         .await;
     let server = Server::new(acceptor);
-    let handle = server.handle();
-    tokio::spawn(listen_shutdown_signal(handle));
+    let server_handle = server.handle();
+    tokio::spawn(listen_shutdown_signal(server_handle));
     server
         .serve(service)
         .await;
 }
 
 // Start production HTTPS/1.1 server.
-async fn start_https_server(host: &str, service: Service, tls_cert: &str, tls_key: &str) -> Result<(), Error> {
+async fn start_https_server(host: &str, service: Service) -> Result<(), Error> {
+    let env = Env::get_env();
     let tls_config = RustlsConfig::new(
         Keycert::new()
-            .cert_from_path(tls_cert)?
-            .key_from_path(tls_key)?
+            .cert_from_path(&env.server_tls_cert)?
+            .key_from_path(&env.server_tls_key)?
     );
     let acceptor = TcpListener::new(host)
         .rustls(tls_config)
         .bind()
         .await;
     let server = Server::new(acceptor);
-    let handle = server.handle();
-    tokio::spawn(listen_shutdown_signal(handle));
+    let server_handle = server.handle();
+    tokio::spawn(listen_shutdown_signal(server_handle));
     server
         .serve(service)
         .await;
