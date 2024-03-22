@@ -21,7 +21,7 @@ pub async fn set_service() -> Result<(), Error> {
         .catcher(Catcher::default()
             .hoop(handle_cors)
         );
-    set_server_host(service). await?;
+    set_server_host(service).await?;
     Ok(())
 }
 
