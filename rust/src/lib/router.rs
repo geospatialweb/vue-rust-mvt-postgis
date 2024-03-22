@@ -83,7 +83,7 @@ mod test {
 
     fn get_base_url() -> String {
         let env = Env::get_env();
-        format!("http://{}:{}", &env.server_host, &env.server_port)
+        format!("http://{}:{}", &env.server_host_dev, &env.server_port)
     }
 
     fn get_api_url() -> String {
