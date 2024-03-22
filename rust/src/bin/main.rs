@@ -16,7 +16,7 @@ async fn main() {
     if let Err(err) = database::set_pool().await {
         return error!("database connection error: {}", &err);
     }
-    if let Err(err) = server::start().await {
+    if let Err(err) = server::set_service().await {
         return error!("server tsl error: {}", &err);
     }
 }
