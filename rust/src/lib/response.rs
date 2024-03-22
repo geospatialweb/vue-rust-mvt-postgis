@@ -102,6 +102,6 @@ impl Scribe for ResponseError {
     /// Write response status code and response error message.
     fn render(self, res: &mut Response) {
         res.status_code(self.as_status_code())
-           .render(json!(format!("{}", self)).to_string());
+           .render(json!(format!("{}", &self)).to_string());
     }
 }

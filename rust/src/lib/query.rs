@@ -16,8 +16,8 @@ pub async fn get_json_features(params: &LayerParams) -> Result<Vec<JsonFeature>,
         AS feature
         FROM (SELECT {} FROM {})
         AS feature",
-        params.columns,
-        params.table);
+        &params.columns,
+        &params.table);
     let json_features = sqlx::query_as(&query)
         .fetch_all(&get_pool().await?)
         .await?;
