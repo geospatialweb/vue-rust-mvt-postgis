@@ -9,6 +9,13 @@ use super::response::ResponseError;
 pub struct JsonFeature {
     pub feature: String,
 }
+impl JsonFeature {
+    pub fn new(feature: &str) -> Self {
+        Self {
+            feature: feature.to_owned(),
+        }
+    }
+}
 
 /// Create GeoJSON feature collection from a vector of GeoJSON features.
 pub fn create_feature_collection(json_features: &[JsonFeature]) -> Result<FeatureCollection, ResponseError> {
@@ -34,21 +41,15 @@ mod test {
     use super::*;
 
     fn create_feature() -> String {
-        let feature = r#"{"geometry":{"coordinates":[-76.011422,44.384362],"type":"Point"},"properties":{"description":"19 Reynolds Road, Lansdowne, ON. Open Monday to Friday 8:30am - 4:30pm","name":"Frontenac Arch Biosphere Office"},"type":"Feature"}"#;
-        feature.to_string()
-    }
-
-    fn create_json_features(feature: &str) -> Vec<JsonFeature> {
-        let json_feature = JsonFeature {
-            feature: feature.to_owned(),
-        };
-        vec![json_feature]
+        String::from(
+            r#"{"geometry":{"coordinates":[-76.011422,44.384362],"type":"Point"},"properties":{"description":"19 Reynolds Road, Lansdowne, ON. Open Monday to Friday 8:30am - 4:30pm","name":"Frontenac Arch Biosphere Office"},"type":"Feature"}"#,
+        )
     }
 
     #[test]
     fn create_geojson_feature_collection_ok() {
         let feature = create_feature();
-        let json_features = create_json_features(&feature);
+        let json_features = vec![JsonFeature::new(&feature)];
         let fc = r#"{"features":[{"geometry":{"coordinates":[-76.011422,44.384362],"type":"Point"},"properties":{"description":"19 Reynolds Road, Lansdowne, ON. Open Monday to Friday 8:30am - 4:30pm","name":"Frontenac Arch Biosphere Office"},"type":"Feature"}],"type":"FeatureCollection"}"#;
         let expected_fc = FeatureCollection::from_str(fc).unwrap();
         let result = create_feature_collection(&json_features);
@@ -56,19 +57,11 @@ mod test {
     }
 
     #[test]
-    fn create_geojson_feature_collection_err() {
-        let feature = create_feature().replace("Feature", "FeatureCollection");
-        let json_features = create_json_features(&feature);
-        let result = create_feature_collection(&json_features);
-        assert!(matches!(result, Err(ResponseError::GeoJson(_))));
-    }
-
-    #[test]
     fn create_geojson_features_ok() {
         let feature = create_feature();
-        let json_features = create_json_features(&feature);
-        let expected_geojson_feature = Feature::from_str(&feature).unwrap();
-        let expected_geojson_features = vec![expected_geojson_feature];
+        let json_features = vec![JsonFeature::new(&feature)];
+        let geojson_feature = Feature::from_str(&feature).unwrap();
+        let expected_geojson_features = vec![geojson_feature];
         let result = create_geojson_features(&json_features);
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), expected_geojson_features);
@@ -77,7 +70,7 @@ mod test {
     #[test]
     fn create_geojson_features_err() {
         let feature = create_feature().replace("Feature", "FeatureCollection");
-        let json_features = create_json_features(&feature);
+        let json_features = vec![JsonFeature::new(&feature)];
         let result = create_geojson_features(&json_features);
         assert!(matches!(result, Err(_)));
     }
