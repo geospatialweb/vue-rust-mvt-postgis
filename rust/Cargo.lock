@@ -1729,7 +1729,6 @@ dependencies = [
  "garde",
  "geojson",
  "jsonwebtoken",
- "once_cell",
  "openssl",
  "salvo",
  "serde",
