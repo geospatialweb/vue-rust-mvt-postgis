@@ -3,7 +3,7 @@
 use sqlx::Row;
 
 use super::auth::Credential;
-use super::database::get_pool;
+use super::database::set_pool;
 use super::geojson::JsonFeature;
 use super::handler::LayerParams;
 use super::password::HashedPassword;
@@ -11,6 +11,7 @@ use super::response::ResponseError;
 
 /// Return vector of JsonFeature structs.
 pub async fn get_json_features(params: &LayerParams) -> Result<Vec<JsonFeature>, ResponseError> {
+    let pool = set_pool().await?;
     let query = format!("
         SELECT ST_AsGeoJSON(feature.*)
         AS feature
@@ -19,20 +20,21 @@ pub async fn get_json_features(params: &LayerParams) -> Result<Vec<JsonFeature>,
         &params.columns,
         &params.table);
     let json_features = sqlx::query_as(&query)
-        .fetch_all(&get_pool().await?)
+        .fetch_all(&pool)
         .await?;
     Ok(json_features)
 }
 
 /// Return user.
 pub async fn get_user(username: &str) -> Result<String, ResponseError> {
+    let pool = set_pool().await?;
     let query = "
         SELECT username
         FROM users
         WHERE username = $1";
     let row = sqlx::query(query)
         .bind(username)
-        .fetch_one(&get_pool().await?)
+        .fetch_one(&pool)
         .await?;
     let username = row.get("username");
     Ok(username)
@@ -40,13 +42,14 @@ pub async fn get_user(username: &str) -> Result<String, ResponseError> {
 
 /// Delete user returning username.
 pub async fn delete_user(username: &str) -> Result<String, ResponseError> {
+    let pool = set_pool().await?;
     let query = "
         DELETE FROM users
         WHERE username = $1
         RETURNING username";
     let row = sqlx::query(query)
         .bind(username)
-        .fetch_one(&get_pool().await?)
+        .fetch_one(&pool)
         .await?;
     let username = row.get("username");
     Ok(username)
@@ -54,6 +57,7 @@ pub async fn delete_user(username: &str) -> Result<String, ResponseError> {
 
 /// Insert user returning username.
 pub async fn insert_user(username: &str, password: &HashedPassword) -> Result<String, ResponseError> {
+    let pool = set_pool().await?;
     let query = "
         INSERT INTO users (username, password)
         VALUES ($1, $2)
@@ -61,7 +65,7 @@ pub async fn insert_user(username: &str, password: &HashedPassword) -> Result<St
     let row = sqlx::query(query)
         .bind(username)
         .bind(password.as_str())
-        .fetch_one(&get_pool().await?)
+        .fetch_one(&pool)
         .await?;
     let username = row.get("username");
     Ok(username)
@@ -69,13 +73,14 @@ pub async fn insert_user(username: &str, password: &HashedPassword) -> Result<St
 
 /// Return HS256 hashed password.
 pub async fn get_password(username: &str) -> Result<Credential, ResponseError> {
+    let pool = set_pool().await?;
     let query = "
         SELECT password
         FROM users
         WHERE username = $1";
     let row = sqlx::query(query)
         .bind(username)
-        .fetch_one(&get_pool().await?)
+        .fetch_one(&pool)
         .await?;
     let hashed_password = HashedPassword::new(row.get("password"));
     let credential = Credential::new(&hashed_password);
@@ -84,6 +89,7 @@ pub async fn get_password(username: &str) -> Result<Credential, ResponseError> {
 
 /// Update HS256 hashed password returning username.
 pub async fn update_password(username: &str, password: &HashedPassword) -> Result<String, ResponseError> {
+    let pool = set_pool().await?;
     let query = "
         UPDATE users
         SET password = $2
@@ -92,7 +98,7 @@ pub async fn update_password(username: &str, password: &HashedPassword) -> Resul
     let row = sqlx::query(query)
         .bind(username)
         .bind(password.as_str())
-        .fetch_one(&get_pool().await?)
+        .fetch_one(&pool)
         .await?;
     let username = row.get("username");
     Ok(username)
@@ -161,7 +167,7 @@ mod test {
     #[tokio::test]
     async fn get_json_features_ok() {
         let feature = r#"{"type": "Feature", "geometry": {"type":"Point","coordinates":[-76.011422,44.384362]}, "properties": {"name": "Frontenac Arch Biosphere Office", "description": "19 Reynolds Road, Lansdowne, ON. Open Monday to Friday 8:30am - 4:30pm"}}"#;
-        let json_features = vec![JsonFeature { feature: String::from(feature) }];
+        let json_features = vec![JsonFeature::new(feature)];
         let columns = "name,description,geom";
         let table = "office";
         let params = LayerParams {
