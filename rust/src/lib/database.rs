@@ -3,12 +3,6 @@ use tracing::info;
 
 use super::env::Env;
 
-/// Get postgres connection pool.
-pub async fn get_pool() -> Result<PgPool, Error> {
-    let pool = set_pool().await?;
-    Ok(pool)
-}
-
 /// Set uri for postgres connection pool.
 pub async fn set_pool() -> Result<PgPool, Error> {
     let env = Env::get_env();
@@ -18,7 +12,7 @@ pub async fn set_pool() -> Result<PgPool, Error> {
 }
 
 /// Create postgres pool connection.
-pub async fn connect(uri: &str) -> Result<PgPool, Error> {
+async fn connect(uri: &str) -> Result<PgPool, Error> {
     let pool = PgPool::connect(uri).await?;
     info!("pool connection ok");
     Ok(pool)
