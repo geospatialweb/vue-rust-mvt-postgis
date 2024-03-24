@@ -1,6 +1,7 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
 use salvo::{
+    compression::{Compression, CompressionLevel},
     cors::{Cors, CorsHandler},
     http::Method,
     logging::Logger,
@@ -38,6 +39,7 @@ pub fn handle_cors() -> CorsHandler {
 pub fn new() -> Router {
     let env = Env::get_env();
     let handle_auth = auth::handle_auth();
+    let handle_compression = Compression::new().enable_brotli(CompressionLevel::Minsize);
     let handle_cors = handle_cors();
     let logger = Logger::new();
     Router::new()
@@ -48,6 +50,7 @@ pub fn new() -> Router {
                 .hoop(handle_auth)
                 .push(
                     Router::with_path(&env.geojson_endpoint)
+                        .hoop(handle_compression)
                         .get(handler::handle_get_geojson_feature_collection))
                 .push(
                     Router::with_path(&env.mapbox_access_token_endpoint)

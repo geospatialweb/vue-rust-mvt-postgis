@@ -145,7 +145,7 @@ version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "edcdbedc2236483ab103a53415653d6b4442ea6141baf1ffa85df29635e88436"
 dependencies = [
- "nix",
+ "nix 0.27.1",
  "rand",
 ]
 
@@ -177,6 +177,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "35636a1494ede3b646cc98f74f8e62c773a38a659ebc777a2cf26b9b74171df9"
 
 [[package]]
+name = "base64"
+version = "0.22.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9475866fec1451be56a3c2400fd081ff546538961565ccb5b7142cbd22bc7a51"
+
+[[package]]
 name = "base64ct"
 version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -188,7 +194,7 @@ version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "28d1c9c15093eb224f0baa400f38fcd713fc1391a6f1c389d886beef146d60a3"
 dependencies = [
- "base64",
+ "base64 0.21.5",
  "blowfish",
  "getrandom",
  "subtle",
@@ -294,6 +300,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
+name = "cfg_aliases"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fd16c4719339c4530435d38e511904438d07cce7950afa3718a84ac36c10e89e"
+
+[[package]]
 name = "chrono"
 version = "0.4.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -343,7 +355,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3cd91cf61412820176e137621345ee43b3f4423e589e7ae4e50d601d93e35ef8"
 dependencies = [
  "aes-gcm",
- "base64",
+ "base64 0.21.5",
  "hmac",
  "percent-encoding",
  "rand",
@@ -836,7 +848,7 @@ version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "322106e6bd0cba2d5ead589ddb8150a13d7c4217cf80d7c4f682ca994ccc6aa9"
 dependencies = [
- "base64",
+ "base64 0.21.5",
  "bytes",
  "headers-core",
  "http",
@@ -1098,7 +1110,7 @@ version = "9.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5c7ea04a7c5c055c175f189b6dc6ba036fd62306b58c66c9f6389036c503a3f4"
 dependencies = [
- "base64",
+ "base64 0.21.5",
  "js-sys",
  "pem",
  "ring",
@@ -1118,9 +1130,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.150"
+version = "0.2.153"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "89d92a4743f9a61002fae18374ed11e7973f530cb3a3255fb354818118b2203c"
+checksum = "9c198f91728a82281a64e1f4f9eeb25d82cb32a5de251c6bd1b5154d63a8e7bd"
 
 [[package]]
 name = "libm"
@@ -1254,6 +1266,18 @@ checksum = "2eb04e9c688eff1c89d72b407f168cf79bb9e867a9d3323ed6c01519eb9cc053"
 dependencies = [
  "bitflags 2.4.1",
  "cfg-if",
+ "libc",
+]
+
+[[package]]
+name = "nix"
+version = "0.28.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ab2156c4fce2f8df6c499cc1c763e4394b7482525bf2a9701c9d79d215f519e4"
+dependencies = [
+ "bitflags 2.4.1",
+ "cfg-if",
+ "cfg_aliases",
  "libc",
 ]
 
@@ -1462,7 +1486,7 @@ version = "3.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1b8fcc794035347fb64beda2d3b462595dd2753e3f268d89c5aae77e8cf2c310"
 dependencies = [
- "base64",
+ "base64 0.21.5",
  "serde",
 ]
 
@@ -1803,7 +1827,7 @@ version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1c74cae0a4cf6ccbbf5f359f08efdf8ee7e1dc532573bf0db71968cb56b1448c"
 dependencies = [
- "base64",
+ "base64 0.21.5",
 ]
 
 [[package]]
@@ -1812,7 +1836,7 @@ version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "35e4980fa29e4c4b212ffb3db068a564cbf560e51d3944b7c88bd8bf5bec64f4"
 dependencies = [
- "base64",
+ "base64 0.21.5",
  "rustls-pki-types",
 ]
 
@@ -1861,10 +1885,29 @@ version = "0.66.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cc33c203d2cd7c5507b807ad94a919c80ebd98f16e1d7e89e77877d8f757bd62"
 dependencies = [
+ "salvo-compression",
  "salvo-cors",
  "salvo-jwt-auth",
  "salvo_core",
  "salvo_extra",
+]
+
+[[package]]
+name = "salvo-compression"
+version = "0.66.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9b8dcb449d64baf27e958655ce38b1a55c80fabe70e94ff4b3ed26de59f7db99"
+dependencies = [
+ "brotli",
+ "bytes",
+ "flate2",
+ "futures-util",
+ "indexmap",
+ "salvo_core",
+ "tokio",
+ "tokio-util",
+ "tracing",
+ "zstd",
 ]
 
 [[package]]
@@ -1884,7 +1927,7 @@ version = "0.66.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ee7dcd03038e0ac03ebe5a44bcf1ca192ba541573c01f0d1c28325e60eba085d"
 dependencies = [
- "base64",
+ "base64 0.21.5",
  "bytes",
  "http-body-util",
  "hyper-rustls",
@@ -1900,9 +1943,9 @@ dependencies = [
 
 [[package]]
 name = "salvo-serde-util"
-version = "0.66.0"
+version = "0.66.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ab0b4cdd2008ddaa2ff3d7438e0929200bc7631afd0762704b53f2cd23e3847"
+checksum = "9bdc633be44bb61b29e544c6c17c03ae534a3ffbba4dfb429d2e25a0bce6e7b8"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -1912,12 +1955,12 @@ dependencies = [
 
 [[package]]
 name = "salvo_core"
-version = "0.66.0"
+version = "0.66.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "15ef60ced9a068d0ef57bad6073bae17e382d5261de9774d4a3fe962ad2d9202"
+checksum = "8f35be8857cb2be75e021954f1e70cd6e069e9357725f0958dd0310c3e2d28cd"
 dependencies = [
  "async-trait",
- "base64",
+ "base64 0.22.0",
  "brotli",
  "bytes",
  "cookie",
@@ -1937,7 +1980,7 @@ dependencies = [
  "mime-infer",
  "multer",
  "multimap",
- "nix",
+ "nix 0.28.0",
  "once_cell",
  "parking_lot",
  "percent-encoding",
@@ -1967,7 +2010,7 @@ version = "0.66.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7e5590043d5d0a0b526cb1f25e22ec45d3b702773b79d5c2e6413fc7a1eae98a"
 dependencies = [
- "base64",
+ "base64 0.21.5",
  "etag",
  "futures-util",
  "hyper",
@@ -1983,9 +2026,9 @@ dependencies = [
 
 [[package]]
 name = "salvo_macros"
-version = "0.66.0"
+version = "0.66.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b4a6fcfc71979c016cd57a63c459f25d41b59c57c3c788b01d86c39b41c2bc3"
+checksum = "5b2272314d94bcb20a84cb0cbb8f2b8dbe283beaacfc5540ba7c759101197830"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -2324,7 +2367,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e37195395df71fd068f6e2082247891bc11e3289624bbc776a0cdfa1ca7f1ea4"
 dependencies = [
  "atoi",
- "base64",
+ "base64 0.21.5",
  "bitflags 2.4.1",
  "byteorder",
  "bytes",
@@ -2366,7 +2409,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d6ac0ac3b7ccd10cc96c7ab29791a7dd236bd94021f31eec7ba3d46a74aa1c24"
 dependencies = [
  "atoi",
- "base64",
+ "base64 0.21.5",
  "bitflags 2.4.1",
  "byteorder",
  "crc",
