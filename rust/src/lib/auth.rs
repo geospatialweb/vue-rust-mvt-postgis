@@ -34,45 +34,61 @@ impl Debug for Credential {
     }
 }
 
-/// Auth jwt token and expiry.
+/// Auth JWT token and expiry.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Jwt {
-    pub token: String,
     expiry: i64,
+    pub token: String,
 }
-
-/// Jwt claims issuer, subject and expiry.
+impl Jwt {
+    /// Create new JWT.
+    fn new(expiry: &i64, token: &str) -> Self {
+        Self {
+            expiry: expiry.to_owned(),
+            token: token.to_owned(),
+        }
+    }
+}
+/// JWT claims issuer, subject and expiry.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct JwtClaims {
+    exp: i64,
     iss: String,
     sub: String,
-    exp: i64,
+}
+impl JwtClaims {
+    /// Create new JwtClaims.
+    fn new(exp: &i64, iss: &str, sub: &str) -> Self {
+        Self {
+            exp: exp.to_owned(),
+            iss: iss.to_owned(),
+            sub: sub.to_owned(),
+        }
+    }
 }
 
 /// Generate HS256 hashed password from text password.
 pub fn generate_hashed_password_from_password(password: &TextPassword) -> Result<HashedPassword, ResponseError> {
     let hashed_password = bcrypt::hash(password.as_str(), bcrypt::DEFAULT_COST)?;
-    Ok(HashedPassword::new(&hashed_password))
+    let hashed_password = HashedPassword::new(&hashed_password);
+    Ok(hashed_password)
 }
 
-/// Return JWT token and expiry.
+/// Return JWT HS256 token and expiry.
 pub fn get_jwt(username: &str) -> Result<Jwt, ResponseError> {
     let env = Env::get_env();
     let minutes = env.jwt_claims_expiry.parse::<i64>()?;
     let expiry = (Utc::now() + Duration::minutes(minutes)).timestamp();
     let issuer = &env.jwt_claims_issuer;
+    let jwt_claims = JwtClaims::new(&expiry, issuer, username);
     let secret = env.jwt_secret.as_bytes();
-    let jwt_claims = JwtClaims {
-        iss: issuer.to_owned(),
-        sub: username.to_owned(),
-        exp: expiry,
-    };
     let token = jsonwebtoken::encode(
-        &Header::default(), // HS256
+        &Header::default(),
         &jwt_claims,
         &EncodingKey::from_secret(secret),
     )?;
-    Ok(Jwt { token, expiry })
+    let jwt = Jwt::new(&expiry, &token);
+    Ok(jwt)
 }
 
 /// Router authentication middleware.
