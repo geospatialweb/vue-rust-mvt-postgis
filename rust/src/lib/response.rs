@@ -31,11 +31,8 @@ pub struct ResponsePayload<T> {
 }
 impl<T> ResponsePayload<T> {
     /// Create new ResponsePayload.
-    pub fn new(payload: ResponseType<T>, status_code: &StatusCode) -> Self {
-        Self {
-            payload,
-            status_code: status_code.to_owned(),
-        }
+    pub fn new(payload: ResponseType<T>, status_code: StatusCode) -> Self {
+        Self { payload, status_code }
     }
 }
 #[rustfmt::skip]
