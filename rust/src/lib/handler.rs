@@ -12,10 +12,10 @@ use salvo::{
 use serde::Deserialize;
 
 use super::auth::{self, Jwt};
-use super::env::Env;
 use super::model::User;
 use super::query;
 use super::response::{ResponseError, ResponsePayload};
+use super::router::MapboxAccessToken;
 use super::validation;
 
 /// URL query params.
@@ -52,8 +52,8 @@ pub async fn handle_get_geojson_feature_collection(
 pub async fn handle_get_mapbox_access_token(depot: &mut Depot) -> Result<ResponsePayload<String>, ResponseError> {
     match depot.jwt_auth_state() {
         Authorized => {
-            let env = Env::get_env();
-            let res = ResponsePayload::new(env.mapbox_access_token.clone().into(), StatusCode::OK);
+            let mapbox = depot.obtain::<MapboxAccessToken>().unwrap();
+            let res = ResponsePayload::new(mapbox.access_token.clone().into(), StatusCode::OK);
             Ok(res)
         }
         Unauthorized => Err(ResponseError::JwtUnauthorized),

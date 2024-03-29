@@ -1,6 +1,7 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
 use salvo::{
+    affix,
     compression::{Compression, CompressionLevel},
     cors::{Cors, CorsHandler},
     http::Method,
@@ -11,6 +12,19 @@ use salvo::{
 use super::auth;
 use super::env::Env;
 use super::handler;
+
+/// Mapbox access token stored in .env file.
+#[derive(Debug, Clone)]
+pub struct MapboxAccessToken {
+    pub access_token: String,
+}
+impl MapboxAccessToken {
+    fn new(access_token: &str) -> Self {
+        Self {
+            access_token: access_token.to_owned(),
+        }
+    }
+}
 
 /// Create new CORS handler.
 pub fn handle_cors() -> CorsHandler {
@@ -54,6 +68,7 @@ pub fn new() -> Router {
                         .get(handler::handle_get_geojson_feature_collection))
                 .push(
                     Router::with_path(&env.mapbox_access_token_endpoint)
+                        .hoop(affix::inject(MapboxAccessToken::new(&env.mapbox_access_token)))
                         .get(handler::handle_get_mapbox_access_token))
                 .push(
                     Router::with_path(&env.get_user_endpoint)
