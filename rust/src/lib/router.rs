@@ -2,12 +2,14 @@
 
 use salvo::{
     affix,
+    cache::{Cache, MokaStore, RequestIssuer},
     compression::{Compression, CompressionLevel},
     cors::{Cors, CorsHandler},
     http::Method,
     logging::Logger,
     routing::Router,
 };
+use std::time::Duration;
 
 use super::auth;
 use super::env::Env;
@@ -19,11 +21,29 @@ pub struct MapboxAccessToken {
     pub access_token: String,
 }
 impl MapboxAccessToken {
+    /// Create new MapboxAccessToken.
     fn new(access_token: &str) -> Self {
         Self {
             access_token: access_token.to_owned(),
         }
     }
+}
+
+/// Create new compression handler.
+fn handle_compression() -> Compression {
+    Compression::new()
+        .enable_gzip(CompressionLevel::Minsize)
+}
+
+/// Create new cache handler.
+fn handle_cache(cache_ttl: &str) -> Cache<MokaStore<String>, RequestIssuer> {
+    let secs = cache_ttl.parse::<u64>().unwrap();
+    Cache::new(
+        MokaStore::builder()
+            .time_to_live(Duration::from_secs(secs))
+            .build(),
+        RequestIssuer::default(),
+    )
 }
 
 /// Create new CORS handler.
@@ -53,15 +73,17 @@ pub fn handle_cors() -> CorsHandler {
 pub fn new() -> Router {
     let env = Env::get_env();
     let handle_auth = auth::handle_auth();
-    let handle_compression = Compression::new().enable_brotli(CompressionLevel::Minsize);
+    let handle_cache = handle_cache(&env.cache_ttl);
+    let handle_compression = handle_compression();
     let handle_cors = handle_cors();
-    let logger = Logger::new();
+    let handle_logger = Logger::new();
     Router::new()
         .hoop(handle_cors)
-        .hoop(logger)
+        .hoop(handle_logger)
         .push(
             Router::with_path(&env.api_path_prefix)
                 .hoop(handle_auth)
+                .hoop(handle_cache)
                 .push(
                     Router::with_path(&env.geojson_endpoint)
                         .hoop(handle_compression)
