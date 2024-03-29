@@ -15,10 +15,10 @@ pub struct User {
 }
 impl User {
     /// Create new User.
-    pub fn new(username: &str, password: &Option<TextPassword>) -> Self {
+    pub fn new(username: &str, password: &Option<&TextPassword>) -> Self {
         Self {
             username: username.to_owned(),
-            password: password.to_owned(),
+            password: password.cloned(),
         }
     }
 }
@@ -45,7 +45,7 @@ mod test {
             username: String::from(username),
             password: Some(text_password.clone()),
         };
-        let result = User::new(username, &Some(text_password.clone()));
+        let result = User::new(username, &Some(&text_password));
         assert_eq!(result, user);
     }
 

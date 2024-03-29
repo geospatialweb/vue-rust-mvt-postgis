@@ -42,7 +42,7 @@ mod test {
         let username = "foo@bar.com";
         let password = "secretPassword";
         let text_password = TextPassword::new(&String::from(password));
-        let user = User::new(username, &Some(text_password));
+        let user = User::new(username, &Some(&text_password));
         let result = validate_user(&user);
         assert!(result.is_ok());
     }
@@ -52,7 +52,7 @@ mod test {
         let username = "foobar.com"; // must be email format
         let password = "secretPassword";
         let text_password = TextPassword::new(&String::from(password));
-        let user = User::new(username, &Some(text_password));
+        let user = User::new(username, &Some(&text_password));
         let result = validate_user(&user);
         assert!(matches!(result, Err(ResponseError::UserValidation)));
     }
