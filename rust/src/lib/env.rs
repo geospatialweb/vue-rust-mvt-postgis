@@ -12,6 +12,7 @@ pub struct Env {
     pub app_mode: String,
     pub app_mode_dev: String,
     pub app_mode_prod: String,
+    pub cache_ttl: String,
     pub credentials_path_prefix: String,
     pub delete_user_endpoint: String,
     pub geojson_endpoint: String,
