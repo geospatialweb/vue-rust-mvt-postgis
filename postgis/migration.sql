@@ -4,7 +4,7 @@ SET TIME ZONE 'America/New_York';
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username TEXT NOT NULL,
-  password CHAR(60) NOT NULL,
+  password TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE users ADD CONSTRAINT users_username_unique UNIQUE (username);
@@ -12,7 +12,7 @@ CREATE INDEX users_username_idx ON users (username);
 INSERT into users (username, password)
 VALUES (
   'johncampbell@geospatialweb.ca',
-  '$2a$12$OlOdf9fWqVQ/dvBh1yJkOesvDffclPIF1ya2Dpm1mxdGk8QpdscNO'
+  '$argon2id$v=19$m=19456,t=2,p=1$TkhkdE1tcHpNalIyWTJocw$lsAnz91G8T+cg+/JWlbrG7hVMq0J709dGOhsz53gpkw'
 );
 
 CREATE TABLE biosphere (
