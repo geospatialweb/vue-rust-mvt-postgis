@@ -1,3 +1,4 @@
+use argon2::{self, Config};
 use chrono::{Duration, Utc};
 use jsonwebtoken::{EncodingKey, Header};
 use salvo::{
@@ -16,6 +17,7 @@ use super::response::ResponseError;
 pub struct Credential {
     pub hashed_password: HashedPassword,
 }
+
 impl Credential {
     /// Create new Credential.
     pub fn new(hashed_password: &HashedPassword) -> Self {
@@ -24,6 +26,7 @@ impl Credential {
         }
     }
 }
+
 // Manually implement Debug to prevent password leakage into logs.
 #[rustfmt::skip]
 impl Debug for Credential {
@@ -40,6 +43,7 @@ pub struct Jwt {
     expiry: i64,
     pub token: String,
 }
+
 impl Jwt {
     /// Create new JWT.
     fn new(expiry: &i64, token: &str) -> Self {
@@ -56,6 +60,7 @@ pub struct JwtClaims {
     iss: String,
     sub: String,
 }
+
 impl JwtClaims {
     /// Create new JwtClaims.
     fn new(exp: &i64, iss: &str, sub: &str) -> Self {
@@ -69,8 +74,11 @@ impl JwtClaims {
 
 /// Generate HS256 hashed password from text password.
 pub fn generate_hashed_password_from_password(password: &TextPassword) -> Result<HashedPassword, ResponseError> {
-    let hashed_password = bcrypt::hash(password.as_str(), bcrypt::DEFAULT_COST)?;
-    let hashed_password = HashedPassword::new(&hashed_password);
+    let env = Env::get_env();
+    let config = Config::default();
+    let password = password.as_str().as_bytes();
+    let salt = env.argon2_hash_salt.as_bytes();
+    let hashed_password = HashedPassword::new(&argon2::hash_encoded(password, salt, &config)?);
     Ok(hashed_password)
 }
 
@@ -105,7 +113,7 @@ pub fn verify_password_and_hashed_password(
     password: &TextPassword,
     hashed_password: &HashedPassword,
 ) -> Result<(), ResponseError> {
-    bcrypt::verify(password.as_str(), hashed_password.as_str())?;
+    argon2::verify_encoded(hashed_password.as_str(), password.as_str().as_bytes())?;
     Ok(())
 }
 
@@ -149,6 +157,6 @@ mod test {
         let text_password = TextPassword::new(password);
         let hashed_password = "$2a$12$BSul3QNaH9FahdqlxfnejuM7Y0Ptm8q9kcBSpuJqWjS0j4DCwTdzb";
         let result = verify_password_and_hashed_password(&text_password, &HashedPassword::new(hashed_password));
-        assert!(matches!(result, Err(ResponseError::Bcrypt(_))));
+        assert!(matches!(result, Err(ResponseError::Argon2(_))));
     }
 }
