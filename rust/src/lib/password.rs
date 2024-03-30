@@ -5,6 +5,7 @@ use std::fmt::{Debug, Formatter, Result};
 /// Plain text password.
 #[derive(Clone, Deserialize, PartialEq, Serialize, Validate)]
 pub struct TextPassword(#[garde(ascii)] String);
+
 impl TextPassword {
     /// Create new TextPassword.
     pub fn new(password: &str) -> Self {
@@ -16,6 +17,7 @@ impl TextPassword {
         self.0.as_str()
     }
 }
+
 // Manually implement Debug to prevent password leakage into logs.
 #[rustfmt::skip]
 impl Debug for TextPassword {
@@ -29,6 +31,7 @@ impl Debug for TextPassword {
 /// HS256 hashed password.
 #[derive(Clone, PartialEq)]
 pub struct HashedPassword(String);
+
 impl HashedPassword {
     /// Create new HashedPassword.
     pub fn new(password: &str) -> Self {
@@ -40,6 +43,7 @@ impl HashedPassword {
         self.0.as_str()
     }
 }
+
 // Manually implement Debug to prevent password leakage into logs.
 #[rustfmt::skip]
 impl Debug for HashedPassword {

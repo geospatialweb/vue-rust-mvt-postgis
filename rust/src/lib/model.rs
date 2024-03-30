@@ -13,6 +13,7 @@ pub struct User {
     #[garde(skip)]
     pub password: Option<TextPassword>,
 }
+
 impl User {
     /// Create new User.
     pub fn new(username: &str, password: &Option<&TextPassword>) -> Self {
@@ -22,6 +23,7 @@ impl User {
         }
     }
 }
+
 // Manually implement Debug to prevent password leakage into logs.
 #[rustfmt::skip]
 impl Debug for User {

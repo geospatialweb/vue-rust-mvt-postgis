@@ -20,6 +20,7 @@ use super::handler;
 pub struct MapboxAccessToken {
     pub access_token: String,
 }
+
 impl MapboxAccessToken {
     /// Create new MapboxAccessToken.
     fn new(access_token: &str) -> Self {
