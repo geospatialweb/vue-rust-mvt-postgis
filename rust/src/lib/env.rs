@@ -12,6 +12,7 @@ pub struct Env {
     pub app_mode: String,
     pub app_mode_dev: String,
     pub app_mode_prod: String,
+    pub argon2_hash_salt: String,
     pub cache_ttl: String,
     pub credentials_path_prefix: String,
     pub delete_user_endpoint: String,
@@ -34,6 +35,7 @@ pub struct Env {
     pub update_password_endpoint: String,
     pub validate_user_endpoint: String,
 }
+
 impl Env {
     /// Get env variables from static ENV and return Env struct static lifetime reference.
     pub fn get_env() -> &'static Self {
