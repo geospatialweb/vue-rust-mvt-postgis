@@ -1,4 +1,4 @@
-use bcrypt::BcryptError;
+use argon2::Error as Argon2Error;
 use geojson::Error as GeoJsonError;
 use jsonwebtoken::errors::Error as JwtError;
 use salvo::{
@@ -47,8 +47,8 @@ impl<T: Serialize> Scribe for ResponsePayload<T> {
 /// Response error types.
 #[derive(Debug, Error)]
 pub enum ResponseError {
-    #[error("bcrypt error: {0}")]
-    Bcrypt(#[from] BcryptError),
+    #[error("argon2 error: {0}")]
+    Argon2(#[from] Argon2Error),
 
     #[error("database error: {0}")]
     Database(#[from] DatabaseError),
@@ -77,11 +77,12 @@ pub enum ResponseError {
     #[error("user query params validation error")]
     UserValidation,
 }
+
 impl ResponseError {
     /// Set response status code for each response error type.
     fn as_status_code(&self) -> StatusCode {
         match self {
-            Self::Bcrypt(_) => StatusCode::UNAUTHORIZED,
+            Self::Argon2(_) => StatusCode::UNAUTHORIZED,
             Self::Database(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::GeoJson(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::Jwt(_) => StatusCode::UNAUTHORIZED,
@@ -94,6 +95,7 @@ impl ResponseError {
         }
     }
 }
+
 #[rustfmt::skip]
 impl Scribe for ResponseError {
     /// Write response status code and response error message.
