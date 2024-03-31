@@ -1,7 +1,6 @@
 use geojson::{Error, Feature, FeatureCollection};
 use sqlx::FromRow;
 use std::str::FromStr;
-use tracing::warn;
 
 use super::response::ResponseError;
 
@@ -13,23 +12,13 @@ pub struct JsonFeature {
 
 /// Create GeoJSON feature collection from a vector of GeoJSON features.
 pub fn create_feature_collection(json_features: &[JsonFeature]) -> Result<FeatureCollection, ResponseError> {
-    if !json_features.is_empty() {
-        let features = create_geojson_features(json_features)?;
-        let fc = FeatureCollection {
-            bbox: None,
-            features,
-            foreign_members: None,
-        };
-        Ok(fc)
-    } else {
-        let fc = FeatureCollection {
-            bbox: None,
-            features: vec![],
-            foreign_members: None,
-        };
-        warn!("no json features returned from sql query");
-        Ok(fc)
-    }
+    let features = create_geojson_features(json_features)?;
+    let fc = FeatureCollection {
+        bbox: None,
+        features,
+        foreign_members: None,
+    };
+    Ok(fc)
 }
 
 /// Create vector of GeoJSON features from a slice of json feature strings formatted as a GeoJSON feature.
@@ -65,20 +54,6 @@ mod test {
         let fc = r#"{"features":[{"geometry":{"coordinates":[-76.011422,44.384362],"type":"Point"},"properties":{"description":"19 Reynolds Road, Lansdowne, ON. Open Monday to Friday 8:30am - 4:30pm","name":"Frontenac Arch Biosphere Office"},"type":"Feature"}],"type":"FeatureCollection"}"#;
         let expected_fc = FeatureCollection::from_str(fc).unwrap();
         let result = create_feature_collection(&json_features);
-        assert!(result.is_ok());
-        assert_eq!(result.unwrap(), expected_fc);
-    }
-
-    #[test]
-    fn create_geojson_feature_collection_no_features() {
-        let json_features = vec![];
-        let expected_fc = FeatureCollection {
-            bbox: None,
-            features: vec![],
-            foreign_members: None,
-        };
-        let result = create_feature_collection(&json_features);
-        assert!(result.is_ok());
         assert_eq!(result.unwrap(), expected_fc);
     }
 
