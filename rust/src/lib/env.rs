@@ -1,9 +1,9 @@
 use envy::Error;
+use once_cell::sync::OnceCell;
 use serde::Deserialize;
-use tokio::sync::OnceCell;
 use tracing::info;
 
-static ENV: OnceCell<Env> = OnceCell::const_new();
+static ENV: OnceCell<Env> = OnceCell::new();
 
 /// Environment variables parsed from .env file.
 #[derive(Debug, Deserialize)]
