@@ -14,21 +14,7 @@ use std::time::Duration;
 use super::auth;
 use super::env::Env;
 use super::handler;
-
-/// Mapbox access token stored in .env file.
-#[derive(Debug, Clone)]
-pub struct MapboxAccessToken {
-    pub access_token: String,
-}
-
-impl MapboxAccessToken {
-    /// Create new MapboxAccessToken.
-    fn new(access_token: &str) -> Self {
-        Self {
-            access_token: access_token.to_owned(),
-        }
-    }
-}
+use super::mapbox::MapboxAccessToken;
 
 /// Create new compression handler.
 fn handle_compression() -> Compression {

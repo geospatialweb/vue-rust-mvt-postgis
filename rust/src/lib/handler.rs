@@ -1,4 +1,3 @@
-use garde::Validate;
 use geojson::FeatureCollection;
 use salvo::{
     handler,
@@ -9,23 +8,14 @@ use salvo::{
     },
     Depot,
 };
-use serde::Deserialize;
 
 use super::auth::{self, Jwt};
+use super::mapbox::MapboxAccessToken;
 use super::model::User;
 use super::query;
+use super::request::LayerParams;
 use super::response::{ResponseError, ResponsePayload};
-use super::router::MapboxAccessToken;
 use super::validation;
-
-/// URL query params.
-#[derive(Debug, Deserialize, Validate)]
-pub struct LayerParams {
-    #[garde(ascii)]
-    pub columns: String,
-    #[garde(ascii)]
-    pub table: String,
-}
 
 /// Return GeoJSON feature collection.
 #[handler]

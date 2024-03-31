@@ -1,7 +1,7 @@
 use garde::Validate;
 
-use super::handler::LayerParams;
 use super::model::User;
+use super::request::LayerParams;
 use super::response::ResponseError;
 
 /// Validate layer query params with `garde` field constraints in LayerParams struct.
