@@ -1916,6 +1916,7 @@ dependencies = [
  "garde",
  "geojson",
  "jsonwebtoken",
+ "once_cell",
  "openssl",
  "rust-argon2",
  "salvo",
