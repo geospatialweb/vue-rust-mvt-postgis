@@ -4,7 +4,6 @@
   background-color: var(--light-taupe);
   border: var(--thick-grey-border);
   border-radius: var(--border-radius);
-  cursor: pointer;
   font-size: 2.1rem;
   line-height: 1.4;
   padding: 1rem 1.5rem;
@@ -15,6 +14,8 @@
 .hexagonui button {
   background-color: var(--white);
   border: var(--thick-grey-border);
+  border-radius: var(--border-radius);
+  cursor: pointer;
   height: 4.3rem;
   margin-top: 0.9rem;
   text-align: center;
@@ -46,7 +47,6 @@
 }
 
 .hexagonui label.mouseout {
-  cursor: pointer;
   text-shadow: var(--cream-text-shadow);
 }
 

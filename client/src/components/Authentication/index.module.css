@@ -1,7 +1,6 @@
 .credentials {
   -webkit-animation: fade-in 1s ease-out forwards;
   animation: fade-in 1s ease-out forwards;
-  cursor: default;
   left: 50%;
   position: absolute;
   top: 50%;
@@ -14,7 +13,6 @@
   border: var(--thick-grey-border);
   border-radius: var(--border-radius);
   color: var(--white);
-  cursor: pointer;
   left: 50%;
   padding: 1rem 0;
   position: absolute;
@@ -61,6 +59,7 @@
 }
 
 .credentials h1 {
+  cursor: default;
   font-size: 2rem;
   font-weight: bold;
   margin-top: 0.5rem;
@@ -81,7 +80,6 @@
   border: var(--thick-grey-border);
   border-radius: var(--border-radius);
   color: var(--white);
-  cursor: pointer;
   left: 50%;
   padding: 1rem 0;
   position: absolute;
