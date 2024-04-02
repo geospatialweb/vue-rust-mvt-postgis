@@ -80,6 +80,7 @@ export default defineComponent({
                   name="password"
                   type="password"
                   autocomplete="off"
+                  minlength="8"
                   placeholder="Enter Password"
                   required
                 />
