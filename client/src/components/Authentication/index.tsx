@@ -72,6 +72,7 @@ export default defineComponent({
                   name="password"
                   type="password"
                   autocomplete="off"
+                  minlength="8"
                   value={password}
                   required />
               ) : (
