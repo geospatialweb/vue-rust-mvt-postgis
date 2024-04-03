@@ -13,7 +13,7 @@ async fn main() {
     if let Err(err) = Env::set_env() {
         return error!("env error: {}", &err);
     }
-    if let Err(err) = database::get_pool().await {
+    if let Err(err) = database::set_pool().await {
         return error!("database pool connection error: {}", &err);
     }
     if let Err(err) = server::set_service().await {

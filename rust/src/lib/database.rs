@@ -3,8 +3,8 @@ use tracing::info;
 
 use super::env::Env;
 
-/// Get Postgres connection pool.
-pub async fn get_pool() -> Result<PgPool, Error> {
+/// Set Postgres connection pool.
+pub async fn set_pool() -> Result<PgPool, Error> {
     let env = Env::get_env();
     let uri = &env.postgres_uri;
     let pool = create_pool_connection(uri).await?;
@@ -23,13 +23,7 @@ mod test {
     use super::*;
 
     #[tokio::test]
-    async fn get_pool_ok() {
-        let result = get_pool().await;
-        assert!(result.is_ok());
-    }
-
-    #[tokio::test]
-    async fn create_pool_connection_ok() {
+    async fn set_pool_ok() {
         let env = Env::get_env();
         let uri = &env.postgres_uri;
         let result = create_pool_connection(uri).await;

@@ -3,7 +3,7 @@
 use sqlx::Row;
 
 use super::auth::Credential;
-use super::database::get_pool;
+use super::database::set_pool;
 use super::geojson::JsonFeature;
 use super::password::HashedPassword;
 use super::request::LayerParams;
@@ -11,7 +11,7 @@ use super::response::ResponseError;
 
 /// Return vector of JsonFeature structs.
 pub async fn get_json_features(params: &LayerParams) -> Result<Vec<JsonFeature>, ResponseError> {
-    let pool = get_pool().await?;
+    let pool = set_pool().await?;
     let query = format!("
         SELECT ST_AsGeoJSON(feature.*)
         AS feature
@@ -27,7 +27,7 @@ pub async fn get_json_features(params: &LayerParams) -> Result<Vec<JsonFeature>,
 
 /// Return user.
 pub async fn get_user(username: &str) -> Result<String, ResponseError> {
-    let pool = get_pool().await?;
+    let pool = set_pool().await?;
     let query = "
         SELECT username
         FROM users
@@ -42,7 +42,7 @@ pub async fn get_user(username: &str) -> Result<String, ResponseError> {
 
 /// Delete user returning username.
 pub async fn delete_user(username: &str) -> Result<String, ResponseError> {
-    let pool = get_pool().await?;
+    let pool = set_pool().await?;
     let query = "
         DELETE FROM users
         WHERE username = $1
@@ -57,7 +57,7 @@ pub async fn delete_user(username: &str) -> Result<String, ResponseError> {
 
 /// Insert user returning username.
 pub async fn insert_user(username: &str, password: &HashedPassword) -> Result<String, ResponseError> {
-    let pool = get_pool().await?;
+    let pool = set_pool().await?;
     let query = "
         INSERT INTO users (username, password)
         VALUES ($1, $2)
@@ -73,7 +73,7 @@ pub async fn insert_user(username: &str, password: &HashedPassword) -> Result<St
 
 /// Return HS256 hashed password.
 pub async fn get_password(username: &str) -> Result<Credential, ResponseError> {
-    let pool = get_pool().await?;
+    let pool = set_pool().await?;
     let query = "
         SELECT password
         FROM users
@@ -89,7 +89,7 @@ pub async fn get_password(username: &str) -> Result<Credential, ResponseError> {
 
 /// Update HS256 hashed password returning username.
 pub async fn update_password(username: &str, password: &HashedPassword) -> Result<String, ResponseError> {
-    let pool = get_pool().await?;
+    let pool = set_pool().await?;
     let query = "
         UPDATE users
         SET password = $2
