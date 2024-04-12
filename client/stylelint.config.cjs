@@ -6,6 +6,7 @@ module.exports = {
   ],
   rules: {
     'at-rule-no-vendor-prefix': null,
-    'property-no-vendor-prefix': null
+    'property-no-vendor-prefix': null,
+    'selector-class-pattern': ['[a-z_]']
   }
 }
