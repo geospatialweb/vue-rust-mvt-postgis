@@ -22,11 +22,11 @@ export default class LayerElementService {
   }
 
   get layerElementsState() {
-    return <ILayerElement[]>this.#storeService.getState(this.#storeStates.LAYER_ELEMENTS)
+    return <ILayerElement[]>this.#storeService.getStoreState(this.#storeStates.LAYER_ELEMENTS)
   }
 
   set #layerElementsState(state: ILayerElement[]) {
-    this.#storeService.setState(this.#storeStates.LAYER_ELEMENTS, state)
+    this.#storeService.setStoreState(this.#storeStates.LAYER_ELEMENTS, state)
   }
 
   displayLayerElement(id: LayerId): void {
@@ -34,14 +34,13 @@ export default class LayerElementService {
   }
 
   #createLayerElementsHashmap(): void {
-    const { BIOSPHERE, DECKGL, OFFICE, PLACES, SATELLITE, TRAILS } = this.#layerId
     this.#layerElementsHashmap = {
-      [BIOSPHERE]: this.#layer,
-      [DECKGL]: this.#deckgl,
-      [OFFICE]: this.#marker,
-      [PLACES]: this.#marker,
-      [SATELLITE]: this.#satellite,
-      [TRAILS]: this.#layer
+      [this.#layerId.BIOSPHERE]: this.#layer,
+      [this.#layerId.DECKGL]: this.#deckgl,
+      [this.#layerId.OFFICE]: this.#marker,
+      [this.#layerId.PLACES]: this.#marker,
+      [this.#layerId.SATELLITE]: this.#satellite,
+      [this.#layerId.TRAILS]: this.#layer
     }
   }
 

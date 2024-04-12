@@ -20,11 +20,11 @@ export default class AppService {
   }
 
   get appState() {
-    return <IApp>this.#storeService.getState(this.#storeStates.APP)
+    return <IApp>this.#storeService.getStoreState(this.#storeStates.APP)
   }
 
   set #appState(state: IApp) {
-    this.#storeService.setState(this.#storeStates.APP, state)
+    this.#storeService.setStoreState(this.#storeStates.APP, state)
   }
 
   setInitialZoom(): void {

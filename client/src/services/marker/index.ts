@@ -20,11 +20,11 @@ export default class MarkerService {
   #storeStates: IStoreStates = StoreStates
 
   get #markerVisibilityState() {
-    return <IMarkerVisibility>this.#storeService.getState(this.#storeStates.MARKER_VISIBILITY)
+    return <IMarkerVisibility>this.#storeService.getStoreState(this.#storeStates.MARKER_VISIBILITY)
   }
 
   set #markerVisibilityState(state: IMarkerVisibility) {
-    this.#storeService.setState(this.#storeStates.MARKER_VISIBILITY, state)
+    this.#storeService.setStoreState(this.#storeStates.MARKER_VISIBILITY, state)
   }
 
   setHiddenMarkersVisibility(): void {

@@ -52,12 +52,12 @@ export default class StoreService {
     this.#defineUseStore()
   }
 
-  getState(id: string): StoreState {
-    return this.#useStore().getState(id)
+  getStoreState(id: string): StoreState {
+    return this.#useStore().getStoreState(id)
   }
 
-  setState(id: string, state: StoreState): void {
-    this.#useStore().setState(id, state)
+  setStoreState(id: string, state: StoreState): void {
+    this.#useStore().setStoreState(id, state)
   }
 
   #defineUseStore(): void {
@@ -77,12 +77,12 @@ export default class StoreService {
         modal: this.#modal
       }),
       actions: {
-        setState(id: string, state: StoreState): void {
+        setStoreState(id: string, state: StoreState): void {
           this.$patch({ [id]: cloneDeep(state) })
         }
       },
       getters: {
-        getState: (state: IStoreState) => {
+        getStoreState: (state: IStoreState) => {
           return (id: string): StoreState => <StoreState>cloneDeep(state[id as keyof IStoreState])
         }
       }

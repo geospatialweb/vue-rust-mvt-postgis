@@ -19,6 +19,14 @@ export enum LayerId {
   TRAILS = 'trails'
 }
 
+export enum Route {
+  DECKGL = 'deckgl',
+  LOGIN = 'login',
+  MAPBOX = 'mapbox',
+  PAGE_NOT_FOUND = 'pageNotFound',
+  REGISTER = 'register'
+}
+
 export enum StoreStates {
   APP = 'app',
   CREDENTIALS = 'credentials',

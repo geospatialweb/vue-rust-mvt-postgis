@@ -1,9 +1,7 @@
-import { routes } from '@/configuration'
-import { IRoutes } from '@/interfaces'
+import { Route } from '@/enums'
 import { Authentication, Deck, Mapbox, PageNotFound, Registration } from '@/views'
 
-const { deckgl, login, mapbox, pageNotFound, register }: IRoutes = routes,
-  baseURL = import.meta.env.BASE_URL
+const baseURL = import.meta.env.BASE_URL
 
 export default {
   credentials: {
@@ -113,31 +111,31 @@ export default {
   routes: [
     {
       path: baseURL,
-      redirect: login
+      redirect: Route.LOGIN
     },
     {
-      path: `${baseURL}${login}`,
-      name: login,
+      path: `${baseURL}${Route.LOGIN}`,
+      name: Route.LOGIN,
       component: Authentication
     },
     {
-      path: `${baseURL}${register}`,
-      name: register,
+      path: `${baseURL}${Route.REGISTER}`,
+      name: Route.REGISTER,
       component: Registration
     },
     {
-      path: `${baseURL}${deckgl}`,
-      name: deckgl,
+      path: `${baseURL}${Route.DECKGL}`,
+      name: Route.DECKGL,
       component: Deck
     },
     {
-      path: `${baseURL}${mapbox}`,
-      name: mapbox,
+      path: `${baseURL}${Route.MAPBOX}`,
+      name: Route.MAPBOX,
       component: Mapbox
     },
     {
       path: `${baseURL}:pathMatch(.*)*`,
-      name: pageNotFound,
+      name: Route.PAGE_NOT_FOUND,
       component: PageNotFound
     }
   ],

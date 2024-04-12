@@ -3,7 +3,7 @@
   bottom: 0;
   position: absolute;
   top: 4.5rem;
-  width: 100%;
+  min-width: 100vw;
   z-index: 2;
 }
 

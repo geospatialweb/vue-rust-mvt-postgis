@@ -12,7 +12,7 @@ export default class AuthorizationService {
   #storeStates: IStoreStates = StoreStates
 
   get jwtState() {
-    return <IJWT>this.#storeService.getState(this.#storeStates.JWT)
+    return <IJWT>this.#storeService.getStoreState(this.#storeStates.JWT)
   }
 
   get mapboxAccessToken() {
@@ -21,7 +21,7 @@ export default class AuthorizationService {
   }
 
   set #jwtState(state: IJWT) {
-    this.#storeService.setState(this.#storeStates.JWT, state)
+    this.#storeService.setStoreState(this.#storeStates.JWT, state)
   }
 
   set #mapboxAccessToken(mapboxAccessToken: string) {

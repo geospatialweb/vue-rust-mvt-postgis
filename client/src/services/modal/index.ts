@@ -10,11 +10,11 @@ export default class ModalService {
   #storeStates: IStoreStates = StoreStates
 
   get modalState() {
-    return <IModal>this.#storeService.getState(this.#storeStates.MODAL)
+    return <IModal>this.#storeService.getStoreState(this.#storeStates.MODAL)
   }
 
   set #modalState(state: IModal) {
-    this.#storeService.setState(this.#storeStates.MODAL, state)
+    this.#storeService.setStoreState(this.#storeStates.MODAL, state)
   }
 
   hideModal(): void {

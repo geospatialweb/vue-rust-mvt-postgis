@@ -6,9 +6,9 @@ import styles from './index.module.css'
 
 export default defineComponent({
   setup() {
-    const { pagenotfound } = styles
+    const { page_not_found } = styles
     return (): JSX.Element => (
-      <div class={pagenotfound} role="presentation">
+      <div class={page_not_found} role="presentation">
         <PageNotFound />
       </div>
     )

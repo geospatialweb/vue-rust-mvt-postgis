@@ -42,6 +42,6 @@ export type StoreState =
 export type UseStoreDefinition = StoreDefinition<
   'store',
   IStoreState,
-  { getState: (state: IStoreState) => (id: string) => StoreState },
-  { setState(id: string, state: StoreState): void }
+  { getStoreState: (state: IStoreState) => (id: string) => StoreState },
+  { setStoreState(id: string, state: StoreState): void }
 >

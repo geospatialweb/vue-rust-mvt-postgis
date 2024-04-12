@@ -15,13 +15,13 @@ export default defineComponent({
   },
   setup({ container }) {
     const { mapbox } = styles,
-      authorizationService = Container.get(AuthorizationService),
       mapboxService = Container.get(MapboxService),
       markerService = Container.get(MarkerService),
       modalService = Container.get(ModalService),
       getMapboxAccessToken = async (): Promise<void> => {
         /* prettier-ignore */
-        const { jwtState: { token }, mapboxAccessToken } = authorizationService
+        const authorizationService = Container.get(AuthorizationService),
+          { jwtState: { token }, mapboxAccessToken } = authorizationService
         if (!mapboxAccessToken) await authorizationService.getMapboxAccessToken(token)
       },
       loadMap = (): void => mapboxService.loadMap(),

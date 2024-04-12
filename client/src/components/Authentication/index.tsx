@@ -2,7 +2,7 @@ import 'vue/jsx'
 import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
-import { routes } from '@/configuration'
+import { Route } from '@/enums'
 import { ICredential } from '@/interfaces'
 import { AuthenticationService, CredentialsService } from '@/services'
 import styles from './index.module.css'
@@ -10,9 +10,7 @@ import styles from './index.module.css'
 export default defineComponent({
   name: 'Authentication',
   setup() {
-    const { active, inactive, credentials, spacer, doublespacer } = styles,
-      { register } = routes,
-      authenticationService = Container.get(AuthenticationService),
+    const { active, credentials, doublespacer, inactive, spacer } = styles,
       credentialsService = Container.get(CredentialsService),
       getCredentialsState = (): ICredential => {
         const { credentialsState } = credentialsService
@@ -28,6 +26,7 @@ export default defineComponent({
         return { username, password }
       },
       login = (credentials: ICredential): void => {
+        const authenticationService = Container.get(AuthenticationService)
         void authenticationService.login({ ...credentials })
       },
       onSubmitHandler = (evt: Event): void => {
@@ -92,7 +91,7 @@ export default defineComponent({
           </form>
           <div class={doublespacer}></div>
           <router-link
-            to={{ name: register }}
+            to={{ name: Route.REGISTER }}
             onClick={(): void => setCredentialsState({ isCorrect: true, isValid: true })}
           >
             Optional Registration

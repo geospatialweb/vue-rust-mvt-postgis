@@ -1,7 +1,7 @@
 import { Container, Service } from 'typedi'
 
-import { routes } from '@/configuration'
-import { ICredential, IJWT, IRoutes } from '@/interfaces'
+import { Route } from '@/enums'
+import { ICredential, IJWT, IRoute } from '@/interfaces'
 import { AuthorizationService, CredentialsService, MarkerService, RouterService } from '@/services'
 
 @Service()
@@ -10,7 +10,7 @@ export default class AuthenticationService {
   #credentialsService = Container.get(CredentialsService)
   #markerService = Container.get(MarkerService)
   #routerService = Container.get(RouterService)
-  #routes: IRoutes = routes
+  #route: IRoute = Route
 
   async login(credentials: ICredential): Promise<void> {
     let { username } = credentials
@@ -24,11 +24,10 @@ export default class AuthenticationService {
       return this.#setCredentialsState({ isCorrect: false, isValid: true })
     }
     this.#setCredentialsState({ isCorrect: true, isValid: true, ...credentials })
-    const { token, expiry } = jwt,
-      { mapbox } = this.#routes
+    const { token, expiry } = jwt
     this.#setJWTState({ token, expiry })
     await this.#setMarkerFeatures(token)
-    await this.#setRoute(mapbox)
+    await this.#setRoute(this.#route.MAPBOX)
   }
 
   async #login(credentials: ICredential): Promise<IJWT> {

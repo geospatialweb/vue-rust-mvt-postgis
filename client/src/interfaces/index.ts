@@ -221,12 +221,12 @@ export interface IQueryParam {
   id: string
 }
 
-export interface IRoutes {
-  deckgl: string
-  login: string
-  mapbox: string
-  pageNotFound: string
-  register: string
+export interface IRoute {
+  DECKGL: string
+  LOGIN: string
+  MAPBOX: string
+  PAGE_NOT_FOUND: string
+  REGISTER: string
 }
 
 export interface ISlot {

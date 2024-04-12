@@ -8,7 +8,7 @@ import { ILayer, IUrl } from '@/interfaces'
 @Service()
 export default class LayerService {
   #layers: ILayer[] = cloneDeep(layers)
-  #urls: IUrl = Url
+  #url: IUrl = Url
 
   constructor() {
     import.meta.env.PROD && this.#setBaseURL()
@@ -23,7 +23,7 @@ export default class LayerService {
     for (const layer of layers) {
       /* prettier-ignore */
       const { source: { url } } = layer
-      layer.source.url = url.replace(this.#urls.MVT_BASE_URL_DEV, this.#urls.MVT_BASE_URL_PROD)
+      layer.source.url = url.replace(this.#url.MVT_BASE_URL_DEV, this.#url.MVT_BASE_URL_PROD)
     }
     this.#layers = cloneDeep(layers)
   }

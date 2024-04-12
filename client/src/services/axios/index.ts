@@ -8,7 +8,7 @@ import { IUrl } from '@/interfaces'
 export default class AxiosService {
   #axios = axios
   #httpClient = this.#axios.create()
-  #urls: IUrl = Url
+  #url: IUrl = Url
 
   constructor() {
     this.#createHttpClient()
@@ -27,7 +27,7 @@ export default class AxiosService {
   }
 
   #setBaseURL(): string {
-    if (import.meta.env.PROD) return this.#urls.API_BASE_URL_PROD
-    return this.#urls.API_BASE_URL_DEV
+    if (import.meta.env.PROD) return this.#url.API_BASE_URL_PROD
+    return this.#url.API_BASE_URL_DEV
   }
 }

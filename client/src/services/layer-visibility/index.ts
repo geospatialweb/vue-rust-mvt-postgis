@@ -11,11 +11,11 @@ export default class LayerVisibilityService {
   #storeStates: IStoreStates = StoreStates
 
   get layerVisibilityState() {
-    return <ILayerVisibility>this.#storeService.getState(this.#storeStates.LAYER_VISIBILITY)
+    return <ILayerVisibility>this.#storeService.getStoreState(this.#storeStates.LAYER_VISIBILITY)
   }
 
   set #layerVisibilityState(state: ILayerVisibility) {
-    this.#storeService.setState(this.#storeStates.LAYER_VISIBILITY, state)
+    this.#storeService.setStoreState(this.#storeStates.LAYER_VISIBILITY, state)
   }
 
   setLayerVisibilityState(id: string): void {

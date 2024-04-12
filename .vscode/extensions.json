@@ -5,9 +5,8 @@
     "esbenp.prettier-vscode",
     "ms-azuretools.vscode-docker",
     "rust-lang.rust-analyzer",
-    "serayuzgur.crates",
     "stylelint.vscode-stylelint",
     "tamasfe.even-better-toml",
-    "vadimcn.vscode-lldb",
+    "vadimcn.vscode-lldb"
   ]
 }

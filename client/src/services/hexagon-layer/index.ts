@@ -22,11 +22,11 @@ export default class HexagonLayerService {
   #storeStates: IStoreStates = StoreStates
 
   get hexagonLayerPropsState() {
-    return <IHexagonLayerProp>this.#storeService.getState(this.#storeStates.HEXAGON_LAYER_PROPS)
+    return <IHexagonLayerProp>this.#storeService.getStoreState(this.#storeStates.HEXAGON_LAYER_PROPS)
   }
 
   set #hexagonLayerPropsState(state: IHexagonLayerProp) {
-    this.#storeService.setState(this.#storeStates.HEXAGON_LAYER_PROPS, state)
+    this.#storeService.setStoreState(this.#storeStates.HEXAGON_LAYER_PROPS, state)
   }
 
   setHexagonLayerPropsState({ id, value }: IHexagonLayerPropState): void {

@@ -10,11 +10,11 @@ export default class HexagonUIService {
   #storeStates: IStoreStates = StoreStates
 
   get hexagonUILabelElementState() {
-    return <IHexagonUILabelElement>this.#storeService.getState(this.#storeStates.HEXAGON_UI_LAYER_ELEMENT)
+    return <IHexagonUILabelElement>this.#storeService.getStoreState(this.#storeStates.HEXAGON_UI_LAYER_ELEMENT)
   }
 
   set #hexagonUILabelElementState(state: IHexagonUILabelElement) {
-    this.#storeService.setState(this.#storeStates.HEXAGON_UI_LAYER_ELEMENT, state)
+    this.#storeService.setStoreState(this.#storeStates.HEXAGON_UI_LAYER_ELEMENT, state)
   }
 
   setHexagonUILabelElementState(id: string): void {

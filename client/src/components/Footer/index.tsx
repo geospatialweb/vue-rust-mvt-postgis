@@ -10,9 +10,9 @@ export default defineComponent({
   name: 'Footer',
   setup() {
     const { active, inactive } = styles,
-      appService = Container.get(AppService),
       getAppState = (): IApp => {
-        const { appState } = appService
+        const appService = Container.get(AppService),
+          { appState } = appService
         return appState
       },
       jsx = ({ isMobile }: IApp): JSX.Element => (

@@ -25,16 +25,12 @@ export default class DeckglService {
     return this._deck
   }
 
-  get map(){
-    return this._map
-  }
-
   get #deckglSettingsState() {
-    return <IDeckglSetting>this.#storeService.getState(this.#storeStates.DECKGL_SETTINGS)
+    return <IDeckglSetting>this.#storeService.getStoreState(this.#storeStates.DECKGL_SETTINGS)
   }
 
   set #deckglSettingsState(state: IDeckglSetting) {
-    this.#storeService.setState(this.#storeStates.DECKGL_SETTINGS, state)
+    this.#storeService.setStoreState(this.#storeStates.DECKGL_SETTINGS, state)
   }
 
   loadHexagonLayer(): void {

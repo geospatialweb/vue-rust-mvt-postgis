@@ -19,12 +19,12 @@ export default defineComponent({
   },
   setup({ canvas, container }) {
     const { deckgl, hexagonlayer } = styles,
-      authorizationService = Container.get(AuthorizationService),
       deckglService = Container.get(DeckglService),
       modalService = Container.get(ModalService),
       getMapboxAccessToken = async (): Promise<void> => {
         /* prettier-ignore */
-        const { jwtState: { token }, mapboxAccessToken } = authorizationService
+        const authorizationService = Container.get(AuthorizationService),
+          { jwtState: { token }, mapboxAccessToken } = authorizationService
         if (!mapboxAccessToken) await authorizationService.getMapboxAccessToken(token)
       },
       loadHexagonLayer = (): void => deckglService.loadHexagonLayer(),

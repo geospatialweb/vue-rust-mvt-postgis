@@ -13,11 +13,11 @@ export default class CredentialsService {
   #storeStates: IStoreStates = StoreStates
 
   get credentialsState() {
-    return <ICredential>this.#storeService.getState(this.#storeStates.CREDENTIALS)
+    return <ICredential>this.#storeService.getStoreState(this.#storeStates.CREDENTIALS)
   }
 
   set #credentialsState(state: ICredential) {
-    this.#storeService.setState(this.#storeStates.CREDENTIALS, state)
+    this.#storeService.setStoreState(this.#storeStates.CREDENTIALS, state)
   }
 
   async login(credentials: ICredential): Promise<IJWT> {

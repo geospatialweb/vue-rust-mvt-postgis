@@ -10,7 +10,7 @@ import { CsvResponse, HexagonLayerData } from '@/types'
 export default class HexagonLayerDataService {
   #csvService = Container.get(CsvService)
   #hexagonLayerData: HexagonLayerData = []
-  #urls: IUrl = Url
+  #url: IUrl = Url
 
   constructor() {
     void this.#loadHexagonLayerData()
@@ -21,7 +21,7 @@ export default class HexagonLayerDataService {
   }
 
   async #loadHexagonLayerData(): Promise<void> {
-    const data = await this.#getHexagonLayerData(this.#urls.HEXAGON_LAYER_DATA_URL)
+    const data = await this.#getHexagonLayerData(this.#url.HEXAGON_LAYER_DATA_URL)
     this.#setHexagonLayerData(<DSVRowArray<string>>data)
   }
 

@@ -51,11 +51,11 @@ export default class MapboxService {
   }
 
   get #mapboxSettingsState() {
-    return <IMapboxSetting>this.#storeService.getState(this.#storeStates.MAPBOX_SETTINGS)
+    return <IMapboxSetting>this.#storeService.getStoreState(this.#storeStates.MAPBOX_SETTINGS)
   }
 
   set #mapboxSettingsState(state: IMapboxSetting) {
-    this.#storeService.setState(this.#storeStates.MAPBOX_SETTINGS, state)
+    this.#storeService.setStoreState(this.#storeStates.MAPBOX_SETTINGS, state)
   }
 
   loadMap(): void {
@@ -89,8 +89,8 @@ export default class MapboxService {
   }
 
   setLayerVisibility(id: string): void {
+    /* prettier-ignore */
     const appService = Container.get(AppService),
-      /* prettier-ignore */
       { appState: { isMobile }} = appService,
       { layerVisibilityState } = this.#layerVisibilityService
 

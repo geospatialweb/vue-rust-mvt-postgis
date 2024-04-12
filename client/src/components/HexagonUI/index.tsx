@@ -14,14 +14,14 @@ export default defineComponent({
     /* prettier-ignore */
     const { hexagonui } = styles,
       { heading } = hexagonUIHeading,
-      hexagonLayerService = Container.get(HexagonLayerService),
-      hexagonUIService = Container.get(HexagonUIService),
       getHexagonLayerPropsState = (): ComputedRef<IHexagonLayerProp> => {
-        const { hexagonLayerPropsState } = hexagonLayerService
+        const hexagonLayerService = Container.get(HexagonLayerService),
+          { hexagonLayerPropsState } = hexagonLayerService
         return computed((): IHexagonLayerProp => hexagonLayerPropsState)
       },
       getHexagonUILabelElementState = (): ComputedRef<IHexagonUILabelElement> => {
-        const { hexagonUILabelElementState } = hexagonUIService
+        const hexagonUIService = Container.get(HexagonUIService),
+          { hexagonUILabelElementState } = hexagonUIService
         return computed((): IHexagonUILabelElement => hexagonUILabelElementState)
       },
       setButtonSlot = (slot: ISlot): JSX.Element => (
