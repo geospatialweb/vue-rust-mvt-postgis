@@ -1,50 +1,49 @@
 import { Container } from 'typedi'
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
-import { routes as routesConfig } from '@/configuration'
+import { Route } from '@/enums'
 import { AuthorizationService } from '@/services'
 import { Authentication, Deck, Mapbox, PageNotFound, Registration } from '@/views'
 
-const { deckgl, login, mapbox, pageNotFound, register } = routesConfig,
+const baseURL = import.meta.env.BASE_URL,
+  history = createWebHistory(baseURL),
   beforeEnter = () => () => {
+    /* prettier-ignore */
     const authorizationService = Container.get(AuthorizationService),
-      /* prettier-ignore */
       { jwtState: { expiry } } = authorizationService,
       currentTimestamp = Math.floor(Date.now() / 1000)
-    if (currentTimestamp > expiry) return { name: login }
+    if (currentTimestamp > expiry) return { name: Route.LOGIN }
   },
-  baseURL = import.meta.env.BASE_URL,
-  history = createWebHistory(baseURL),
   routes: RouteRecordRaw[] = [
     {
       path: baseURL,
-      redirect: login
+      redirect: Route.LOGIN
     },
     {
-      path: `${baseURL}login`,
-      name: login,
+      path: `${baseURL}${Route.LOGIN}`,
+      name: Route.LOGIN,
       component: Authentication
     },
     {
-      path: `${baseURL}register`,
-      name: register,
+      path: `${baseURL}${Route.REGISTER}`,
+      name: Route.REGISTER,
       component: Registration
     },
     {
-      path: `${baseURL}deckgl`,
-      name: deckgl,
+      path: `${baseURL}${Route.DECKGL}`,
+      name: Route.DECKGL,
       component: Deck,
       beforeEnter: beforeEnter()
     },
     {
-      path: `${baseURL}mapbox`,
-      name: mapbox,
+      path: `${baseURL}${Route.MAPBOX}`,
+      name: Route.MAPBOX,
       component: Mapbox,
       beforeEnter: beforeEnter()
     },
     {
       path: `${baseURL}:pathMatch(.*)*`,
-      name: pageNotFound,
+      name: Route.PAGE_NOT_FOUND,
       component: PageNotFound
     }
   ],

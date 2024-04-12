@@ -19,11 +19,11 @@ export default class MapboxStyleService {
   }
 
   get mapboxStylesState() {
-    return <IMapboxStyle>this.#storeService.getState(this.#storeStates.MAPBOX_STYLES)
+    return <IMapboxStyle>this.#storeService.getStoreState(this.#storeStates.MAPBOX_STYLES)
   }
 
   set #mapboxStylesState(state: IMapboxStyle) {
-    this.#storeService.setState(this.#storeStates.MAPBOX_STYLES, state)
+    this.#storeService.setStoreState(this.#storeStates.MAPBOX_STYLES, state)
   }
 
   setActiveMapboxStyle(): void {

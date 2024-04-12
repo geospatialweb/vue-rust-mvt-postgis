@@ -1,7 +1,4 @@
-import { Url } from '@/enums'
-import { IUrl } from '@/interfaces'
-
-const { MVT_BASE_URL_DEV }: IUrl = Url
+import { LayerId, Url } from '@/enums'
 
 export default [
   {
@@ -9,7 +6,7 @@ export default [
     type: 'fill',
     source: {
       type: 'vector',
-      url: `${MVT_BASE_URL_DEV}/biosphere`
+      url: `${Url.MVT_BASE_URL_DEV}/${LayerId.BIOSPHERE}`
     },
     'source-layer': 'biosphere',
     layout: {
@@ -26,7 +23,7 @@ export default [
     type: 'line',
     source: {
       type: 'vector',
-      url: `${MVT_BASE_URL_DEV}/biosphere`
+      url: `${Url.MVT_BASE_URL_DEV}/${LayerId.BIOSPHERE}`
     },
     'source-layer': 'biosphere',
     layout: {
@@ -42,7 +39,7 @@ export default [
     type: 'line',
     source: {
       type: 'vector',
-      url: `${MVT_BASE_URL_DEV}/trails`
+      url: `${Url.MVT_BASE_URL_DEV}/${LayerId.TRAILS}`
     },
     'source-layer': 'trails',
     layout: {

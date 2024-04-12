@@ -1,8 +1,8 @@
 import { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { Container, Service } from 'typedi'
 
-import { routes } from '@/configuration'
-import { IHttpResponseError, IRoutes } from '@/interfaces'
+import { Route } from '@/enums'
+import { IHttpResponseError, IRoute } from '@/interfaces'
 import { AxiosService, RouterService } from '@/services'
 import { HttpResponse } from '@/types'
 
@@ -11,7 +11,7 @@ export default class HttpService {
   #axiosService = Container.get(AxiosService)
   #routerService = Container.get(RouterService)
   #httpClient: AxiosInstance
-  #routes: IRoutes = routes
+  #route: IRoute = Route
 
   constructor() {
     const { httpClient } = this.#axiosService
@@ -60,9 +60,8 @@ export default class HttpService {
 
   async #catchError({ message, response }: IHttpResponseError): Promise<void> {
     if (!response) return this.#consoleError(message)
-    const { data, status } = response,
-      { login } = this.#routes
-    if (status === 401) await this.#setRoute(login)
+    const { data, status } = response
+    if (status === 401) await this.#setRoute(this.#route.LOGIN)
     this.#consoleError(<string>data)
   }
 

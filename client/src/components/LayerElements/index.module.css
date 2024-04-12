@@ -1,6 +1,6 @@
 .layerelement {
   -webkit-animation: fade-in 1.5s ease-out forwards;
-  animation: fade-in 2s ease-out forwards;
+  animation: fade-in 1.5s ease-out forwards;
   border: var(--grey-border);
   border-radius: var(--border-radius);
   cursor: pointer;

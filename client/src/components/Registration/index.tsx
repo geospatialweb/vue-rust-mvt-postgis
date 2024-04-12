@@ -2,7 +2,7 @@ import 'vue/jsx'
 import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
-import { routes } from '@/configuration'
+import { Route } from '@/enums'
 import { ICredential } from '@/interfaces'
 import { CredentialsService, RegistrationService } from '@/services'
 import styles from './index.module.css'
@@ -10,10 +10,8 @@ import styles from './index.module.css'
 export default defineComponent({
   name: 'Registration',
   setup() {
-    const { active, inactive, credentials, spacer, doublespacer } = styles,
-      { login } = routes,
+    const { active, credentials, doublespacer, inactive, spacer } = styles,
       credentialsService = Container.get(CredentialsService),
-      registrationService = Container.get(RegistrationService),
       getCredentialsState = (): ICredential => {
         const { credentialsState } = credentialsService
         return credentialsState
@@ -28,6 +26,7 @@ export default defineComponent({
         return { username, password }
       },
       register = (credentials: ICredential): void => {
+        const registrationService = Container.get(RegistrationService)
         void registrationService.register({ ...credentials })
       },
       onSubmitHandler = (evt: Event): void => {
@@ -68,7 +67,7 @@ export default defineComponent({
           </form>
           <div class={doublespacer}></div>
           <router-link
-            to={{ name: login }}
+            to={{ name: Route.LOGIN }}
             onClick={(): void => setCredentialsState({ isCorrect: true, isValid: true })}
           >
             Already Registered?

@@ -1,5 +1,4 @@
-.pagenotfound {
-  height: 100%;
-  position: absolute;
-  width: 100%;
+.page_not_found {
+  min-height: 100vh;
+  min-width: 100vw;
 }
