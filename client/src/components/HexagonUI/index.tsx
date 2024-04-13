@@ -1,6 +1,6 @@
 import 'vue/jsx'
 import { Container } from 'typedi'
-import { computed, ComputedRef, defineComponent } from 'vue'
+import { defineComponent } from 'vue'
 
 import { HexagonUIButtons, HexagonUIHeading, HexagonUISliders } from '@/components'
 import { hexagonUIButtons as buttons, hexagonUIHeading } from '@/configuration'
@@ -14,15 +14,15 @@ export default defineComponent({
     /* prettier-ignore */
     const { hexagonui } = styles,
       { heading } = hexagonUIHeading,
-      getHexagonLayerPropsState = (): ComputedRef<IHexagonLayerProp> => {
+      getHexagonLayerPropsState = (): IHexagonLayerProp => {
         const hexagonLayerService = Container.get(HexagonLayerService),
           { hexagonLayerPropsState } = hexagonLayerService
-        return computed((): IHexagonLayerProp => hexagonLayerPropsState)
+        return hexagonLayerPropsState
       },
-      getHexagonUILabelElementState = (): ComputedRef<IHexagonUILabelElement> => {
+      getHexagonUILabelElementState = (): IHexagonUILabelElement => {
         const hexagonUIService = Container.get(HexagonUIService),
           { hexagonUILabelElementState } = hexagonUIService
-        return computed((): IHexagonUILabelElement => hexagonUILabelElementState)
+        return hexagonUILabelElementState
       },
       setButtonSlot = (slot: ISlot): JSX.Element => (
         <HexagonUIButtons id={slot.id}>{{ text: (): string => slot.text }}</HexagonUIButtons>
@@ -34,6 +34,6 @@ export default defineComponent({
           {buttons.map(setButtonSlot)}
         </div>
       )
-    return (): JSX.Element => jsx(getHexagonLayerPropsState().value, getHexagonUILabelElementState().value)
+    return (): JSX.Element => jsx(getHexagonLayerPropsState(), getHexagonUILabelElementState())
   }
 })

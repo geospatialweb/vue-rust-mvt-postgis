@@ -1,6 +1,6 @@
 import 'vue/jsx'
 import { Container } from 'typedi'
-import { computed, ComputedRef, defineComponent } from 'vue'
+import { defineComponent } from 'vue'
 
 import { LayerElement, LayerIcon } from '@/components'
 import { layerIcons } from '@/configuration'
@@ -14,9 +14,9 @@ export default defineComponent({
   setup() {
     const { layerelement } = styles,
       layerElementService = Container.get(LayerElementService),
-      getLayerElementsState = (): ComputedRef<ILayerElement[]> => {
+      getLayerElementsState = (): ILayerElement[] => {
         const { layerElementsState } = layerElementService
-        return computed((): ILayerElement[] => layerElementsState)
+        return layerElementsState
       },
       displayLayerElement = (id: string): void => layerElementService.displayLayerElement(id as LayerId),
       onClickHandler = (evt: MouseEvent): void => {
@@ -42,6 +42,6 @@ export default defineComponent({
           {layerElements.map(listItem)}
         </ul>
       )
-    return (): JSX.Element => jsx(getLayerElementsState().value)
+    return (): JSX.Element => jsx(getLayerElementsState())
   }
 })
