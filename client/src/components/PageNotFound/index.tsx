@@ -11,8 +11,10 @@ export default defineComponent({
   setup() {
     const { page_not_found } = styles,
       routeTimeout = window.setTimeout((): void => setRoute(), 2000),
-      routerService = Container.get(RouterService),
-      setRoute = (): void => void routerService.setRoute(Route.LOGIN)
+      setRoute = (): void => {
+        const routerService = Container.get(RouterService)
+        void routerService.setRoute(Route.LOGIN)
+      }
     onMounted((): number => routeTimeout)
     onBeforeUnmount((): void => window.clearTimeout(routeTimeout))
     return (): JSX.Element => (

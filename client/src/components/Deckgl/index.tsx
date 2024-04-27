@@ -20,7 +20,6 @@ export default defineComponent({
   setup({ canvas, container }) {
     const { deckgl, hexagonlayer } = styles,
       deckglService = Container.get(DeckglService),
-      modalService = Container.get(ModalService),
       getMapboxAccessToken = async (): Promise<void> => {
         /* prettier-ignore */
         const authorizationService = Container.get(AuthorizationService),
@@ -29,7 +28,10 @@ export default defineComponent({
       },
       loadHexagonLayer = (): void => deckglService.loadHexagonLayer(),
       removeMapResources = (): void => deckglService.removeMapResources(),
-      showModal = (): void => modalService.showModal()
+      showModal = (): void => {
+        const modalService = Container.get(ModalService)
+        modalService.showModal()
+      }
     onMounted(async (): Promise<void> => {
       showModal()
       await getMapboxAccessToken()

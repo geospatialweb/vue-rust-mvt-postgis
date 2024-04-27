@@ -16,8 +16,6 @@ export default defineComponent({
   setup({ container }) {
     const { mapbox } = styles,
       mapboxService = Container.get(MapboxService),
-      markerService = Container.get(MarkerService),
-      modalService = Container.get(ModalService),
       getMapboxAccessToken = async (): Promise<void> => {
         /* prettier-ignore */
         const authorizationService = Container.get(AuthorizationService),
@@ -26,8 +24,14 @@ export default defineComponent({
       },
       loadMap = (): void => mapboxService.loadMap(),
       removeMapResources = (): void => mapboxService.removeMapResources(),
-      setHiddenMarkersVisibility = (): void => markerService.setHiddenMarkersVisibility(),
-      showModal = (): void => modalService.showModal()
+      setHiddenMarkersVisibility = (): void => {
+        const markerService = Container.get(MarkerService)
+        markerService.setHiddenMarkersVisibility()
+      },
+      showModal = (): void => {
+        const modalService = Container.get(ModalService)
+        modalService.showModal()
+      }
     onMounted(async (): Promise<void> => {
       showModal()
       await getMapboxAccessToken()

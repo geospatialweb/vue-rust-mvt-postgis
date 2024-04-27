@@ -10,8 +10,10 @@ export default defineComponent({
   name: 'Trails',
   setup() {
     const { trail } = styles,
-      trailService = Container.get(TrailService),
-      selectTrail = (name: string): void => trailService.selectTrail(name),
+      selectTrail = (name: string): void => {
+        const trailService = Container.get(TrailService)
+        trailService.selectTrail(name)
+      },
       onChangeHandler = (evt: Event): void => {
         evt.stopPropagation()
         const { value } = evt.target as HTMLSelectElement
