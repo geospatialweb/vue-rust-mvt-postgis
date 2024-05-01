@@ -1,8 +1,8 @@
 import { Container, Service } from 'typedi'
 
 import { mediaQueryCollection } from '@/configuration'
-import { StoreStates } from '@/enums'
-import { IApp, IStoreStates } from '@/interfaces'
+import { StoreState } from '@/enums'
+import { IApp } from '@/interfaces'
 import { DeckglService, MapboxService, StoreService, TrailService } from '@/services'
 import { MediaQuery, MediaQueryCollection } from '@/types'
 
@@ -12,19 +12,20 @@ export default class AppService {
   #mapboxService = Container.get(MapboxService)
   #storeService = Container.get(StoreService)
   #trailService = Container.get(TrailService)
+
+  #appStoreState: string = StoreState.APP
   #mediaQueryCollection: MediaQueryCollection = mediaQueryCollection
-  #storeStates: IStoreStates = StoreStates
 
   constructor() {
     this.#setAppState()
   }
 
   get appState() {
-    return <IApp>this.#storeService.getStoreState(this.#storeStates.APP)
+    return <IApp>this.#storeService.getStoreState(this.#appStoreState)
   }
 
   set #appState(state: IApp) {
-    this.#storeService.setStoreState(this.#storeStates.APP, state)
+    this.#storeService.setStoreState(this.#appStoreState, state)
   }
 
   setInitialZoom(): void {

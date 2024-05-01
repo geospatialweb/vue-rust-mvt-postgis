@@ -7,7 +7,7 @@ import { AppService } from '@/services'
 import styles from './index.module.css'
 
 export default defineComponent({
-  name: 'App',
+  name: 'App Component',
   setup() {
     const { app } = styles,
       appService = Container.get(AppService),

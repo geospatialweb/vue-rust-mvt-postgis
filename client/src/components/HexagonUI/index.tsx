@@ -9,7 +9,7 @@ import { HexagonLayerService, HexagonUIService } from '@/services'
 import styles from './index.module.css'
 
 export default defineComponent({
-  name: 'HexagonUI',
+  name: 'HexagonUI Component',
   setup() {
     /* prettier-ignore */
     const { hexagonui } = styles,

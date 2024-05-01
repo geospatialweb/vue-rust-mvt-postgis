@@ -4,7 +4,7 @@ import { createPinia, setActivePinia } from 'pinia'
 
 import { Deckgl, Footer, HexagonUI, Modal } from '@/components'
 import { deckgl } from '@/configuration'
-import { Deck as DeckView } from '@/views'
+import { Deckgl as DeckglView } from '@/views'
 
 describe('Deck view test suite', (): void => {
   beforeEach((): void => {
@@ -12,7 +12,7 @@ describe('Deck view test suite', (): void => {
   })
 
   it('should render successfully', (): void => {
-    render(DeckView)
+    render(DeckglView)
     const deckView = screen.getAllByRole('presentation')[0]
     expect(deckView).toBeInTheDocument()
   })

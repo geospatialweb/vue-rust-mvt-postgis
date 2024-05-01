@@ -7,7 +7,7 @@ import { ModalService } from '@/services'
 import styles from './index.module.css'
 
 export default defineComponent({
-  name: 'Modal',
+  name: 'Modal Component',
   setup() {
     const { active, inactive } = styles,
       getModalState = (): IModal => {

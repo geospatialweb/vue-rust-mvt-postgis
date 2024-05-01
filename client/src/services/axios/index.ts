@@ -2,13 +2,13 @@ import axios from 'axios'
 import { Service } from 'typedi'
 
 import { Url } from '@/enums'
-import { IUrl } from '@/interfaces'
 
 @Service()
 export default class AxiosService {
   #axios = axios
+  #apiBaseUrlDev: string = Url.API_BASE_URL_DEV
+  #apiBaseUrlProd: string = Url.API_BASE_URL_PROD
   #httpClient = this.#axios.create()
-  #url: IUrl = Url
 
   constructor() {
     this.#createHttpClient()
@@ -27,7 +27,7 @@ export default class AxiosService {
   }
 
   #setBaseURL(): string {
-    if (import.meta.env.PROD) return this.#url.API_BASE_URL_PROD
-    return this.#url.API_BASE_URL_DEV
+    if (import.meta.env.PROD) return this.#apiBaseUrlProd
+    return this.#apiBaseUrlDev
   }
 }

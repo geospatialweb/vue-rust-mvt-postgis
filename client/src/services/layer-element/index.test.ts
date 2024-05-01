@@ -2,7 +2,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { layerElements } from '@/configuration'
-import { LayerId } from '@/enums'
 import { ILayerElement } from '@/interfaces'
 import { LayerElementService } from '@/services'
 import { mockMapImplementation } from '@/test'
@@ -15,9 +14,9 @@ describe('LayerElementService test suite', (): void => {
   test.each(ids)("pass '%s' id to displayLayerElement method", (id): void => {
     const layerElementService = Container.get(LayerElementService),
       spy = vi.spyOn(layerElementService, 'displayLayerElement').mockImplementation(mockMapImplementation)
-    layerElementService.displayLayerElement(<LayerId>id)
+    layerElementService.displayLayerElement(id)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(<LayerId>id)
+    expect(spy).toHaveBeenCalledWith(id)
     expect(spy).toHaveReturnedTimes(1)
   })
 })

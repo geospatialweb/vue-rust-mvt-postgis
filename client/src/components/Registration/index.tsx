@@ -8,7 +8,7 @@ import { CredentialsService, RegistrationService } from '@/services'
 import styles from './index.module.css'
 
 export default defineComponent({
-  name: 'Registration',
+  name: 'Registration Component',
   setup() {
     const { active, credentials, doublespacer, inactive, spacer } = styles,
       credentialsService = Container.get(CredentialsService),

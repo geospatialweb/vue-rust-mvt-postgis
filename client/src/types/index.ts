@@ -2,7 +2,6 @@ import { DSVRowArray } from 'd3-dsv'
 import { FeatureCollection } from 'geojson'
 import { StoreDefinition } from 'pinia'
 
-import { LayerId } from '@/enums'
 import {
   IApp,
   ICredential,
@@ -22,7 +21,7 @@ import {
 export type CsvResponse = DSVRowArray<string> | void
 export type HexagonLayerData = number[][]
 export type HttpResponse = FeatureCollection | IJWT | string | void
-export type LayerElementsHashmap = Record<string, (id: LayerId) => void>
+export type LayerElementsHashmap = Record<string, (id: string) => void>
 export type MediaQuery = Record<string, number> | undefined
 export type MediaQueryCollection = Record<string, MediaQuery>
 export type NavigationControlPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'

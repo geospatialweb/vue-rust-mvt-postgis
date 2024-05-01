@@ -27,7 +27,7 @@ export enum Route {
   REGISTER = 'register'
 }
 
-export enum StoreStates {
+export enum StoreState {
   APP = 'app',
   CREDENTIALS = 'credentials',
   DECKGL_SETTINGS = 'deckglSettings',

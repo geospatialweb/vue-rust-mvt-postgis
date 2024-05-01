@@ -4,13 +4,12 @@ import { defineComponent } from 'vue'
 
 import { LayerElement, LayerIcon } from '@/components'
 import { layerIcons } from '@/configuration'
-import { LayerId } from '@/enums'
 import { ILayerElement } from '@/interfaces'
 import { LayerElementService } from '@/services'
 import styles from './index.module.css'
 
 export default defineComponent({
-  name: 'LayerElements',
+  name: 'LayerElements Component',
   setup() {
     const { layerelement } = styles,
       layerElementService = Container.get(LayerElementService),
@@ -18,7 +17,7 @@ export default defineComponent({
         const { layerElementsState } = layerElementService
         return layerElementsState
       },
-      displayLayerElement = (id: string): void => layerElementService.displayLayerElement(id as LayerId),
+      displayLayerElement = (id: string): void => layerElementService.displayLayerElement(id),
       onClickHandler = (evt: MouseEvent): void => {
         evt.stopPropagation()
         const { id } = evt.target as HTMLDivElement

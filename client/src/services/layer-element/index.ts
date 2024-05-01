@@ -1,8 +1,8 @@
 import cloneDeep from 'lodash.clonedeep'
 import { Container, Service } from 'typedi'
 
-import { LayerId, StoreStates } from '@/enums'
-import { ILayerElement, ILayerId, IStoreStates } from '@/interfaces'
+import { LayerId, StoreState } from '@/enums'
+import { ILayerElement } from '@/interfaces'
 import { LayerVisibilityService, MapboxService, MarkerService, RouterService, StoreService } from '@/services'
 import { LayerElementsHashmap } from '@/types'
 
@@ -13,55 +13,62 @@ export default class LayerElementService {
   #markerService = Container.get(MarkerService)
   #routerService = Container.get(RouterService)
   #storeService = Container.get(StoreService)
+
+  #biosphereLayer: string = LayerId.BIOSPHERE
+  #biosphereBorderLayer: string = LayerId.BIOSPHERE_BORDER
+  #deckglLayer: string = LayerId.DECKGL
   #layerElementsHashmap: LayerElementsHashmap = {}
-  #layerId: ILayerId = LayerId
-  #storeStates: IStoreStates = StoreStates
+  #layerElementsStoreState: string = StoreState.LAYER_ELEMENTS
+  #officeLayer: string = LayerId.OFFICE
+  #placesLayer: string = LayerId.PLACES
+  #satelliteLayer: string = LayerId.SATELLITE
+  #trailsLayer: string = LayerId.TRAILS
 
   constructor() {
     this.#createLayerElementsHashmap()
   }
 
   get layerElementsState() {
-    return <ILayerElement[]>this.#storeService.getStoreState(this.#storeStates.LAYER_ELEMENTS)
+    return <ILayerElement[]>this.#storeService.getStoreState(this.#layerElementsStoreState)
   }
 
   set #layerElementsState(state: ILayerElement[]) {
-    this.#storeService.setStoreState(this.#storeStates.LAYER_ELEMENTS, state)
+    this.#storeService.setStoreState(this.#layerElementsStoreState, state)
   }
 
-  displayLayerElement(id: LayerId): void {
+  displayLayerElement(id: string): void {
     this.#layerElementsHashmap[id](id)
   }
 
   #createLayerElementsHashmap(): void {
     this.#layerElementsHashmap = {
-      [this.#layerId.BIOSPHERE]: this.#layer,
-      [this.#layerId.DECKGL]: this.#deckgl,
-      [this.#layerId.OFFICE]: this.#marker,
-      [this.#layerId.PLACES]: this.#marker,
-      [this.#layerId.SATELLITE]: this.#satellite,
-      [this.#layerId.TRAILS]: this.#layer
+      [this.#biosphereLayer]: this.#layer,
+      [this.#deckglLayer]: this.#deckgl,
+      [this.#officeLayer]: this.#marker,
+      [this.#placesLayer]: this.#marker,
+      [this.#satelliteLayer]: this.#satellite,
+      [this.#trailsLayer]: this.#layer
     }
   }
 
-  #deckgl = (id: LayerId): void => {
+  #deckgl = (id: string): void => {
     void this.#routerService.setRoute(id)
   }
 
-  #layer = (id: LayerId): void => {
+  #layer = (id: string): void => {
     this.#setLayerElementsState(id)
     this.#setLayerVisibilityState(id)
     this.#setLayerVisibility(id)
-    id === <LayerId>this.#layerId.BIOSPHERE && this.#setLayerVisibility(<LayerId>this.#layerId.BIOSPHERE_BORDER)
-    id === <LayerId>this.#layerId.TRAILS && this.#toggleMarkerVisibility(id)
+    id === this.#biosphereLayer && this.#setLayerVisibility(this.#biosphereBorderLayer)
+    id === this.#trailsLayer && this.#toggleMarkerVisibility(id)
   }
 
-  #marker = (id: LayerId): void => {
+  #marker = (id: string): void => {
     this.#setLayerElementsState(id)
     this.#toggleMarkerVisibility(id)
   }
 
-  #satellite = (id: LayerId): void => {
+  #satellite = (id: string): void => {
     this.#setLayerElementsState(id)
     this.#setHiddenMarkersVisibility()
     this.#resetMap()
@@ -75,23 +82,23 @@ export default class LayerElementService {
     this.#markerService.setHiddenMarkersVisibility()
   }
 
-  #setLayerElementsState(id: LayerId): void {
+  #setLayerElementsState(id: string): void {
     const state = cloneDeep(this.layerElementsState),
-      layerElement = (layerElement: ILayerElement): boolean => <LayerId>layerElement.id === id,
+      layerElement = (layerElement: ILayerElement): boolean => layerElement.id === id,
       idx = state.findIndex(layerElement)
     if (idx >= 0) state[idx].isActive = !state[idx].isActive
     this.#layerElementsState = state
   }
 
-  #setLayerVisibility(id: LayerId): void {
+  #setLayerVisibility(id: string): void {
     this.#mapboxService.setLayerVisibility(id)
   }
 
-  #setLayerVisibilityState(id: LayerId): void {
+  #setLayerVisibilityState(id: string): void {
     this.#layerVisibilityService.setLayerVisibilityState(id)
   }
 
-  #toggleMarkerVisibility(id: LayerId): void {
+  #toggleMarkerVisibility(id: string): void {
     this.#markerService.toggleMarkerVisibility(id)
   }
 }

@@ -1,20 +1,21 @@
 import { Container, Service } from 'typedi'
 
-import { StoreStates } from '@/enums'
-import { IHexagonUILabelElement, IStoreStates } from '@/interfaces'
+import { StoreState } from '@/enums'
+import { IHexagonUILabelElement } from '@/interfaces'
 import { StoreService } from '@/services'
 
 @Service()
 export default class HexagonUIService {
   #storeService = Container.get(StoreService)
-  #storeStates: IStoreStates = StoreStates
+
+  #hexagonUILayerElementStoreState: string = StoreState.HEXAGON_UI_LAYER_ELEMENT
 
   get hexagonUILabelElementState() {
-    return <IHexagonUILabelElement>this.#storeService.getStoreState(this.#storeStates.HEXAGON_UI_LAYER_ELEMENT)
+    return <IHexagonUILabelElement>this.#storeService.getStoreState(this.#hexagonUILayerElementStoreState)
   }
 
   set #hexagonUILabelElementState(state: IHexagonUILabelElement) {
-    this.#storeService.setStoreState(this.#storeStates.HEXAGON_UI_LAYER_ELEMENT, state)
+    this.#storeService.setStoreState(this.#hexagonUILayerElementStoreState, state)
   }
 
   setHexagonUILabelElementState(id: string): void {

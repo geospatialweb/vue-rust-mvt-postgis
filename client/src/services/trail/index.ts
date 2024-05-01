@@ -8,6 +8,7 @@ import { MapboxService } from '@/services'
 @Service()
 export default class TrailService {
   #mapboxService = Container.get(MapboxService)
+
   #trails: ITrail[] = <ITrail[]>cloneDeep(trails)
 
   selectTrail(name: string): void {

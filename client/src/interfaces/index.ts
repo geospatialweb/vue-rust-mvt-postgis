@@ -41,17 +41,6 @@ export interface IDeckglSetting {
   zoom: number
 }
 
-export interface IEndpoint {
-  DELETE_USER_ENDPOINT: string
-  GEOJSON_ENDPOINT: string
-  GET_USER_ENDPOINT: string
-  LOGIN_ENDPOINT: string
-  MAPBOX_ACCESS_TOKEN_ENDPOINT: string
-  REGISTER_ENDPOINT: string
-  UPDATE_PASSWORD_ENDPOINT: string
-  VALIDATE_USER_ENDPOINT: string
-}
-
 export interface IGeoJSONProperty {
   description: string
   name: string
@@ -143,16 +132,6 @@ export interface ILayerIcon {
   width: string
 }
 
-export interface ILayerId {
-  BIOSPHERE: string
-  BIOSPHERE_BORDER: string
-  DECKGL: string
-  OFFICE: string
-  PLACES: string
-  SATELLITE: string
-  TRAILS: string
-}
-
 export interface ILayerVisibility {
   biosphere: {
     isActive: boolean
@@ -221,14 +200,6 @@ export interface IQueryParam {
   id: string
 }
 
-export interface IRoute {
-  DECKGL: string
-  LOGIN: string
-  MAPBOX: string
-  PAGE_NOT_FOUND: string
-  REGISTER: string
-}
-
 export interface ISlot {
   id: string
   text: string
@@ -249,31 +220,8 @@ export interface IStoreState {
   modal: IModal
 }
 
-export interface IStoreStates {
-  APP: string
-  CREDENTIALS: string
-  DECKGL_SETTINGS: string
-  HEXAGON_LAYER_PROPS: string
-  HEXAGON_UI_LAYER_ELEMENT: string
-  JWT: string
-  LAYER_ELEMENTS: string
-  LAYER_VISIBILITY: string
-  MAPBOX_SETTINGS: string
-  MAPBOX_STYLES: string
-  MARKER_VISIBILITY: string
-  MODAL: string
-}
-
 export interface ITrail {
   center: LngLatLike
   name: string
   zoom: number
-}
-
-export interface IUrl {
-  API_BASE_URL_DEV: string
-  API_BASE_URL_PROD: string
-  HEXAGON_LAYER_DATA_URL: string
-  MVT_BASE_URL_DEV: string
-  MVT_BASE_URL_PROD: string
 }

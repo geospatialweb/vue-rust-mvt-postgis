@@ -4,8 +4,8 @@ import { LngLat, LngLatLike, Marker } from 'mapbox-gl'
 import { Container, Service } from 'typedi'
 
 import { markerParams } from '@/configuration'
-import { StoreStates } from '@/enums'
-import { IMarkerVisibility, IQueryParam, IStoreStates } from '@/interfaces'
+import { StoreState } from '@/enums'
+import { IMarkerVisibility, IQueryParam } from '@/interfaces'
 import { ApiService, MapboxService, PopupService, StoreService } from '@/services'
 
 @Service()
@@ -13,18 +13,19 @@ export default class MarkerService {
   #apiService = Container.get(ApiService)
   #popupService = Container.get(PopupService)
   #storeService = Container.get(StoreService)
+
   #markerParams: IQueryParam[] = markerParams
+  #markerVisibilityStoreState: string = StoreState.MARKER_VISIBILITY
   #markers: Marker[][] = []
   #markersHashmap: Map<string, number> = new Map()
   #reverseMarkersHashmap: Map<number, string> = new Map()
-  #storeStates: IStoreStates = StoreStates
 
   get #markerVisibilityState() {
-    return <IMarkerVisibility>this.#storeService.getStoreState(this.#storeStates.MARKER_VISIBILITY)
+    return <IMarkerVisibility>this.#storeService.getStoreState(this.#markerVisibilityStoreState)
   }
 
   set #markerVisibilityState(state: IMarkerVisibility) {
-    this.#storeService.setStoreState(this.#storeStates.MARKER_VISIBILITY, state)
+    this.#storeService.setStoreState(this.#markerVisibilityStoreState, state)
   }
 
   setHiddenMarkersVisibility(): void {
@@ -95,7 +96,7 @@ export default class MarkerService {
   }
 
   #setMarkerVisibilityState(id: string): void {
-    const state = { ...this.#markerVisibilityState }
+    const state: IMarkerVisibility = { ...this.#markerVisibilityState }
     state[id as keyof IMarkerVisibility].isActive = !state[id as keyof IMarkerVisibility].isActive
     this.#markerVisibilityState = state
   }
@@ -108,7 +109,7 @@ export default class MarkerService {
   }
 
   #setHiddenMarkerVisibilityState(id: string): void {
-    const state = { ...this.#markerVisibilityState }
+    const state: IMarkerVisibility = { ...this.#markerVisibilityState }
     state[id as keyof IMarkerVisibility].isHidden = !state[id as keyof IMarkerVisibility].isHidden
     this.#markerVisibilityState = state
   }

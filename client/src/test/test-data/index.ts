@@ -1,5 +1,5 @@
 import { Route } from '@/enums'
-import { Authentication, Deck, Mapbox, PageNotFound, Registration } from '@/views'
+import { Authentication, Deckgl, Mapbox, PageNotFound, Registration } from '@/views'
 
 const baseURL = import.meta.env.BASE_URL
 
@@ -126,7 +126,7 @@ export default {
     {
       path: `${baseURL}${Route.DECKGL}`,
       name: Route.DECKGL,
-      component: Deck
+      component: Deckgl
     },
     {
       path: `${baseURL}${Route.MAPBOX}`,

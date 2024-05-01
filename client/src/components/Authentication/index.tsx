@@ -8,7 +8,7 @@ import { AuthenticationService, CredentialsService } from '@/services'
 import styles from './index.module.css'
 
 export default defineComponent({
-  name: 'Authentication',
+  name: 'Authentication Component',
   setup() {
     const { active, credentials, doublespacer, inactive, spacer } = styles,
       credentialsService = Container.get(CredentialsService),

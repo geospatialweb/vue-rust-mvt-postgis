@@ -6,7 +6,7 @@ import { hexagonUIButtons as buttons } from '@/configuration'
 import { HexagonLayerService, RouterService } from '@/services'
 
 export default defineComponent({
-  name: 'HexagonUIButtons',
+  name: 'HexagonUIButtons Component',
   props: {
     id: {
       type: String,

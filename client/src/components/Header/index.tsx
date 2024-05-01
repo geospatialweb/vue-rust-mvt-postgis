@@ -4,7 +4,7 @@ import { defineComponent } from 'vue'
 import styles from './index.module.css'
 
 export default defineComponent({
-  name: 'Header',
+  name: 'Header Component',
   setup() {
     const { header, name, repo, title } = styles
     return (): JSX.Element => (

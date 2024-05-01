@@ -8,7 +8,7 @@ import { HexagonLayerService, HexagonUIService } from '@/services'
 import styles from '../index.module.css'
 
 export default defineComponent({
-  name: 'HexagonUISliders',
+  name: 'HexagonUISliders Component',
   props: {
     label: {
       type: Object as PropType<IHexagonUILabelElement>,
@@ -42,7 +42,7 @@ export default defineComponent({
         <>
           <hr />
           {Object.values(props).map((value: string, idx: number) => (
-            <section>
+            <>
               <label
                 class={label[sliders[idx].id as keyof IHexagonUILabelElement] ? mouseover : mouseout}
                 data-testid={sliders[idx].id}
@@ -65,7 +65,7 @@ export default defineComponent({
               </label>
               <output for={sliders[idx].id}>{value}</output>
               <hr />
-            </section>
+            </>
           ))}
         </>
       )

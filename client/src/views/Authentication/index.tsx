@@ -2,15 +2,14 @@ import 'vue/jsx'
 import { defineComponent } from 'vue'
 
 import { Authentication } from '@/components'
-import styles from './index.module.css'
 
 export default defineComponent({
+  name: 'Authentication View',
   setup() {
-    const { login } = styles
     return (): JSX.Element => (
-      <div class={login} role="presentation">
+      <section role="presentation">
         <Authentication />
-      </div>
+      </section>
     )
   }
 })

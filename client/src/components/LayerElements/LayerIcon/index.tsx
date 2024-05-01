@@ -4,7 +4,7 @@ import { defineComponent } from 'vue'
 import styles from '../index.module.css'
 
 export default defineComponent({
-  name: 'LayerIcon',
+  name: 'LayerIcon Component',
   props: {
     height: {
       type: String,

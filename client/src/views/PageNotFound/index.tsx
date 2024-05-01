@@ -2,15 +2,14 @@ import 'vue/jsx'
 import { defineComponent } from 'vue'
 
 import { PageNotFound } from '@/components'
-import styles from './index.module.css'
 
 export default defineComponent({
+  name: 'Page Not Found View',
   setup() {
-    const { page_not_found } = styles
     return (): JSX.Element => (
-      <div class={page_not_found} role="presentation">
+      <section role="presentation">
         <PageNotFound />
-      </div>
+      </section>
     )
   }
 })

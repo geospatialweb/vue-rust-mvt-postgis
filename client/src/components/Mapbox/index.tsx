@@ -6,7 +6,7 @@ import { AuthorizationService, MapboxService, MarkerService, ModalService } from
 import styles from './index.module.css'
 
 export default defineComponent({
-  name: 'Mapbox',
+  name: 'Mapbox Component',
   props: {
     container: {
       type: String,

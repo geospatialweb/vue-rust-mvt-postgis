@@ -7,7 +7,7 @@ import { AppService } from '@/services'
 import styles from './index.module.css'
 
 export default defineComponent({
-  name: 'Footer',
+  name: 'Footer Component',
   setup() {
     const { active, inactive } = styles,
       getAppState = (): IApp => {

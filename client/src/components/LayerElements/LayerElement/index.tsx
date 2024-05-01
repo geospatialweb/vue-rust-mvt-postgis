@@ -5,7 +5,7 @@ import { ILayerElement } from '@/interfaces'
 import styles from '../index.module.css'
 
 export default defineComponent({
-  name: 'LayerElement',
+  name: 'LayerElement Component',
   props: {
     id: {
       type: String,

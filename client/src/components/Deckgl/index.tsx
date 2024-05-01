@@ -6,7 +6,7 @@ import { AuthorizationService, DeckglService, ModalService } from '@/services'
 import styles from './index.module.css'
 
 export default defineComponent({
-  name: 'Deckgl',
+  name: 'Deckgl Component',
   props: {
     canvas: {
       type: String,

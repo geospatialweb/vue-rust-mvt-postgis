@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
 
-import { Authentication, Deck, Mapbox, PageNotFound, Registration } from '@/views'
+import { Authentication, Deckgl, Mapbox, PageNotFound, Registration } from '@/views'
 import { testData } from '@/test'
 
 describe('router test suite', (): void => {
@@ -17,7 +17,7 @@ describe('router test suite', (): void => {
   })
 
   test('set deckgl route', async (): Promise<void> => {
-    render(Deck, { global: { plugins: [router] } })
+    render(Deckgl, { global: { plugins: [router] } })
     const deckgl = screen.getAllByRole('presentation')[0]
     await router.push(`${baseURL}deckgl`)
     expect(deckgl).toBeInTheDocument()

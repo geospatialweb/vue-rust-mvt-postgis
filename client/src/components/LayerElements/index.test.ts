@@ -70,7 +70,9 @@ describe('LayerElements component click event test suite', (): void => {
   test("Remaining layers class changes to 'active' on click and 'inactive' on click again", async (): Promise<void> => {
     render(LayerElements)
     for (const { id, name } of layerElements) {
-      if (id !== <string>LayerId.BIOSPHERE && id !== <string>LayerId.DECKGL) {
+      const biosphereLayer: string = LayerId.BIOSPHERE,
+        deckglLayer: string = LayerId.DECKGL
+      if (id !== biosphereLayer && id !== deckglLayer) {
         const layer = screen.getByText(name)
         await user.click(layer)
         expect(layer.className).toMatch(/_active/)

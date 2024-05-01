@@ -4,8 +4,8 @@ import { LngLatLike, Map } from 'mapbox-gl'
 import { Container, Service } from 'typedi'
 
 import { deckgl } from '@/configuration'
-import { StoreStates } from '@/enums'
-import { IDeckglOption, IDeckglSetting, IStoreStates } from '@/interfaces'
+import { StoreState } from '@/enums'
+import { IDeckglOption, IDeckglSetting } from '@/interfaces'
 import { HexagonLayerService, ModalService, StoreService } from '@/services'
 
 @Service()
@@ -13,8 +13,9 @@ export default class DeckglService {
   #hexagonLayerService = Container.get(HexagonLayerService)
   #modalService = Container.get(ModalService)
   #storeService = Container.get(StoreService)
+
   #deckglOptions: IDeckglOption = deckgl.options
-  #storeStates: IStoreStates = StoreStates
+  #deckglSettingsStoreState: string = StoreState.DECKGL_SETTINGS
 
   constructor(
     private _deck: any,
@@ -26,11 +27,11 @@ export default class DeckglService {
   }
 
   get #deckglSettingsState() {
-    return <IDeckglSetting>this.#storeService.getStoreState(this.#storeStates.DECKGL_SETTINGS)
+    return <IDeckglSetting>this.#storeService.getStoreState(this.#deckglSettingsStoreState)
   }
 
   set #deckglSettingsState(state: IDeckglSetting) {
-    this.#storeService.setStoreState(this.#storeStates.DECKGL_SETTINGS, state)
+    this.#storeService.setStoreState(this.#deckglSettingsStoreState, state)
   }
 
   loadHexagonLayer(): void {

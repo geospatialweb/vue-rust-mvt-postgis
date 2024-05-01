@@ -2,15 +2,14 @@ import 'vue/jsx'
 import { defineComponent } from 'vue'
 
 import { Registration } from '@/components'
-import styles from './index.module.css'
 
 export default defineComponent({
+  name: 'Registration View',
   setup() {
-    const { register } = styles
     return (): JSX.Element => (
-      <div class={register} role="presentation">
+      <section role="presentation">
         <Registration />
-      </div>
+      </section>
     )
   }
 })

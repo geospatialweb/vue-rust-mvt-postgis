@@ -7,8 +7,8 @@ import { HexagonLayer } from '@deck.gl/aggregation-layers'
 import { Container, Service } from 'typedi'
 
 import { hexagonLayer } from '@/configuration'
-import { StoreStates } from '@/enums'
-import { IHexagonLayerProp, IHexagonLayerPropState, IHexagonLayerStaticProp, IStoreStates } from '@/interfaces'
+import { StoreState } from '@/enums'
+import { IHexagonLayerProp, IHexagonLayerPropState, IHexagonLayerStaticProp } from '@/interfaces'
 import { DeckglService, HexagonLayerDataService, StoreService } from '@/services'
 import { HexagonLayerData } from '@/types'
 
@@ -16,17 +16,18 @@ import { HexagonLayerData } from '@/types'
 export default class HexagonLayerService {
   #hexagonLayerDataService = Container.get(HexagonLayerDataService)
   #storeService = Container.get(StoreService)
+
   #hexagonLayerData: HexagonLayerData = []
+  #hexagonLayerPropsStoreState: string = StoreState.HEXAGON_LAYER_PROPS
   #reactiveProps: IHexagonLayerProp = { ...hexagonLayer.reactiveProps }
   #staticProps: IHexagonLayerStaticProp = hexagonLayer.staticProps
-  #storeStates: IStoreStates = StoreStates
 
   get hexagonLayerPropsState() {
-    return <IHexagonLayerProp>this.#storeService.getStoreState(this.#storeStates.HEXAGON_LAYER_PROPS)
+    return <IHexagonLayerProp>this.#storeService.getStoreState(this.#hexagonLayerPropsStoreState)
   }
 
   set #hexagonLayerPropsState(state: IHexagonLayerProp) {
-    this.#storeService.setStoreState(this.#storeStates.HEXAGON_LAYER_PROPS, state)
+    this.#storeService.setStoreState(this.#hexagonLayerPropsStoreState, state)
   }
 
   setHexagonLayerPropsState({ id, value }: IHexagonLayerPropState): void {

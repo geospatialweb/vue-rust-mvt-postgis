@@ -7,7 +7,7 @@ import { TrailService } from '@/services'
 import styles from './index.module.css'
 
 export default defineComponent({
-  name: 'Trails',
+  name: 'Trails Component',
   setup() {
     const { trail } = styles,
       selectTrail = (name: string): void => {
