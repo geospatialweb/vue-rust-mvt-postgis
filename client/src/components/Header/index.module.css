@@ -7,47 +7,47 @@
   height: 4.5rem;
   min-width: 100vw;
   z-index: 1;
-}
 
-.header > img {
-  height: 3.5rem;
-  margin: 0.2rem 1rem 0;
-  width: 3.5rem;
-}
+  img {
+    height: 3.5rem;
+    margin: 0.2rem 1rem 0;
+    width: 3.5rem;
+  }
 
-.header div.name {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 0.3rem;
-  text-shadow: var(--cream-text-shadow);
-}
+  .name {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    text-shadow: var(--cream-text-shadow);
+  }
 
-.header div.title {
-  flex: 1;
-  color: var(--whitesmoke);
-  font-size: 2rem;
-  margin-right: 1rem;
-  text-align: center;
-  text-shadow: var(--black-bold-text-shadow);
-}
+  .title {
+    flex: 1;
+    color: var(--whitesmoke);
+    font-size: 2rem;
+    margin-right: 1rem;
+    text-align: center;
+    text-shadow: var(--black-bold-text-shadow);
+  }
 
-.header div.repo {
-  position: relative;
-  margin-bottom: 0.3rem;
-  right: 1.2rem;
-}
+  .repo {
+    position: relative;
+    margin-bottom: 0.3rem;
+    right: 1.2rem;
 
-.header div.repo > a {
-  color: var(--black);
-  font-size: 1.6rem;
-  font-weight: bold;
-  text-shadow: var(--cream-text-shadow);
-}
+    > a {
+      color: var(--black);
+      font-size: 1.6rem;
+      font-weight: bold;
+      text-shadow: var(--cream-text-shadow);
 
-.header div.repo > a:hover {
-  color: var(--whitesmoke);
-  font-weight: normal;
-  text-shadow: var(--black-text-shadow);
+      &:hover {
+        color: var(--whitesmoke);
+        font-weight: normal;
+        text-shadow: var(--black-text-shadow);
+      }
+    }
+  }
 }
 
 @media screen and (width <= 2560px) {

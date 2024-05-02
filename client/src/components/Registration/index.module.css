@@ -1,30 +1,30 @@
 .credentials {
   composes: credentials from '../Authentication/index.module.css';
-}
 
-.credentials button {
-  width: 9rem;
-}
+  button {
+    width: 9rem;
+  }
 
-.credentials div.spacer {
-  height: 1rem;
-}
+  .active {
+    color: var(--strong-red);
+    cursor: default;
+    font-weight: bold;
+    text-shadow: none;
+    top: -5.8rem;
+    width: 39.5rem;
+  }
 
-.credentials div.doublespacer {
-  height: 2rem;
-}
+  .inactive {
+    display: none;
+  }
 
-.credentials p.active {
-  color: var(--strong-red);
-  cursor: default;
-  font-weight: bold;
-  text-shadow: none;
-  top: -5.8rem;
-  width: 39.5rem;
-}
+  .spacer {
+    height: 1rem;
+  }
 
-.credentials p.inactive {
-  display: none;
+  .doublespacer {
+    height: 2rem;
+  }
 }
 
 @-webkit-keyframes fade-in {

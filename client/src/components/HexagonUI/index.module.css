@@ -9,50 +9,50 @@
   padding: 1rem 1.5rem;
   transform: scale(1.1) translate(2rem, 7.7rem);
   width: 25rem;
-}
 
-.hexagonui button {
-  background-color: var(--white);
-  border: var(--thick-grey-border);
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  height: 4.3rem;
-  margin-top: 0.9rem;
-  text-align: center;
-  width: 100%;
-}
+  button {
+    background-color: var(--white);
+    border: var(--thick-grey-border);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    height: 4.3rem;
+    margin-top: 0.9rem;
+    text-align: center;
+    width: 100%;
 
-.hexagonui button:hover {
-  background-color: var(--dark-taupe);
-  color: var(--white);
-  text-shadow: var(--black-text-shadow);
-}
+    &:hover {
+      background-color: var(--dark-taupe);
+      color: var(--white);
+      text-shadow: var(--black-text-shadow);
+    }
+  }
 
-.hexagonui h1 {
-  font-size: 2.25rem;
-  font-weight: bold;
-  margin: 0;
-  text-align: center;
-  text-shadow: var(--cream-text-shadow);
-}
+  h1 {
+    font-size: 2.25rem;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+    text-shadow: var(--cream-text-shadow);
+  }
 
-.hexagonui input {
-  cursor: pointer;
-  width: 100%;
-}
+  input {
+    cursor: pointer;
+    width: 100%;
+  }
 
-.hexagonui label.mouseover {
-  color: var(--white);
-  text-shadow: var(--black-text-shadow);
-}
+  output {
+    color: var(--white);
+    text-shadow: var(--black-text-shadow);
+  }
 
-.hexagonui label.mouseout {
-  text-shadow: var(--cream-text-shadow);
-}
+  .mouseover {
+    color: var(--white);
+    text-shadow: var(--black-text-shadow);
+  }
 
-.hexagonui output {
-  color: var(--white);
-  text-shadow: var(--black-text-shadow);
+  .mouseout {
+    text-shadow: var(--cream-text-shadow);
+  }
 }
 
 @-webkit-keyframes fade-in {
