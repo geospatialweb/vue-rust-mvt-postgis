@@ -3,7 +3,7 @@ import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
 import { Route } from '@/enums'
-import { ICredential } from '@/interfaces'
+import { ICredentialState } from '@/interfaces'
 import { AuthenticationService, CredentialsService } from '@/services'
 import styles from './index.module.css'
 
@@ -12,20 +12,20 @@ export default defineComponent({
   setup() {
     const { active, credentials, doublespacer, inactive, spacer } = styles,
       credentialsService = Container.get(CredentialsService),
-      getCredentialsState = (): ICredential => {
+      getCredentialsState = (): ICredentialState => {
         const { credentialsState } = credentialsService
         return credentialsState
       },
-      setCredentialsState = (state: ICredential): void => credentialsService.setCredentialsState({ ...state }),
+      setCredentialsState = (state: ICredentialState): void => credentialsService.setCredentialsState({ ...state }),
       /* eslint-disable */
-      getCredentials = (evt: any): void | ICredential => {
+      getCredentials = (evt: any): void | ICredentialState => {
         const username = evt.target[1].value as string,
           password = evt.target[2].value as string
         /* eslint-enable */
         if (!username || !password) return setCredentialsState({ isCorrect: false, isValid: true })
         return { username, password }
       },
-      login = (credentials: ICredential): void => {
+      login = (credentials: ICredentialState): void => {
         const authenticationService = Container.get(AuthenticationService)
         void authenticationService.login({ ...credentials })
       },
@@ -34,7 +34,7 @@ export default defineComponent({
         const credentials = getCredentials(evt)
         credentials && login(credentials)
       },
-      jsx = ({ isAdmin, isCorrect, isValid, password, username }: ICredential): JSX.Element => (
+      jsx = ({ isAdmin, isCorrect, isValid, password, username }: ICredentialState): JSX.Element => (
         <div class={credentials} role="presentation">
           <p class={isCorrect ? inactive : active}>Username/password incorrect</p>
           <p class={isValid ? inactive : active}>Username is not registered</p>

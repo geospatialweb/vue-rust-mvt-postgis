@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
-import { LayerId } from '@/enums'
+import { Layer } from '@/enums'
 import { MarkerService } from '@/services'
 import { mockMapImplementation } from '@/test'
 
@@ -21,7 +21,7 @@ describe('MarkerService test suite', (): void => {
   })
 
   test('toggleMarkerVisibility method should be called', (): void => {
-    const officeLayer: string = LayerId.OFFICE,
+    const officeLayer: string = Layer.OFFICE,
       spy = vi.spyOn(markerService, 'toggleMarkerVisibility').mockImplementation(mockMapImplementation)
     markerService.toggleMarkerVisibility(officeLayer)
     expect(spy).toHaveBeenCalledTimes(1)

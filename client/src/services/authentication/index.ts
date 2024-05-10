@@ -1,7 +1,7 @@
 import { Container, Service } from 'typedi'
 
 import { Route } from '@/enums'
-import { ICredential, IJWT } from '@/interfaces'
+import { ICredentialState, IJWTState } from '@/interfaces'
 import { AuthorizationService, CredentialsService, MarkerService, RouterService } from '@/services'
 
 @Service()
@@ -13,7 +13,7 @@ export default class AuthenticationService {
 
   #mapboxRoute = Route.MAPBOX
 
-  async login(credentials: ICredential): Promise<void> {
+  async login(credentials: ICredentialState): Promise<void> {
     let { username } = credentials
     username = await this.#validateUser(<string>username)
     if (!username) {
@@ -31,7 +31,7 @@ export default class AuthenticationService {
     await this.#setRoute(this.#mapboxRoute)
   }
 
-  async #login(credentials: ICredential): Promise<IJWT> {
+  async #login(credentials: ICredentialState): Promise<IJWTState> {
     return this.#credentialsService.login(credentials)
   }
 
@@ -39,19 +39,19 @@ export default class AuthenticationService {
     await this.#markerService.setMarkerFeatures(token)
   }
 
-  async #setRoute(name: string): Promise<void> {
-    await this.#routerService.setRoute(name)
+  async #setRoute(route: string): Promise<void> {
+    await this.#routerService.setRoute(route)
   }
 
   async #validateUser(username: string): Promise<string> {
     return this.#credentialsService.validateUser(username)
   }
 
-  #setCredentialsState(state: ICredential): void {
+  #setCredentialsState(state: ICredentialState): void {
     this.#credentialsService.setCredentialsState(state)
   }
 
-  #setJWTState({ token, expiry }: IJWT): void {
+  #setJWTState({ token, expiry }: IJWTState): void {
     this.#authorizationService.setJWTState({ token, expiry })
   }
 

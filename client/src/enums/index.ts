@@ -9,7 +9,7 @@ export enum Endpoint {
   VALIDATE_USER_ENDPOINT = '/credentials/validateuser'
 }
 
-export enum LayerId {
+export enum Layer {
   BIOSPHERE = 'biosphere',
   BIOSPHERE_BORDER = 'biosphere-border',
   DECKGL = 'deckgl',
@@ -27,12 +27,12 @@ export enum Route {
   REGISTER = 'register'
 }
 
-export enum StoreState {
+export enum State {
   APP = 'app',
   CREDENTIALS = 'credentials',
   DECKGL_SETTINGS = 'deckglSettings',
-  HEXAGON_LAYER_PROPS = 'hexagonLayerProps',
-  HEXAGON_UI_LAYER_ELEMENT = 'hexagonUILabelElement',
+  HEXAGON_LAYER = 'hexagonLayer',
+  HEXAGON_UI_LABEL = 'hexagonUILabel',
   JWT = 'JWT',
   LAYER_ELEMENTS = 'layerElements',
   LAYER_VISIBILITY = 'layerVisibility',

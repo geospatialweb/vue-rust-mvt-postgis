@@ -66,8 +66,8 @@ export default class HttpService {
     this.#consoleError(<string>data)
   }
 
-  async #setRoute(name: string): Promise<void> {
-    await this.#routerService.setRoute(name)
+  async #setRoute(route: string): Promise<void> {
+    await this.#routerService.setRoute(route)
   }
 
   #consoleError(msg: string): void {

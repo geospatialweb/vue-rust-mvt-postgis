@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
-import { LayerId } from '@/enums'
+import { Layer } from '@/enums'
 import { ITrail } from '@/interfaces'
 import { MapboxService } from '@/services'
 import { mockMapImplementation, testData } from '@/test'
@@ -53,7 +53,7 @@ describe('MapboxService test suite', (): void => {
   })
 
   test('setLayerVisibility method should be called', (): void => {
-    const biosphereLayer: string = LayerId.BIOSPHERE,
+    const biosphereLayer: string = Layer.BIOSPHERE,
       spy = vi.spyOn(mapboxService, 'setLayerVisibility').mockImplementation(mockMapImplementation)
     mapboxService.setLayerVisibility(biosphereLayer)
     expect(spy).toHaveBeenCalledTimes(1)

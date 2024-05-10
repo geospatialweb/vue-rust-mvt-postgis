@@ -2,12 +2,12 @@ import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { layerElements } from '@/configuration'
-import { ILayerElement } from '@/interfaces'
+import { ILayerElementsState } from '@/interfaces'
 import { LayerElementService } from '@/services'
 import { mockMapImplementation } from '@/test'
 
 describe('LayerElementService test suite', (): void => {
-  const ids = layerElements.map((layer: ILayerElement): string => <string>Object.values(layer)[0])
+  const ids = layerElements.map((layer: ILayerElementsState): string => <string>Object.values(layer)[0])
 
   setActivePinia(createPinia())
 

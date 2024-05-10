@@ -1,8 +1,8 @@
-import { LayerId, Url } from '@/enums'
+import { Layer, Url } from '@/enums'
 
 const mvtBaseURLDev: string = Url.MVT_BASE_URL_DEV,
-  biosphereLayer: string = LayerId.BIOSPHERE,
-  trailsLayer: string = LayerId.TRAILS
+  biosphereLayer: string = Layer.BIOSPHERE,
+  trailsLayer: string = Layer.TRAILS
 
 export default [
   {

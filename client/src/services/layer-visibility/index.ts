@@ -1,31 +1,31 @@
 import { Container, Service } from 'typedi'
 
-import { LayerId, StoreState } from '@/enums'
-import { ILayerVisibility } from '@/interfaces'
+import { Layer, State } from '@/enums'
+import { ILayerVisibilityState } from '@/interfaces'
 import { StoreService } from '@/services'
 
 @Service()
 export default class LayerVisibilityService {
   #storeService = Container.get(StoreService)
 
-  #biosphereLayer: string = LayerId.BIOSPHERE
-  #biosphereBorderLayer: string = LayerId.BIOSPHERE_BORDER
-  #layerVisibilityStoreState: string = StoreState.LAYER_VISIBILITY
+  #biosphereLayer: string = Layer.BIOSPHERE
+  #biosphereBorderLayer: string = Layer.BIOSPHERE_BORDER
+  #layerVisibility: string = State.LAYER_VISIBILITY
 
   get layerVisibilityState() {
-    return <ILayerVisibility>this.#storeService.getStoreState(this.#layerVisibilityStoreState)
+    return <ILayerVisibilityState>this.#storeService.getState(this.#layerVisibility)
   }
 
-  set #layerVisibilityState(state: ILayerVisibility) {
-    this.#storeService.setStoreState(this.#layerVisibilityStoreState, state)
+  set #layerVisibilityState(state: ILayerVisibilityState) {
+    this.#storeService.setState(this.#layerVisibility, state)
   }
 
   setLayerVisibilityState(id: string): void {
-    const state: ILayerVisibility = { ...this.layerVisibilityState }
-    state[id as keyof ILayerVisibility].isActive = !state[id as keyof ILayerVisibility].isActive
+    const state: ILayerVisibilityState = { ...this.layerVisibilityState }
+    state[id as keyof ILayerVisibilityState].isActive = !state[id as keyof ILayerVisibilityState].isActive
     if (id === this.#biosphereLayer) {
-      state[this.#biosphereBorderLayer as keyof ILayerVisibility].isActive =
-        !state[this.#biosphereBorderLayer as keyof ILayerVisibility].isActive
+      state[this.#biosphereBorderLayer as keyof ILayerVisibilityState].isActive =
+        !state[this.#biosphereBorderLayer as keyof ILayerVisibilityState].isActive
     }
     this.#layerVisibilityState = state
   }

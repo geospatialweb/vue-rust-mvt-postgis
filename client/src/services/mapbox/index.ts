@@ -3,13 +3,13 @@ import { AnyLayer, FillLayer, LineLayer, Map, MapLayerMouseEvent, NavigationCont
 import { Container, Service } from 'typedi'
 
 import { mapbox, mapboxDraw } from '@/configuration'
-import { LayerId, StoreState } from '@/enums'
+import { Layer, State } from '@/enums'
 import {
-  ILayerElement,
-  ILayerVisibility,
+  ILayerElementsState,
+  ILayerVisibilityState,
   IMapboxOption,
-  IMapboxSetting,
-  IMapboxStyle,
+  IMapboxSettingState,
+  IMapboxStyleState,
   INavigationControl,
   ITrail
 } from '@/interfaces'
@@ -36,10 +36,10 @@ export default class MapboxService {
   #popupService = Container.get(PopupService)
   #storeService = Container.get(StoreService)
 
-  #biosphereLayer: string = LayerId.BIOSPHERE
+  #biosphereLayer: string = Layer.BIOSPHERE
   #mapboxDraw: MapboxDraw = new MapboxDraw(mapboxDraw.options)
   #mapboxOptions: IMapboxOption = mapbox.options
-  #mapboxSettingsStoreState: string = StoreState.MAPBOX_SETTINGS
+  #mapboxSettings: string = State.MAPBOX_SETTINGS
   #navigationControl: INavigationControl = mapbox.navigationControl
   #skyLayer: SkyLayer = <SkyLayer>mapbox.skyLayer
 
@@ -50,11 +50,11 @@ export default class MapboxService {
   }
 
   get #mapboxSettingsState() {
-    return <IMapboxSetting>this.#storeService.getStoreState(this.#mapboxSettingsStoreState)
+    return <IMapboxSettingState>this.#storeService.getState(this.#mapboxSettings)
   }
 
-  set #mapboxSettingsState(state: IMapboxSetting) {
-    this.#storeService.setStoreState(this.#mapboxSettingsStoreState, state)
+  set #mapboxSettingsState(state: IMapboxSettingState) {
+    this.#storeService.setState(this.#mapboxSettings, state)
   }
 
   loadMap(): void {
@@ -93,11 +93,11 @@ export default class MapboxService {
       { appState: { isMobile }} = appService,
       { layerVisibilityState } = this.#layerVisibilityService
 
-    if (layerVisibilityState[id as keyof ILayerVisibility].isActive) {
+    if (layerVisibilityState[id as keyof ILayerVisibilityState].isActive) {
       this.#setMapLayoutProperty(id, 'visible')
       id === this.#biosphereLayer && !isMobile && this.#addLayerVisibilityEventListeners(id)
     }
-    if (!layerVisibilityState[id as keyof ILayerVisibility].isActive) {
+    if (!layerVisibilityState[id as keyof ILayerVisibilityState].isActive) {
       this.#setMapLayoutProperty(id, 'none')
       id === this.#biosphereLayer && !isMobile && this.#removeLayerVisibilityEventListeners(id)
     }
@@ -106,7 +106,7 @@ export default class MapboxService {
   #drawModeChange(): void {
     const layerElementService = Container.get(LayerElementService),
       { layerElementsState } = layerElementService,
-      layerElement = (layerElement: ILayerElement): boolean => layerElement.id === this.#biosphereLayer,
+      layerElement = (layerElement: ILayerElementsState): boolean => layerElement.id === this.#biosphereLayer,
       idx = layerElementsState.findIndex(layerElement)
     if (idx >= 0 && layerElementsState[idx].isActive) {
       layerElementService.displayLayerElement(this.#biosphereLayer)
@@ -123,7 +123,7 @@ export default class MapboxService {
 
   #setMapboxSettingsState(): void {
     const { activeMapboxStyle, mapboxStylesState } = this.#mapboxStyleService,
-      style = mapboxStylesState[activeMapboxStyle as keyof IMapboxStyle].url
+      style = mapboxStylesState[activeMapboxStyle as keyof IMapboxStyleState].url
     this.#mapboxSettingsState = {
       ...this.#mapboxSettingsState,
       bearing: this._map.getBearing(),
@@ -138,7 +138,7 @@ export default class MapboxService {
     this.#mapboxStyleService.setMapboxStylesState()
     this.#mapboxStyleService.setActiveMapboxStyle()
     const { activeMapboxStyle, mapboxStylesState } = this.#mapboxStyleService,
-      style = mapboxStylesState[activeMapboxStyle as keyof IMapboxStyle].url
+      style = mapboxStylesState[activeMapboxStyle as keyof IMapboxStyleState].url
     this._map.setStyle(style)
   }
 

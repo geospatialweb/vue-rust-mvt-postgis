@@ -7,8 +7,8 @@ import { HexagonLayer } from '@deck.gl/aggregation-layers'
 import { Container, Service } from 'typedi'
 
 import { hexagonLayer } from '@/configuration'
-import { StoreState } from '@/enums'
-import { IHexagonLayerProp, IHexagonLayerPropState, IHexagonLayerStaticProp } from '@/interfaces'
+import { State } from '@/enums'
+import { IHexagonLayerProp, IHexagonLayerState, IHexagonLayerStateProp } from '@/interfaces'
 import { DeckglService, HexagonLayerDataService, StoreService } from '@/services'
 import { HexagonLayerData } from '@/types'
 
@@ -17,27 +17,27 @@ export default class HexagonLayerService {
   #hexagonLayerDataService = Container.get(HexagonLayerDataService)
   #storeService = Container.get(StoreService)
 
+  #hexagonLayer: string = State.HEXAGON_LAYER
   #hexagonLayerData: HexagonLayerData = []
-  #hexagonLayerPropsStoreState: string = StoreState.HEXAGON_LAYER_PROPS
-  #reactiveProps: IHexagonLayerProp = { ...hexagonLayer.reactiveProps }
-  #staticProps: IHexagonLayerStaticProp = hexagonLayer.staticProps
+  #props: IHexagonLayerProp = hexagonLayer.props
+  #state: IHexagonLayerState = { ...hexagonLayer.state }
 
-  get hexagonLayerPropsState() {
-    return <IHexagonLayerProp>this.#storeService.getStoreState(this.#hexagonLayerPropsStoreState)
+  get hexagonLayerState() {
+    return <IHexagonLayerState>this.#storeService.getState(this.#hexagonLayer)
   }
 
-  set #hexagonLayerPropsState(state: IHexagonLayerProp) {
-    this.#storeService.setStoreState(this.#hexagonLayerPropsStoreState, state)
+  set #hexagonLayerState(state: IHexagonLayerState) {
+    this.#storeService.setState(this.#hexagonLayer, state)
   }
 
-  setHexagonLayerPropsState({ id, value }: IHexagonLayerPropState): void {
-    const state: IHexagonLayerProp = { ...this.hexagonLayerPropsState }
-    state[id as keyof IHexagonLayerProp] = Number(value)
-    this.#hexagonLayerPropsState = state
+  setHexagonLayerState({ id, value }: IHexagonLayerStateProp): void {
+    const state: IHexagonLayerState = { ...this.hexagonLayerState }
+    state[id as keyof IHexagonLayerState] = Number(value)
+    this.#hexagonLayerState = state
   }
 
-  resetHexagonLayerPropsState(): void {
-    this.#hexagonLayerPropsState = this.#reactiveProps
+  resetHexagonLayerState(): void {
+    this.#hexagonLayerState = this.#state
   }
 
   #setHexagonLayerData(): void {
@@ -52,8 +52,8 @@ export default class HexagonLayerService {
       hexagonLayer = new HexagonLayer({
         data: this.#hexagonLayerData,
         getPosition: (d: number[]): number[] => d,
-        ...this.#staticProps,
-        ...this.hexagonLayerPropsState
+        ...this.#props,
+        ...this.hexagonLayerState
       })
     deck.setProps({ layers: [hexagonLayer] })
   }

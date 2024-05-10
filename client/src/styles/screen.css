@@ -57,9 +57,8 @@ body {
 
 body,
 canvas {
-  inset: 0;
-  margin: 0;
   overflow: hidden;
+  margin: 0;
   padding: 0;
 }
 
@@ -68,8 +67,7 @@ a {
 }
 
 button,
-input,
-select {
+input {
   font: inherit;
 }
 
@@ -172,6 +170,10 @@ ul {
 @media screen and (width <=430px) and (height <=1024px), (width <=1024px) and (height <=430px) {
   .mapboxgl-ctrl-top-left {
     transform: rotate(90deg) scale(0.5) translate(-6.9rem, -2.7rem);
+  }
+
+  .mapboxgl-ctrl-top-right {
+    transform: scale(0.9);
   }
 }
 

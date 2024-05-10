@@ -3,7 +3,7 @@ import { FeatureCollection } from 'geojson'
 import { Container, Service } from 'typedi'
 
 import { Endpoint } from '@/enums'
-import { ICredential, IQueryParam } from '@/interfaces'
+import { ICredentialState, IQueryParam } from '@/interfaces'
 import { HttpService } from '@/services'
 
 @Service()
@@ -36,7 +36,7 @@ export default class ApiService {
     return <string>await this.#httpService.get(this.#getUserEndpoint, token, params)
   }
 
-  async updatePassword(token: string, credentials: ICredential): Promise<string> {
+  async updatePassword(token: string, credentials: ICredentialState): Promise<string> {
     const body = <AxiosRequestConfig>{ ...credentials }
     return <string>await this.#httpService.patch(this.#updatePasswordEndpoint, token, body)
   }

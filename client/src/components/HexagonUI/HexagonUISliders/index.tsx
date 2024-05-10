@@ -2,32 +2,41 @@ import 'vue/jsx'
 import { Container } from 'typedi'
 import { defineComponent, PropType } from 'vue'
 
-import { hexagonUISliders as sliders } from '@/configuration'
-import { IHexagonLayerProp, IHexagonLayerPropState, IHexagonUILabelElement, IHexagonUIProp } from '@/interfaces'
+import { hexagonUISliders } from '@/configuration'
+import {
+  IHexagonLayerState,
+  IHexagonLayerStateProp,
+  IHexagonUILabelState,
+  IHexagonUISlider,
+  IHexagonUISliderProp
+} from '@/interfaces'
 import { HexagonLayerService, HexagonUIService } from '@/services'
 import styles from '../index.module.css'
 
 export default defineComponent({
   name: 'HexagonUISliders Component',
   props: {
-    label: {
-      type: Object as PropType<IHexagonUILabelElement>,
+    labelState: {
+      type: Object as PropType<IHexagonUILabelState>,
       required: true
     },
-    props: {
-      type: Object as PropType<IHexagonLayerProp>,
+    layerState: {
+      type: Object as PropType<IHexagonLayerState>,
       required: true
     }
   },
-  setup(props: IHexagonUIProp) {
+  setup(props: IHexagonUISliderProp) {
     const { mouseover, mouseout } = styles,
-      hexagonLayerService = Container.get(HexagonLayerService),
-      hexagonUIService = Container.get(HexagonUIService),
-      renderHexagonLayer = ({ id, value }: IHexagonLayerPropState): void => {
-        hexagonLayerService.setHexagonLayerPropsState({ id, value })
+      sliders: IHexagonUISlider[] = hexagonUISliders,
+      renderHexagonLayer = ({ id, value }: IHexagonLayerStateProp): void => {
+        const hexagonLayerService = Container.get(HexagonLayerService)
+        hexagonLayerService.setHexagonLayerState({ id, value })
         hexagonLayerService.renderHexagonLayer()
       },
-      setHexagonUILabelElementState = (id: string): void => hexagonUIService.setHexagonUILabelElementState(id),
+      setHexagonUILabelState = (id: string): void => {
+        const hexagonUIService = Container.get(HexagonUIService)
+        hexagonUIService.setHexagonUILabelState(id)
+      },
       onInputHandler = (evt: Event): void => {
         evt.stopPropagation()
         const { id, value } = evt.target as HTMLInputElement
@@ -36,18 +45,18 @@ export default defineComponent({
       onMouseover_onMouseoutHandler = (evt: MouseEvent): void => {
         evt.stopPropagation()
         const { id } = evt.target as HTMLInputElement
-        setHexagonUILabelElementState(id)
+        setHexagonUILabelState(id)
       },
-      jsx = ({ props, label }: IHexagonUIProp): JSX.Element => (
-        <>
+      jsx = ({ labelState, layerState }: IHexagonUISliderProp): JSX.Element => (
+        <div>
           <hr />
-          {Object.values(props).map((value: string, idx: number) => (
+          {Object.values(layerState).map((value: string, idx: number) => (
             <>
               <label
-                class={label[sliders[idx].id as keyof IHexagonUILabelElement] ? mouseover : mouseout}
+                class={labelState[sliders[idx].id as keyof IHexagonUILabelState] ? mouseover : mouseout}
                 data-testid={sliders[idx].id}
               >
-                {sliders[idx].text}
+                <span>{sliders[idx].text}</span>
                 <input
                   id={sliders[idx].id}
                   min={sliders[idx].min}
@@ -67,7 +76,7 @@ export default defineComponent({
               <hr />
             </>
           ))}
-        </>
+        </div>
       )
     return (): JSX.Element => jsx(props)
   }

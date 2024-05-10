@@ -3,37 +3,35 @@ import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
 import { HexagonUIButtons, HexagonUIHeading, HexagonUISliders } from '@/components'
-import { hexagonUIButtons as buttons, hexagonUIHeading } from '@/configuration'
-import { IHexagonLayerProp, IHexagonUILabelElement, ISlot } from '@/interfaces'
+import { hexagonUIButtons, hexagonUIHeading } from '@/configuration'
+import { IHexagonLayerState, IHexagonUIButton, IHexagonUILabelState } from '@/interfaces'
 import { HexagonLayerService, HexagonUIService } from '@/services'
 import styles from './index.module.css'
 
 export default defineComponent({
   name: 'HexagonUI Component',
   setup() {
-    /* prettier-ignore */
-    const { hexagonui } = styles,
+    const { hexagon_ui } = styles,
       { heading } = hexagonUIHeading,
-      getHexagonLayerPropsState = (): IHexagonLayerProp => {
-        const hexagonLayerService = Container.get(HexagonLayerService),
-          { hexagonLayerPropsState } = hexagonLayerService
-        return hexagonLayerPropsState
+      buttons: IHexagonUIButton[] = hexagonUIButtons,
+      getHexagonLayerState = (): IHexagonLayerState => {
+        const { hexagonLayerState } = Container.get(HexagonLayerService)
+        return hexagonLayerState
       },
-      getHexagonUILabelElementState = (): IHexagonUILabelElement => {
-        const hexagonUIService = Container.get(HexagonUIService),
-          { hexagonUILabelElementState } = hexagonUIService
-        return hexagonUILabelElementState
+      getHexagonUILabelState = (): IHexagonUILabelState => {
+        const { hexagonUILabelState } = Container.get(HexagonUIService)
+        return hexagonUILabelState
       },
-      setButtonSlot = (slot: ISlot): JSX.Element => (
-        <HexagonUIButtons id={slot.id}>{{ text: (): string => slot.text }}</HexagonUIButtons>
+      setButtonSlots = (button: IHexagonUIButton): JSX.Element => (
+        <HexagonUIButtons id={button.id}>{{ text: (): string => button.text }}</HexagonUIButtons>
       ),
-      jsx = (props: IHexagonLayerProp, label: IHexagonUILabelElement): JSX.Element => (
-        <div class={hexagonui} role="presentation">
+      jsx = (labelState: IHexagonUILabelState, layerState: IHexagonLayerState): JSX.Element => (
+        <div class={hexagon_ui} role="presentation">
           <HexagonUIHeading>{{ heading: (): string => heading }}</HexagonUIHeading>
-          <HexagonUISliders label={label} props={props} />
-          {buttons.map(setButtonSlot)}
+          <HexagonUISliders labelState={labelState} layerState={layerState} />
+          {buttons.map(setButtonSlots)}
         </div>
       )
-    return (): JSX.Element => jsx(getHexagonLayerPropsState(), getHexagonUILabelElementState())
+    return (): JSX.Element => jsx(getHexagonUILabelState(), getHexagonLayerState())
   }
 })

@@ -3,7 +3,7 @@ import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
 import { Route } from '@/enums'
-import { ICredential } from '@/interfaces'
+import { ICredentialState } from '@/interfaces'
 import { CredentialsService, RegistrationService } from '@/services'
 import styles from './index.module.css'
 
@@ -12,20 +12,20 @@ export default defineComponent({
   setup() {
     const { active, credentials, doublespacer, inactive, spacer } = styles,
       credentialsService = Container.get(CredentialsService),
-      getCredentialsState = (): ICredential => {
+      getCredentialsState = (): ICredentialState => {
         const { credentialsState } = credentialsService
         return credentialsState
       },
-      setCredentialsState = (state: ICredential): void => credentialsService.setCredentialsState({ ...state }),
+      setCredentialsState = (state: ICredentialState): void => credentialsService.setCredentialsState({ ...state }),
       /* eslint-disable */
-      getCredentials = (evt: any): void | ICredential => {
+      getCredentials = (evt: any): void | ICredentialState => {
         const username = evt.target[1].value as string,
           password = evt.target[2].value as string
         /* eslint-enable */
         if (!username || !password) return setCredentialsState({ isCorrect: false, isValid: true })
         return { username, password }
       },
-      register = (credentials: ICredential): void => {
+      register = (credentials: ICredentialState): void => {
         const registrationService = Container.get(RegistrationService)
         void registrationService.register({ ...credentials })
       },
@@ -34,7 +34,7 @@ export default defineComponent({
         const credentials = getCredentials(evt)
         credentials && register(credentials)
       },
-      jsx = ({ isCorrect, isValid }: ICredential): JSX.Element => (
+      jsx = ({ isCorrect, isValid }: ICredentialState): JSX.Element => (
         <div class={credentials} role="presentation">
           <p class={isCorrect ? inactive : active}>Username/password incorrect</p>
           <p class={isValid ? inactive : active}>Username already registered</p>

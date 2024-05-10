@@ -3,44 +3,44 @@ import { FeatureCollection } from 'geojson'
 import { StoreDefinition } from 'pinia'
 
 import {
-  IApp,
-  ICredential,
-  IDeckglSetting,
-  IHexagonLayerProp,
-  IHexagonUILabelElement,
-  IJWT,
-  ILayerElement,
-  ILayerVisibility,
-  IMapboxSetting,
-  IMapboxStyle,
-  IMarkerVisibility,
-  IModal,
-  IStoreState
+  IAppState,
+  ICredentialState,
+  IDeckglSettingState,
+  IHexagonLayerState,
+  IHexagonUILabelState,
+  IJWTState,
+  ILayerElementsState,
+  ILayerVisibilityState,
+  IMapboxSettingState,
+  IMapboxStyleState,
+  IMarkerVisibilityState,
+  IModalState,
+  IState
 } from '@/interfaces'
 
 export type CsvResponse = DSVRowArray<string> | void
 export type HexagonLayerData = number[][]
-export type HttpResponse = FeatureCollection | IJWT | string | void
+export type HttpResponse = FeatureCollection | IJWTState | string | void
 export type LayerElementsHashmap = Record<string, (id: string) => void>
 export type MediaQuery = Record<string, number> | undefined
 export type MediaQueryCollection = Record<string, MediaQuery>
 export type NavigationControlPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
-export type StoreState =
-  | IApp
-  | ICredential
-  | IDeckglSetting
-  | IHexagonLayerProp
-  | IHexagonUILabelElement
-  | IJWT
-  | ILayerElement[]
-  | ILayerVisibility
-  | IMapboxSetting
-  | IMapboxStyle
-  | IMarkerVisibility
-  | IModal
+export type State =
+  | IAppState
+  | ICredentialState
+  | IDeckglSettingState
+  | IHexagonLayerState
+  | IHexagonUILabelState
+  | IJWTState
+  | ILayerElementsState[]
+  | ILayerVisibilityState
+  | IMapboxSettingState
+  | IMapboxStyleState
+  | IMarkerVisibilityState
+  | IModalState
 export type UseStoreDefinition = StoreDefinition<
   'store',
-  IStoreState,
-  { getStoreState: (state: IStoreState) => (id: string) => StoreState },
-  { setStoreState(id: string, state: StoreState): void }
+  IState,
+  { getState: (state: IState) => (id: string) => State },
+  { setState(id: string, state: State): void }
 >

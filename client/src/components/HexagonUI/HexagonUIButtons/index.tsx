@@ -2,7 +2,8 @@ import 'vue/jsx'
 import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
-import { hexagonUIButtons as buttons } from '@/configuration'
+import { hexagonUIButtons } from '@/configuration'
+import { IHexagonUIButton } from '@/interfaces'
 import { HexagonLayerService, RouterService } from '@/services'
 
 export default defineComponent({
@@ -14,18 +15,20 @@ export default defineComponent({
     }
   },
   setup({ id }, { slots }) {
-    const hexagonLayerService = Container.get(HexagonLayerService),
-      routerService = Container.get(RouterService),
+    const buttons: IHexagonUIButton[] = hexagonUIButtons,
       resetHexagonLayer = (): void => {
-        hexagonLayerService.resetHexagonLayerPropsState()
+        const hexagonLayerService = Container.get(HexagonLayerService)
+        hexagonLayerService.resetHexagonLayerState()
         hexagonLayerService.renderHexagonLayer()
       },
-      setRoute = (name: string): void => void routerService.setRoute(name),
+      setRoute = (route: string): void => {
+        const routerService = Container.get(RouterService)
+        void routerService.setRoute(route)
+      },
       onClickHandler = (evt: MouseEvent): void => {
         evt.stopPropagation()
         const { id } = evt.target as HTMLButtonElement
-        if (id === buttons[0].id) return resetHexagonLayer()
-        setRoute(id)
+        id === buttons[0].id ? resetHexagonLayer() : setRoute(id)
       }
     return (): JSX.Element => (
       <button id={id} onClick={(evt): void => onClickHandler(evt)}>

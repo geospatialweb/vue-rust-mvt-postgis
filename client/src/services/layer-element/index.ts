@@ -1,8 +1,8 @@
 import cloneDeep from 'lodash.clonedeep'
 import { Container, Service } from 'typedi'
 
-import { LayerId, StoreState } from '@/enums'
-import { ILayerElement } from '@/interfaces'
+import { Layer, State } from '@/enums'
+import { ILayerElementsState } from '@/interfaces'
 import { LayerVisibilityService, MapboxService, MarkerService, RouterService, StoreService } from '@/services'
 import { LayerElementsHashmap } from '@/types'
 
@@ -14,26 +14,26 @@ export default class LayerElementService {
   #routerService = Container.get(RouterService)
   #storeService = Container.get(StoreService)
 
-  #biosphereLayer: string = LayerId.BIOSPHERE
-  #biosphereBorderLayer: string = LayerId.BIOSPHERE_BORDER
-  #deckglLayer: string = LayerId.DECKGL
+  #biosphereLayer: string = Layer.BIOSPHERE
+  #biosphereBorderLayer: string = Layer.BIOSPHERE_BORDER
+  #deckglLayer: string = Layer.DECKGL
+  #layerElements: string = State.LAYER_ELEMENTS
   #layerElementsHashmap: LayerElementsHashmap = {}
-  #layerElementsStoreState: string = StoreState.LAYER_ELEMENTS
-  #officeLayer: string = LayerId.OFFICE
-  #placesLayer: string = LayerId.PLACES
-  #satelliteLayer: string = LayerId.SATELLITE
-  #trailsLayer: string = LayerId.TRAILS
+  #officeLayer: string = Layer.OFFICE
+  #placesLayer: string = Layer.PLACES
+  #satelliteLayer: string = Layer.SATELLITE
+  #trailsLayer: string = Layer.TRAILS
 
   constructor() {
     this.#createLayerElementsHashmap()
   }
 
   get layerElementsState() {
-    return <ILayerElement[]>this.#storeService.getStoreState(this.#layerElementsStoreState)
+    return <ILayerElementsState[]>this.#storeService.getState(this.#layerElements)
   }
 
-  set #layerElementsState(state: ILayerElement[]) {
-    this.#storeService.setStoreState(this.#layerElementsStoreState, state)
+  set #layerElementsState(state: ILayerElementsState[]) {
+    this.#storeService.setState(this.#layerElements, state)
   }
 
   displayLayerElement(id: string): void {
@@ -84,7 +84,7 @@ export default class LayerElementService {
 
   #setLayerElementsState(id: string): void {
     const state = cloneDeep(this.layerElementsState),
-      layerElement = (layerElement: ILayerElement): boolean => layerElement.id === id,
+      layerElement = (layerElement: ILayerElementsState): boolean => layerElement.id === id,
       idx = state.findIndex(layerElement)
     if (idx >= 0) state[idx].isActive = !state[idx].isActive
     this.#layerElementsState = state

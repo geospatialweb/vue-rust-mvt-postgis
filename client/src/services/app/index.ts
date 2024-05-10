@@ -1,8 +1,8 @@
 import { Container, Service } from 'typedi'
 
 import { mediaQueryCollection } from '@/configuration'
-import { StoreState } from '@/enums'
-import { IApp } from '@/interfaces'
+import { State } from '@/enums'
+import { IAppState } from '@/interfaces'
 import { DeckglService, MapboxService, StoreService, TrailService } from '@/services'
 import { MediaQuery, MediaQueryCollection } from '@/types'
 
@@ -13,7 +13,7 @@ export default class AppService {
   #storeService = Container.get(StoreService)
   #trailService = Container.get(TrailService)
 
-  #appStoreState: string = StoreState.APP
+  #app: string = State.APP
   #mediaQueryCollection: MediaQueryCollection = mediaQueryCollection
 
   constructor() {
@@ -21,11 +21,11 @@ export default class AppService {
   }
 
   get appState() {
-    return <IApp>this.#storeService.getStoreState(this.#appStoreState)
+    return <IAppState>this.#storeService.getState(this.#app)
   }
 
-  set #appState(state: IApp) {
-    this.#storeService.setStoreState(this.#appStoreState, state)
+  set #appState(state: IAppState) {
+    this.#storeService.setState(this.#app, state)
   }
 
   setInitialZoom(): void {
@@ -39,9 +39,9 @@ export default class AppService {
   }
 
   #setAppState(): void {
-    const state: IApp = { ...this.appState }
+    const state: IAppState = { ...this.appState }
     state.initialZoom = this.#getInitialZoom()
-    state.isMobile = this.#getIsMobile()
+    state.isMobile = this.#isMobile()
     this.#appState = state
   }
 
@@ -51,7 +51,7 @@ export default class AppService {
     return mediaQuery && mediaQuery[1]
   }
 
-  #getIsMobile(): boolean {
+  #isMobile(): boolean {
     const mobile = /Android|BB|iPad|iPhone|Nokia/i
     return !!navigator.userAgent.match(mobile)
   }

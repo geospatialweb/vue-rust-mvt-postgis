@@ -1,7 +1,8 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
-import { hexagonUISliders as sliders } from '@/configuration'
+import { hexagonUISliders } from '@/configuration'
+import { IHexagonUISlider } from '@/interfaces'
 import { HexagonLayerService } from '@/services'
 import { mockDeckImplementation } from '@/test'
 
@@ -20,17 +21,18 @@ describe('HexagonLayerService test suite', (): void => {
     expect(spy).toHaveReturnedTimes(1)
   })
 
-  test('resetHexagonLayerPropsState method should be called', (): void => {
-    const spy = vi.spyOn(hexagonLayerService, 'resetHexagonLayerPropsState').mockImplementation(mockDeckImplementation)
-    hexagonLayerService.resetHexagonLayerPropsState()
+  test('resetHexagonLayerState method should be called', (): void => {
+    const spy = vi.spyOn(hexagonLayerService, 'resetHexagonLayerState').mockImplementation(mockDeckImplementation)
+    hexagonLayerService.resetHexagonLayerState()
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveReturnedTimes(1)
   })
 
-  test('setHexagonLayerPropsState method should be called', (): void => {
-    const { id, min: value } = sliders[0],
-      spy = vi.spyOn(hexagonLayerService, 'setHexagonLayerPropsState').mockImplementation(mockDeckImplementation)
-    hexagonLayerService.setHexagonLayerPropsState({ id, value })
+  test('setHexagonLayerState method should be called', (): void => {
+    const sliders: IHexagonUISlider[] = hexagonUISliders,
+      { id, min: value } = sliders[0],
+      spy = vi.spyOn(hexagonLayerService, 'setHexagonLayerState').mockImplementation(mockDeckImplementation)
+    hexagonLayerService.setHexagonLayerState({ id, value })
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveBeenCalledWith({ id, value })
     expect(spy).toHaveReturnedTimes(1)

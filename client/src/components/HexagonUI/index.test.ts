@@ -4,8 +4,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { HexagonUI } from '@/components'
-import { hexagonUIButtons as buttons, hexagonUISliders as sliders, hexagonUIHeading } from '@/configuration'
-import { IHexagonLayerProp } from '@/interfaces'
+import { hexagonUIButtons, hexagonUIHeading, hexagonUISliders } from '@/configuration'
+import { IHexagonLayerState, IHexagonUIButton, IHexagonUISlider } from '@/interfaces'
 import { HexagonLayerService } from '@/services'
 import { testData } from '@/test'
 
@@ -25,6 +25,7 @@ describe('HexagonUI component test suite', (): void => {
 
   test('label element text set correctly for each parameter', (): void => {
     setup()
+    const sliders: IHexagonUISlider[] = hexagonUISliders
     for (const { id, text } of sliders) {
       const label = screen.getByTestId(id)
       expect(label).toHaveTextContent(text)
@@ -33,6 +34,7 @@ describe('HexagonUI component test suite', (): void => {
 
   test("label element class initially set to 'mouseout' for each parameter", (): void => {
     setup()
+    const sliders: IHexagonUISlider[] = hexagonUISliders
     for (const { text } of sliders) {
       const label = screen.getByText(text)
       expect(label.className).toMatch(/_mouseout/)
@@ -41,6 +43,7 @@ describe('HexagonUI component test suite', (): void => {
 
   test('label element class set correctly during mouseover on input for each parameter', async (): Promise<void> => {
     setup()
+    const sliders: IHexagonUISlider[] = hexagonUISliders
     for (const [idx, { text }] of sliders.entries()) {
       const label = screen.getByText(text),
         slider = screen.getAllByRole('slider')[idx]
@@ -51,6 +54,7 @@ describe('HexagonUI component test suite', (): void => {
 
   test('label element class set correctly during mouseout on input for each parameter', async (): Promise<void> => {
     setup()
+    const sliders: IHexagonUISlider[] = hexagonUISliders
     for (const [idx, { text }] of sliders.entries()) {
       const label = screen.getByText(text),
         slider = screen.getAllByRole('slider')[idx]
@@ -61,6 +65,7 @@ describe('HexagonUI component test suite', (): void => {
 
   test('input element attributes set correctly for each parameter', (): void => {
     setup()
+    const sliders: IHexagonUISlider[] = hexagonUISliders
     for (const [idx, { id, max, min, step }] of sliders.entries()) {
       const slider = screen.getAllByRole('slider')[idx]
       expect(slider).toHaveAttribute('id', id)
@@ -72,17 +77,19 @@ describe('HexagonUI component test suite', (): void => {
 
   test('input element initial display value set correctly for each parameter', (): void => {
     setup()
-    const hexagonLayerService = Container.get(HexagonLayerService),
-      { hexagonLayerPropsState } = hexagonLayerService
+    const sliders: IHexagonUISlider[] = hexagonUISliders,
+      hexagonLayerService = Container.get(HexagonLayerService),
+      { hexagonLayerState } = hexagonLayerService
     for (const [idx, { id }] of sliders.entries()) {
       const slider = screen.getAllByRole('slider')[idx]
-      expect(slider).toHaveDisplayValue(String(hexagonLayerPropsState[id as keyof IHexagonLayerProp]))
+      expect(slider).toHaveDisplayValue(String(hexagonLayerState[id as keyof IHexagonLayerState]))
     }
   })
 
   test('display correct input element display value when slider value changes', async () => {
     setup()
-    const { sliderValues } = testData
+    const sliders: IHexagonUISlider[] = hexagonUISliders,
+      { sliderValues } = testData
     for (const [idx] of sliders.entries()) {
       const slider = screen.getAllByRole('slider')[idx]
       await fireEvent.update(slider, sliderValues[idx])
@@ -92,6 +99,7 @@ describe('HexagonUI component test suite', (): void => {
 
   test('button id attribute set correctly', (): void => {
     setup()
+    const buttons: IHexagonUIButton[] = hexagonUIButtons
     for (const [idx, { id }] of buttons.entries()) {
       const button = screen.getAllByRole('button')[idx]
       expect(button).toHaveAttribute('id', id)
@@ -100,6 +108,7 @@ describe('HexagonUI component test suite', (): void => {
 
   test('button text set correctly', (): void => {
     setup()
+    const buttons: IHexagonUIButton[] = hexagonUIButtons
     for (const [idx, { text }] of buttons.entries()) {
       const button = screen.getAllByRole('button')[idx]
       expect(button).toHaveTextContent(text)

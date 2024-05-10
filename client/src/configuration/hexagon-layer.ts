@@ -1,11 +1,5 @@
 export default {
-  reactiveProps: {
-    coverage: 1,
-    elevationScale: 100,
-    radius: 1000,
-    upperPercentile: 100
-  },
-  staticProps: {
+  props: {
     id: 'hexagon-layer',
     colorRange: [
       [1, 152, 189],
@@ -28,5 +22,11 @@ export default {
       coverage: 1000,
       elevationScale: 1000
     }
+  },
+  state: {
+    coverage: 1,
+    elevationScale: 100,
+    radius: 1000,
+    upperPercentile: 100
   }
 }

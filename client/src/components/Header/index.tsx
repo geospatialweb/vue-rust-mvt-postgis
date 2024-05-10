@@ -11,19 +11,21 @@ export default defineComponent({
       <header class={header}>
         <img src="/assets/icons/logo.webp" alt="Geospatial Web Logo" />
         <div id="header-name" class={name} aria-labelledby="header-name">
-          Geospatial Web
+          <span>Geospatial Web</span>
         </div>
         <div id="header-title" class={title} aria-labelledby="header-title">
-          Rust&ensp;REST API&ensp;&#45;&ensp;Martin&ensp;MVT&thinsp;Tile&thinsp;Server&ensp;&#45;&ensp;PostGIS
+          <span>
+            Rust&ensp;REST API&ensp;&#45;&ensp;Martin&ensp;MVT&thinsp;Tile&thinsp;Server&ensp;&#45;&ensp;PostGIS
+          </span>
         </div>
         <div id="header-repo" class={repo} aria-labelledby="header-repo">
           <a
             href="https://gitlab.com/geospatialweb/rust-mvt-postgis"
+            title="Review the source code"
             rel="noopener noreferrer"
             target="_blank"
-            title="Check out the source code"
           >
-            GitLab Repository
+            <span>GitLab Repository</span>
           </a>
         </div>
       </header>

@@ -3,7 +3,7 @@ import { render, screen, within } from '@testing-library/vue'
 import { createPinia, setActivePinia } from 'pinia'
 
 import { LayerElements } from '@/components'
-import { LayerId } from '@/enums'
+import { Layer } from '@/enums'
 import { testData } from '@/test'
 
 describe('LayerElements component static test suite', (): void => {
@@ -70,8 +70,8 @@ describe('LayerElements component click event test suite', (): void => {
   test("Remaining layers class changes to 'active' on click and 'inactive' on click again", async (): Promise<void> => {
     render(LayerElements)
     for (const { id, name } of layerElements) {
-      const biosphereLayer: string = LayerId.BIOSPHERE,
-        deckglLayer: string = LayerId.DECKGL
+      const biosphereLayer: string = Layer.BIOSPHERE,
+        deckglLayer: string = Layer.DECKGL
       if (id !== biosphereLayer && id !== deckglLayer) {
         const layer = screen.getByText(name)
         await user.click(layer)

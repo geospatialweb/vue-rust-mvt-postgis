@@ -2,12 +2,12 @@ import { LngLatLike } from 'mapbox-gl'
 
 import { MediaQuery } from '@/types'
 
-export interface IApp {
+export interface IAppState {
   initialZoom: MediaQuery
   isMobile: boolean
 }
 
-export interface ICredential {
+export interface ICredentialState {
   isAdmin?: boolean | undefined
   isCorrect?: boolean | undefined
   isValid?: boolean | undefined
@@ -29,7 +29,7 @@ export interface IDeckglOption {
   style: string
 }
 
-export interface IDeckglSetting {
+export interface IDeckglSettingState {
   bearing: number
   center: LngLatLike
   latitude: number
@@ -47,18 +47,6 @@ export interface IGeoJSONProperty {
 }
 
 export interface IHexagonLayerProp {
-  coverage: number
-  elevationScale: number
-  radius: number
-  upperPercentile: number
-}
-
-export interface IHexagonLayerPropState {
-  id: string
-  value: string
-}
-
-export interface IHexagonLayerStaticProp {
   colorRange: number[][]
   elevationRange: number[]
   extruded: boolean
@@ -76,16 +64,41 @@ export interface IHexagonLayerStaticProp {
   }
 }
 
-export interface IHexagonUILabelElement {
+export interface IHexagonLayerState {
+  coverage: number
+  elevationScale: number
+  radius: number
+  upperPercentile: number
+}
+
+export interface IHexagonLayerStateProp {
+  id: string
+  value: string
+}
+
+export interface IHexagonUIButton {
+  id: string
+  text: string
+}
+
+export interface IHexagonUILabelState {
   coverage: boolean
   elevationScale: boolean
   radius: boolean
   upperPercentile: boolean
 }
 
-export interface IHexagonUIProp {
-  label: IHexagonUILabelElement
-  props: IHexagonLayerProp
+export interface IHexagonUISlider {
+  id: string
+  min: string
+  max: string
+  step: string
+  text: string
+}
+
+export interface IHexagonUISliderProp {
+  labelState: IHexagonUILabelState
+  layerState: IHexagonLayerState
 }
 
 export interface IHttpResponseError {
@@ -93,7 +106,7 @@ export interface IHttpResponseError {
   response: Record<string, string | number>
 }
 
-export interface IJWT {
+export interface IJWTState {
   expiry: number
   token: string
 }
@@ -118,7 +131,7 @@ export interface ILayer {
   }
 }
 
-export interface ILayerElement {
+export interface ILayerElementsState {
   id: string
   isActive: boolean
   name: string
@@ -132,7 +145,7 @@ export interface ILayerIcon {
   width: string
 }
 
-export interface ILayerVisibility {
+export interface ILayerVisibilityState {
   biosphere: {
     isActive: boolean
   }
@@ -149,7 +162,7 @@ export interface IMapboxOption {
   doubleClickZoom: boolean
 }
 
-export interface IMapboxSetting {
+export interface IMapboxSettingState {
   bearing: number
   center: LngLatLike
   maxPitch: number
@@ -166,12 +179,12 @@ export interface IMapStyle {
   url: string
 }
 
-export interface IMapboxStyle {
+export interface IMapboxStyleState {
   outdoors: IMapStyle
   satellite: IMapStyle
 }
 
-export interface IMarkerVisibility {
+export interface IMarkerVisibilityState {
   office: {
     isActive: boolean
     isHidden: boolean
@@ -186,7 +199,7 @@ export interface IMarkerVisibility {
   }
 }
 
-export interface IModal {
+export interface IModalState {
   isActive: boolean
 }
 
@@ -200,24 +213,19 @@ export interface IQueryParam {
   id: string
 }
 
-export interface ISlot {
-  id: string
-  text: string
-}
-
-export interface IStoreState {
-  app: IApp
-  credentials: ICredential
-  deckglSettings: IDeckglSetting
-  hexagonLayerProps: IHexagonLayerProp
-  hexagonUILabelElement: IHexagonUILabelElement
-  JWT: IJWT
-  layerElements: ILayerElement[]
-  layerVisibility: ILayerVisibility
-  mapboxSettings: IMapboxSetting
-  mapboxStyles: IMapboxStyle
-  markerVisibility: IMarkerVisibility
-  modal: IModal
+export interface IState {
+  app: IAppState
+  credentials: ICredentialState
+  deckglSettings: IDeckglSettingState
+  hexagonLayer: IHexagonLayerState
+  hexagonUILabel: IHexagonUILabelState
+  JWT: IJWTState
+  layerElements: ILayerElementsState[]
+  layerVisibility: ILayerVisibilityState
+  mapboxSettings: IMapboxSettingState
+  mapboxStyles: IMapboxStyleState
+  markerVisibility: IMarkerVisibilityState
+  modal: IModalState
 }
 
 export interface ITrail {

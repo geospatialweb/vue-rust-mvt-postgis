@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
-import { ICredential } from '@/interfaces'
+import { ICredentialState } from '@/interfaces'
 import { CredentialsService } from '@/services'
 import { testData } from '@/test'
 
@@ -16,27 +16,27 @@ describe('CredentialsService test suite', (): void => {
   test('login method should be called', async (): Promise<void> => {
     const { credentials } = testData,
       spy = vi.spyOn(credentialsService, 'login')
-    await credentialsService.login(<ICredential>credentials)
+    await credentialsService.login(<ICredentialState>credentials)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(<ICredential>credentials)
+    expect(spy).toHaveBeenCalledWith(<ICredentialState>credentials)
     expect(spy).toHaveReturnedTimes(1)
   })
 
   test('register method should be called', async (): Promise<void> => {
     const { requestBody } = testData,
       spy = vi.spyOn(credentialsService, 'register')
-    await credentialsService.register(<ICredential>requestBody)
+    await credentialsService.register(<ICredentialState>requestBody)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(<ICredential>requestBody)
+    expect(spy).toHaveBeenCalledWith(<ICredentialState>requestBody)
     expect(spy).toHaveReturnedTimes(1)
   })
 
   test('setCredentialsState method should be called', (): void => {
     const { credentials } = testData,
       spy = vi.spyOn(credentialsService, 'setCredentialsState')
-    credentialsService.setCredentialsState(<ICredential>credentials)
+    credentialsService.setCredentialsState(<ICredentialState>credentials)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(<ICredential>credentials)
+    expect(spy).toHaveBeenCalledWith(<ICredentialState>credentials)
     expect(spy).toHaveReturnedTimes(1)
   })
 

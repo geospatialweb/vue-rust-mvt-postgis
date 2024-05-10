@@ -1,4 +1,4 @@
-.layerelement {
+.layer_element {
   -webkit-animation: fade-in 1.5s ease-out forwards;
   animation: fade-in 1.5s ease-out forwards;
   border: var(--grey-border);
@@ -76,67 +76,67 @@
 }
 
 @media screen and (width <= 3840px) {
-  .layerelement {
+  .layer_element {
     transform: scale(1.4) translate(2.6rem, 12.9rem);
   }
 }
 
 @media screen and (width <= 3200px) {
-  .layerelement {
+  .layer_element {
     transform: scale(1.3) translate(2.2rem, 12.2rem);
   }
 }
 
 @media screen and (width <= 2560px) {
-  .layerelement {
+  .layer_element {
     transform: scale(1.2) translate(1.8rem, 11rem);
   }
 }
 
 @media screen and (width <= 1920px) {
-  .layerelement {
+  .layer_element {
     transform: scale(1.1) translate(1.4rem, 10.6rem);
   }
 }
 
 @media screen and (width <= 1110px) and (height <= 1680px), (width <= 1680px) and (height <= 1110px) {
-  .layerelement {
+  .layer_element {
     transform: scale(1.05) translate(1.1rem, 10.5rem);
   }
 }
 
 @media screen and (width <= 1024px) and (height <= 1440px), (width <= 1440px) and (height <= 1024px) {
-  .layerelement {
+  .layer_element {
     transform: scale(1) translate(0.8rem, 10.3rem);
   }
 }
 
 @media screen and (width <= 884px) and (height <= 1280px), (width <= 1280px) and (height <= 884px) {
-  .layerelement {
+  .layer_element {
     transform: scale(0.9) translate(0.1rem, 10.1rem);
   }
 }
 
 @media screen and (width <= 884px) and (height <= 1104px), (width <= 1104px) and (height <= 884px) {
-  .layerelement {
+  .layer_element {
     transform: scale(0.8) translate(-0.8rem, 9.7rem);
   }
 }
 
 @media screen and (width <= 600px) and (height <= 960px), (width <= 960px) and (height <= 600px) {
-  .layerelement {
+  .layer_element {
     transform: scale(0.7) translate(-1.9rem, 7.6rem);
   }
 }
 
 @media screen and (width <= 430px) and (height <= 1024px), (width <= 1024px) and (height <= 430px) {
-  .layerelement {
+  .layer_element {
     transform: scale(0.6) translate(-3.4rem, 6.6rem);
   }
 }
 
 @media screen and (width <= 392px) and (height <= 800px), (width <= 800px) and (height <= 392px) {
-  .layerelement {
+  .layer_element {
     transform: scale(0.5) translate(-5.4rem, 5.1rem);
   }
 }

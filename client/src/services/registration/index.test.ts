@@ -1,6 +1,6 @@
 import { Container } from 'typedi'
 
-import { ICredential } from '@/interfaces'
+import { ICredentialState } from '@/interfaces'
 import { createPinia, setActivePinia } from 'pinia'
 import { RegistrationService } from '@/services'
 import { testData } from '@/test'
@@ -12,9 +12,9 @@ describe('RegistrationService test suite', (): void => {
     const { credentials } = testData,
       registrationService = Container.get(RegistrationService),
       spy = vi.spyOn(registrationService, 'register')
-    await registrationService.register(<ICredential>credentials)
+    await registrationService.register(<ICredentialState>credentials)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(<ICredential>credentials)
+    expect(spy).toHaveBeenCalledWith(<ICredentialState>credentials)
     expect(spy).toHaveReturnedTimes(1)
   })
 })

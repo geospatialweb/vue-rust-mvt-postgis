@@ -4,8 +4,8 @@ import { LngLatLike, Map } from 'mapbox-gl'
 import { Container, Service } from 'typedi'
 
 import { deckgl } from '@/configuration'
-import { StoreState } from '@/enums'
-import { IDeckglOption, IDeckglSetting } from '@/interfaces'
+import { State } from '@/enums'
+import { IDeckglOption, IDeckglSettingState } from '@/interfaces'
 import { HexagonLayerService, ModalService, StoreService } from '@/services'
 
 @Service()
@@ -15,7 +15,7 @@ export default class DeckglService {
   #storeService = Container.get(StoreService)
 
   #deckglOptions: IDeckglOption = deckgl.options
-  #deckglSettingsStoreState: string = StoreState.DECKGL_SETTINGS
+  #deckglSettings: string = State.DECKGL_SETTINGS
 
   constructor(
     private _deck: any,
@@ -27,11 +27,11 @@ export default class DeckglService {
   }
 
   get #deckglSettingsState() {
-    return <IDeckglSetting>this.#storeService.getStoreState(this.#deckglSettingsStoreState)
+    return <IDeckglSettingState>this.#storeService.getState(this.#deckglSettings)
   }
 
-  set #deckglSettingsState(state: IDeckglSetting) {
-    this.#storeService.setStoreState(this.#deckglSettingsStoreState, state)
+  set #deckglSettingsState(state: IDeckglSettingState) {
+    this.#storeService.setState(this.#deckglSettings, state)
   }
 
   loadHexagonLayer(): void {
@@ -44,7 +44,7 @@ export default class DeckglService {
   }
 
   setInitialZoomState(zoom: number): void {
-    const state: IDeckglSetting = { ...this.#deckglSettingsState, zoom }
+    const state: IDeckglSettingState = { ...this.#deckglSettingsState, zoom }
     this.#setDeckglSettingsState(state)
   }
 
@@ -60,7 +60,7 @@ export default class DeckglService {
         /* prettier-ignore */
         const { viewState: { bearing, latitude, longitude, maxPitch, maxZoom, minZoom, pitch, zoom } } = viewState,
           center: LngLatLike = [longitude, latitude],
-          state: IDeckglSetting = { bearing, center, latitude, longitude, maxPitch, maxZoom, minZoom, pitch, zoom }
+          state: IDeckglSettingState = { bearing, center, latitude, longitude, maxPitch, maxZoom, minZoom, pitch, zoom }
         this.#setDeckglSettingsState(state)
         this.#mapJumpTo()
       },
@@ -80,7 +80,7 @@ export default class DeckglService {
     })
   }
 
-  #setDeckglSettingsState(state: IDeckglSetting): void {
+  #setDeckglSettingsState(state: IDeckglSettingState): void {
     this.#deckglSettingsState = state
   }
 

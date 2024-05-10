@@ -4,16 +4,16 @@ import { defineComponent } from 'vue'
 
 import { LayerElement, LayerIcon } from '@/components'
 import { layerIcons } from '@/configuration'
-import { ILayerElement } from '@/interfaces'
+import { ILayerElementsState } from '@/interfaces'
 import { LayerElementService } from '@/services'
 import styles from './index.module.css'
 
 export default defineComponent({
   name: 'LayerElements Component',
   setup() {
-    const { layerelement } = styles,
+    const { layer_element } = styles,
       layerElementService = Container.get(LayerElementService),
-      getLayerElementsState = (): ILayerElement[] => {
+      getLayerElementsState = (): ILayerElementsState[] => {
         const { layerElementsState } = layerElementService
         return layerElementsState
       },
@@ -23,7 +23,7 @@ export default defineComponent({
         const { id } = evt.target as HTMLDivElement
         displayLayerElement(id.split('-icon')[0])
       },
-      listItem = ({ id, isActive, name }: ILayerElement, idx: number): JSX.Element => (
+      listItem = ({ id, isActive, name }: ILayerElementsState, idx: number): JSX.Element => (
         <li>
           <LayerIcon
             id={`${id}-icon`}
@@ -36,8 +36,8 @@ export default defineComponent({
           <LayerElement id={id} key={id} name={name} isActive={isActive} />
         </li>
       ),
-      jsx = (layerElements: ILayerElement[]) => (
-        <ul class={layerelement} data-testid="layers" onClick={(evt): void => onClickHandler(evt)}>
+      jsx = (layerElements: ILayerElementsState[]) => (
+        <ul class={layer_element} data-testid="layers" onClick={(evt): void => onClickHandler(evt)}>
           {layerElements.map(listItem)}
         </ul>
       )

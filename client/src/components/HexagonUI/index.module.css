@@ -1,4 +1,4 @@
-.hexagonui {
+.hexagon_ui {
   -webkit-animation: fade-in 1.5s ease-out forwards;
   animation: fade-in 1.5s ease-out forwards;
   background-color: var(--light-taupe);
@@ -76,67 +76,67 @@
 }
 
 @media screen and (width <= 3840px) {
-  .hexagonui {
+  .hexagon_ui {
     transform: scale(1.1) translate(2rem, 7.7rem);
   }
 }
 
 @media screen and (width <= 3200px) {
-  .hexagonui {
+  .hexagon_ui {
     transform: scale(1) translate(0.9rem, 5.3rem);
   }
 }
 
 @media screen and (width <= 2560px) {
-  .hexagonui {
+  .hexagon_ui {
     transform: scale(0.9) translate(-0.3rem, 2.5rem);
   }
 }
 
 @media screen and (width <= 1920px) {
-  .hexagonui {
+  .hexagon_ui {
     transform: scale(0.8) translate(-2rem, -1.3rem);
   }
 }
 
 @media screen and (width <= 1110px) and (height <= 1680px), (width <= 1680px) and (height <= 1110px) {
-  .hexagonui {
+  .hexagon_ui {
     transform: scale(0.75) translate(-3rem, -3.4rem);
   }
 }
 
 @media screen and (width <= 1024px) and (height <= 1440px), (width <= 1440px) and (height <= 1024px) {
-  .hexagonui {
+  .hexagon_ui {
     transform: scale(0.7) translate(-4.1rem, -2.8em);
   }
 }
 
 @media screen and (width <= 884px) and (height <= 1280px), (width <= 1280px) and (height <= 884px) {
-  .hexagonui {
+  .hexagon_ui {
     transform: scale(0.6) translate(-6.6rem, -11.9rem);
   }
 }
 
 @media screen and (width <= 884px) and (height <= 1104px), (width <= 1104px) and (height <= 884px) {
-  .hexagonui {
+  .hexagon_ui {
     transform: scale(0.55) translate(-8.6rem, -16.1rem);
   }
 }
 
 @media screen and (width <= 600px) and (height <= 960px), (width <= 960px) and (height <= 600px) {
-  .hexagonui {
+  .hexagon_ui {
     transform: scale(0.5) translate(-10.8rem, -20.9rem);
   }
 }
 
 @media screen and (width <= 430px) and (height <= 1024px), (width <= 1024px) and (height <= 430px) {
-  .hexagonui {
+  .hexagon_ui {
     transform: scale(0.4) translate(-16.6rem, -33.8rem);
   }
 }
 
 @media screen and (width <= 392px) and (height <= 800px), (width <= 800px) and (height <= 392px) {
-  .hexagonui {
+  .hexagon_ui {
     transform: scale(0.35) translate(-20.6rem, -43.3rem);
   }
 }

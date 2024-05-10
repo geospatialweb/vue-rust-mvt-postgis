@@ -1,8 +1,8 @@
 import mapboxgl from 'mapbox-gl'
 import { Container, Service } from 'typedi'
 
-import { StoreState } from '@/enums'
-import { IJWT } from '@/interfaces'
+import { State } from '@/enums'
+import { IJWTState } from '@/interfaces'
 import { ApiService, StoreService } from '@/services'
 
 @Service()
@@ -10,10 +10,10 @@ export default class AuthorizationService {
   #apiService = Container.get(ApiService)
   #storeService = Container.get(StoreService)
 
-  #jwtStoreState: string = StoreState.JWT
+  #jwt: string = State.JWT
 
   get jwtState() {
-    return <IJWT>this.#storeService.getStoreState(this.#jwtStoreState)
+    return <IJWTState>this.#storeService.getState(this.#jwt)
   }
 
   get mapboxAccessToken() {
@@ -21,15 +21,15 @@ export default class AuthorizationService {
     return accessToken
   }
 
-  set #jwtState(state: IJWT) {
-    this.#storeService.setStoreState(this.#jwtStoreState, state)
+  set #jwtState(state: IJWTState) {
+    this.#storeService.setState(this.#jwt, state)
   }
 
   set #mapboxAccessToken(mapboxAccessToken: string) {
     mapboxgl.accessToken = mapboxAccessToken
   }
 
-  setJWTState({ token, expiry }: IJWT): void {
+  setJWTState({ token, expiry }: IJWTState): void {
     this.#jwtState = { token, expiry }
   }
 
