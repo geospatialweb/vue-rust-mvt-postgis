@@ -15,7 +15,7 @@ services:
   #     - /etc/letsencrypt:/etc/letsencrypt:rw
   #     - /var/log/letsencrypt:/var/log/letsencrypt:rw
   #     - /var/www/letsencrypt:/var/www/letsencrypt:rw
-  #     - client/static:/var/www/geospatialweb.ca/static:ro
+  #     - vue/static:/var/www/geospatialweb.ca/static:ro
   #     - logs:/var/log/nginx:rw
 
   rust:

@@ -1,3 +1,3 @@
 app:
 	@docker-compose up -d
-	@cd client; make start
+	@cd vue; make start

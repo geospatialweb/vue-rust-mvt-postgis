@@ -29,7 +29,7 @@
       "name": "Debug Vitest Current File",
       "type": "node",
       "request": "launch",
-      "cwd": "${workspaceFolder}/client",
+      "cwd": "${workspaceFolder}/vue",
       "program": "node_modules/vitest/vitest.mjs",
       "args": ["run", "${file}"],
       "skipFiles": ["<node_internals>/**", "**/node_modules/**"],

@@ -13,7 +13,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "npm run lint && npm run stylelint && npm test && npm run build",
-    "prepare": "cd .. && husky client/.husky",
+    "prepare": "cd .. && husky vue/.husky",
     "start": "npm i && npm run dev",
     "lint": "eslint src --ext .ts,.tsx --cache",
     "stylelint": "stylelint 'src/**/*.css'",
