@@ -56,7 +56,7 @@ export default defineComponent({
                 class={labelState[sliders[idx].id as keyof IHexagonUILabelState] ? mouseover : mouseout}
                 data-testid={sliders[idx].id}
               >
-                <span>{sliders[idx].text}</span>
+                {sliders[idx].text}
                 <input
                   id={sliders[idx].id}
                   min={sliders[idx].min}

@@ -15,7 +15,7 @@ export default defineComponent({
         return appState
       },
       jsx = ({ isMobile }: IAppState): JSX.Element => (
-        <footer class={isMobile ? inactive : active}>
+        <footer class={isMobile ? inactive : active} aria-label="footer">
           <p>Use Mouse Wheel to zoom in/out Hold down Shift key to rotate map</p>
         </footer>
       )

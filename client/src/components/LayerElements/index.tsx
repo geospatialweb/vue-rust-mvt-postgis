@@ -36,7 +36,7 @@ export default defineComponent({
           <LayerElement id={id} key={id} name={name} isActive={isActive} />
         </li>
       ),
-      jsx = (layerElements: ILayerElementsState[]) => (
+      jsx = (layerElements: ILayerElementsState[]): JSX.Element => (
         <ul class={layer_element} data-testid="layers" onClick={(evt): void => onClickHandler(evt)}>
           {layerElements.map(listItem)}
         </ul>
