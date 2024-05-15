@@ -74,10 +74,10 @@ export default class MarkerService {
   #createMarkerElement(id: string, feature: Feature): HTMLDivElement {
     const el = document.createElement('div')
     el.className = id
-    el.addEventListener('mouseenter', (): void => this.#popupService.addMarkerPopup(feature))
+    el.addEventListener('mouseenter', (): void => this.#popupService.addMarkerPopup(feature), { passive: true })
     el.addEventListener('touchstart', (): void => this.#popupService.addMarkerPopup(feature), { passive: true })
-    el.addEventListener('mouseleave', (): void => this.#popupService.removePopup())
-    el.addEventListener('touchend', (): void => this.#popupService.removePopup())
+    el.addEventListener('mouseleave', (): void => this.#popupService.removePopup(), { passive: true })
+    el.addEventListener('touchend', (): void => this.#popupService.removePopup(), { passive: true })
     return el
   }
 
