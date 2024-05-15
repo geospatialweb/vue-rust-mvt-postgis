@@ -1,6 +1,6 @@
 export default {
   navigationControl: {
-    position: 'top-left',
+    position: 'top-right',
     visualizePitch: true
   },
   options: {

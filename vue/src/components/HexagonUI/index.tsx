@@ -11,7 +11,7 @@ import styles from './index.module.css'
 export default defineComponent({
   name: 'HexagonUI Component',
   setup() {
-    const { hexagon_ui } = styles,
+    const { button_text, hexagon_ui } = styles,
       { heading } = hexagonUIHeading,
       buttons: IHexagonUIButton[] = hexagonUIButtons,
       getHexagonLayerState = (): IHexagonLayerState => {
@@ -23,15 +23,17 @@ export default defineComponent({
         return hexagonUILabelState
       },
       setButtonSlots = (button: IHexagonUIButton): JSX.Element => (
-        <HexagonUIButtons id={button.id}>{{ text: (): string => button.text }}</HexagonUIButtons>
+        <HexagonUIButtons id={button.id} class={button_text}>
+          {{ text: (): string => button.text }}
+        </HexagonUIButtons>
       ),
-      jsx = (labelState: IHexagonUILabelState, layerState: IHexagonLayerState): JSX.Element => (
+      jsx = (layerState: IHexagonLayerState, labelState: IHexagonUILabelState): JSX.Element => (
         <div class={hexagon_ui} role="presentation">
           <HexagonUIHeading>{{ heading: (): string => heading }}</HexagonUIHeading>
           <HexagonUISliders labelState={labelState} layerState={layerState} />
           {buttons.map(setButtonSlots)}
         </div>
       )
-    return (): JSX.Element => jsx(getHexagonUILabelState(), getHexagonLayerState())
+    return (): JSX.Element => jsx(getHexagonLayerState(), getHexagonUILabelState())
   }
 })

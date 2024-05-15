@@ -1,7 +1,7 @@
 .mapbox {
   position: absolute;
-  background-color: var(--cream);
+  background: var(--cream);
   bottom: 0;
-  min-width: 100vw;
   top: 4.5rem;
+  width: 100vw;
 }

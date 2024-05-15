@@ -38,6 +38,7 @@ export default defineComponent({
         <div class={credentials} role="presentation">
           <p class={isCorrect ? inactive : active}>Username/password incorrect</p>
           <p class={isValid ? inactive : active}>Username is not registered</p>
+          <div class={spacer}></div>
           <form onSubmit={(evt): void => onSubmitHandler(evt)}>
             <fieldset>
               <h1>Welcome to Geospatial Web</h1>

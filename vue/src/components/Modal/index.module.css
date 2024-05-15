@@ -1,9 +1,9 @@
 .modal {
-  background-color: var(--black-alpha-30);
-  bottom: 0;
   position: absolute;
+  background: var(--black-alpha-30);
+  bottom: 0;
   top: 4.5rem;
-  min-width: 100vw;
+  width: 100vw;
   z-index: 2;
 }
 
