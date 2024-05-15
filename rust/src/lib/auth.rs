@@ -1,4 +1,4 @@
-use argon2::{self, Config};
+use argon2::{Config, Error};
 use chrono::{Duration, Utc};
 use jsonwebtoken::{EncodingKey, Header};
 use salvo::{
@@ -27,7 +27,7 @@ impl Credential {
     }
 }
 
-// Manually implement Debug to prevent password leakage into logs.
+/// Manually implement Debug to prevent password leakage into logs.
 #[rustfmt::skip]
 impl Debug for Credential {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -53,6 +53,7 @@ impl Jwt {
         }
     }
 }
+
 /// JWT claims issuer, subject and expiry.
 #[derive(Debug, Deserialize, Serialize)]
 pub struct JwtClaims {
@@ -78,23 +79,20 @@ pub fn generate_hashed_password_from_password(password: &TextPassword) -> Result
     let config = Config::default();
     let password = password.as_str().as_bytes();
     let salt = env.argon2_hash_salt.as_bytes();
-    let hashed_password = HashedPassword::new(&argon2::hash_encoded(password, salt, &config)?);
+    let hash = argon2::hash_encoded(password, salt, &config)?;
+    let hashed_password = HashedPassword::new(&hash);
     Ok(hashed_password)
 }
 
 /// Return JWT HS256 token and expiry.
 pub fn get_jwt(username: &str) -> Result<Jwt, ResponseError> {
     let env = Env::get_env();
-    let minutes = env.jwt_claims_expiry.parse::<i64>()?;
+    let minutes = env.jwt_claims_expiry.parse::<i64>().unwrap();
     let expiry = (Utc::now() + Duration::minutes(minutes)).timestamp();
     let issuer = &env.jwt_claims_issuer;
     let jwt_claims = JwtClaims::new(&expiry, issuer, username);
     let secret = env.jwt_secret.as_bytes();
-    let token = jsonwebtoken::encode(
-        &Header::default(),
-        &jwt_claims,
-        &EncodingKey::from_secret(secret),
-    )?;
+    let token = jsonwebtoken::encode(&Header::default(), &jwt_claims, &EncodingKey::from_secret(secret))?;
     let jwt = Jwt::new(&expiry, &token);
     Ok(jwt)
 }
@@ -113,8 +111,12 @@ pub fn verify_password_and_hashed_password(
     password: &TextPassword,
     hashed_password: &HashedPassword,
 ) -> Result<(), ResponseError> {
-    argon2::verify_encoded(hashed_password.as_str(), password.as_str().as_bytes())?;
-    Ok(())
+    let verify = argon2::verify_encoded(hashed_password.as_str(), password.as_str().as_bytes());
+    match verify {
+        Ok(true) => Ok(()),
+        Ok(false) => Err(ResponseError::Argon2(Error::DecodingFail)),
+        Err(err) => Err(ResponseError::Argon2(err)),
+    }
 }
 
 #[cfg(test)]
