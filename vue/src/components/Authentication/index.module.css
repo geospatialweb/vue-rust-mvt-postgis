@@ -1,40 +1,36 @@
 .credentials {
-  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   -webkit-animation: fade-in 1s ease-out forwards;
   animation: fade-in 1s ease-out forwards;
-  left: 50%;
-  top: 50%;
-  width: 40rem;
+  height: 100vh;
+  width: 100vw;
 
   a,
   p {
-    position: absolute;
-    background-color: var(--taupe);
+    background: var(--taupe);
     border: var(--thick-grey-border);
     border-radius: var(--border-radius);
     color: var(--white);
-    left: 50%;
     padding: 1rem 0;
     text-align: center;
     text-shadow: var(--black-text-shadow);
-    transform: translate(-50%, 0);
     width: 20rem;
   }
 
   a:hover {
-    background-color: var(--dark-taupe);
+    background: var(--dark-taupe);
   }
 
   p {
-    transform: translate(-50%, -50%);
-
     &.active {
       color: var(--strong-red);
       cursor: default;
       font-weight: bold;
       text-shadow: none;
-      top: -5.8rem;
-      width: 39.5rem;
+      width: 40rem;
     }
 
     &.inactive {
@@ -51,25 +47,26 @@
     width: 7rem;
 
     &:hover {
-      background-color: var(--dark-taupe);
+      background: var(--dark-taupe);
       color: var(--white);
       text-shadow: var(--black-text-shadow);
     }
   }
 
   fieldset {
-    background-color: var(--taupe);
+    background: var(--taupe);
     border: var(--thick-grey-border);
     border-radius: var(--border-radius);
     padding: 0.5rem 0;
     text-align: center;
+    width: 40rem;
   }
 
   h1 {
     cursor: default;
     font-size: 2rem;
     font-weight: bold;
-    margin-top: 0.5rem;
+    margin: 0.5rem 0 1.5rem;
     text-shadow: var(--cream-text-shadow);
   }
 
@@ -111,32 +108,32 @@
   }
 }
 
-@media screen and (width <= 3840px) {
+@media screen and (width <=1194px) {
   .credentials {
-    transform: scale(1.5) translate(-30%, -30%);
+    transform: scale(0.9);
   }
 }
 
-@media screen and (width <= 2560px) {
+@media screen and (width <=1024px) {
   .credentials {
-    transform: scale(1.3) translate(-35%, -30%);
+    transform: scale(0.8);
   }
 }
 
-@media screen and (width <= 1920px) {
+@media screen and (width <=932px) {
   .credentials {
-    transform: scale(1.1) translate(-40%, -35%);
+    transform: scale(0.6);
   }
 }
 
-@media screen and (width <= 884px) and (height <= 1280px), (width <= 1280px) and (height <= 884px) {
+@media screen and (orientation: portrait) and (width <=1194px) {
   .credentials {
-    transform: scale(1) translate(-50%, -40%);
+    transform: scale(0.9);
   }
 }
 
-@media screen and (width <= 430px) and (height <= 1024px), (width <= 1024px) and (height <= 430px) {
+@media screen and (width <=430px) {
   .credentials {
-    transform: scale(0.6) translate(-85%, -70%);
+    transform: scale(0.5);
   }
 }

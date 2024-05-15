@@ -1,10 +1,12 @@
 .layer_element {
+  position: absolute;
   -webkit-animation: fade-in 1.5s ease-out forwards;
   animation: fade-in 1.5s ease-out forwards;
   border: var(--grey-border);
   border-radius: var(--border-radius);
   cursor: pointer;
-  transform: scale(1.4) translate(2.6rem, 12.9rem);
+  left: 1rem;
+  top: 6rem;
   width: 14rem;
 
   div {
@@ -14,17 +16,17 @@
   }
 
   .active {
-    background-color: var(--dark-taupe);
+    background: var(--dark-taupe);
     color: var(--white);
     text-shadow: var(--black-text-shadow);
   }
 
   .inactive {
-    background-color: var(--light-taupe);
+    background: var(--light-taupe);
     text-shadow: var(--cream-text-shadow);
 
     &:hover {
-      background-color: var(--taupe);
+      background: var(--taupe);
       color: var(--white);
       text-shadow: var(--black-text-shadow);
     }
@@ -33,23 +35,23 @@
   img.deckgl-icon,
   img.places-icon,
   img.trails-icon {
-    margin: 0.8rem 0 0 1.2rem;
     position: absolute;
+    margin: 0.8rem 0 0 1.2rem;
   }
 
   img.office-icon,
   img.satellite-icon {
-    margin: 0.7rem 0 0 1.2rem;
     position: absolute;
+    margin: 0.7rem 0 0 1.2rem;
   }
 
   img.biosphere-icon {
-    margin: 0.9rem 0 0 1.3rem;
     position: absolute;
+    margin: 0.9rem 0 0 1.3rem;
   }
 
   img:hover + .inactive {
-    background-color: var(--taupe);
+    background: var(--taupe);
     color: var(--white);
     text-shadow: var(--black-text-shadow);
   }
@@ -75,68 +77,50 @@
   }
 }
 
-@media screen and (width <= 3840px) {
+@media screen and (orientation: landscape) and (width <= 932px) {
   .layer_element {
-    transform: scale(1.4) translate(2.6rem, 12.9rem);
+    left: 0;
+    top: 4.5rem;
+    transform: scale(0.9);
   }
 }
 
-@media screen and (width <= 3200px) {
+@media screen and (orientation: landscape) and (width <= 844px) {
   .layer_element {
-    transform: scale(1.3) translate(2.2rem, 12.2rem);
+    left: -0.5rem;
+    top: 4rem;
+    transform: scale(0.85);
   }
 }
 
-@media screen and (width <= 2560px) {
+@media screen and (orientation: landscape) and (width <= 740px) {
   .layer_element {
-    transform: scale(1.2) translate(1.8rem, 11rem);
+    left: -0.6rem;
+    top: 3.5rem;
+    transform: scale(0.8);
   }
 }
 
-@media screen and (width <= 1920px) {
+@media screen and (width <=430px) {
   .layer_element {
-    transform: scale(1.1) translate(1.4rem, 10.6rem);
+    left: 0;
+    top: 4.5rem;
+    transform: scale(0.9);
   }
 }
 
-@media screen and (width <= 1110px) and (height <= 1680px), (width <= 1680px) and (height <= 1110px) {
+@media screen and (width <=395px) {
   .layer_element {
-    transform: scale(1.05) translate(1.1rem, 10.5rem);
+    left: -0.3rem;
+    top: 4rem;
+    transform: scale(0.85);
   }
 }
 
-@media screen and (width <= 1024px) and (height <= 1440px), (width <= 1440px) and (height <= 1024px) {
+@media screen and (width <=360px) {
   .layer_element {
-    transform: scale(1) translate(0.8rem, 10.3rem);
-  }
-}
-
-@media screen and (width <= 884px) and (height <= 1280px), (width <= 1280px) and (height <= 884px) {
-  .layer_element {
-    transform: scale(0.9) translate(0.1rem, 10.1rem);
-  }
-}
-
-@media screen and (width <= 884px) and (height <= 1104px), (width <= 1104px) and (height <= 884px) {
-  .layer_element {
-    transform: scale(0.8) translate(-0.8rem, 9.7rem);
-  }
-}
-
-@media screen and (width <= 600px) and (height <= 960px), (width <= 960px) and (height <= 600px) {
-  .layer_element {
-    transform: scale(0.7) translate(-1.9rem, 7.6rem);
-  }
-}
-
-@media screen and (width <= 430px) and (height <= 1024px), (width <= 1024px) and (height <= 430px) {
-  .layer_element {
-    transform: scale(0.6) translate(-3.4rem, 6.6rem);
-  }
-}
-
-@media screen and (width <= 392px) and (height <= 800px), (width <= 800px) and (height <= 392px) {
-  .layer_element {
-    transform: scale(0.5) translate(-5.4rem, 5.1rem);
+    left: -0.8rem;
+    top: 3.5rem;
+    transform: scale(0.8);
   }
 }

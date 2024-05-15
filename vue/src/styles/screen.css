@@ -6,7 +6,7 @@
   --black-alpha-30: rgba(0 0 0 / 30%);
   --cream: rgb(230 220 210);
   --grey: rgb(187 187 187);
-  --strong-red: rgb(187 0 0);
+  --strong-red: rgb(192 0 0);
   --taupe: rgb(140 130 120);
   --dark-taupe: rgb(120 110 100);
   --light-taupe: rgb(160 150 140);
@@ -67,7 +67,8 @@ a {
 }
 
 button,
-input {
+input,
+select {
   font: inherit;
 }
 
@@ -77,10 +78,25 @@ fieldset {
   padding: 0;
 }
 
+h1,
+p {
+  margin: 0;
+}
+
+section {
+  height: 100vh;
+  width: 100vw;
+}
+
 ul {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+.mapboxgl-ctrl-top-right {
+  right: 0.3rem;
+  top: 0.8rem;
 }
 
 .mapboxgl-marker.office {
@@ -109,76 +125,70 @@ ul {
   font-weight: bold;
 }
 
-.mapboxgl-ctrl-top-left {
-  transform: rotate(90deg) scale(1.2) translate(-1rem, -4.1rem);
-}
-
-@media screen and (width <=3840px) {
-  .mapboxgl-ctrl-top-left {
-    transform: rotate(90deg) scale(1.2) translate(-1rem, -4.1rem);
+@media screen and (width <= 1366px) {
+  body {
+    background-position-y: -1rem;
   }
 }
 
-@media screen and (width <=3200px) {
-  .mapboxgl-ctrl-top-left {
-    transform: rotate(90deg) scale(1.1) translate(-1.6rem, -3.9rem);
+@media screen and (width <=1194px) {
+  body {
+    background-position-y: 0;
   }
 }
 
-@media screen and (width <=2560px) {
-  .mapboxgl-ctrl-top-left {
-    transform: rotate(90deg) scale(1) translate(-2.4rem, -3.8rem);
+@media screen and (orientation: portrait) and (width <=1024px) {
+  body {
+    background-position-y: -2.5rem;
   }
 }
 
-@media screen and (width <=1920px) {
-  .mapboxgl-ctrl-top-left {
-    transform: rotate(90deg) scale(0.9) translate(-2.9rem, -3.7rem);
-  }
-}
-
-@media screen and (width <=1110px) and (height <=1680px), (width <=1680px) and (height <=1110px) {
-  .mapboxgl-ctrl-top-left {
-    transform: rotate(90deg) scale(0.85) translate(-3rem, -3.7rem);
-  }
-}
-
-@media screen and (width <=1024px) and (height <=1440px), (width <=1440px) and (height <=1024px) {
-  .mapboxgl-ctrl-top-left {
-    transform: rotate(90deg) scale(0.8) translate(-3.3rem, -3.5rem);
-  }
-}
-
-@media screen and (width <=884px) and (height <=1280px), (width <=1280px) and (height <=884px) {
-  .mapboxgl-ctrl-top-left {
-    transform: rotate(90deg) scale(0.75) translate(-3.6rem, -3.5rem);
-  }
-}
-
-@media screen and (width <=884px) and (height <=1104px), (width <=1104px) and (height <=884px) {
-  .mapboxgl-ctrl-top-left {
-    transform: rotate(90deg) scale(0.7) translate(-4rem, -3.4rem);
-  }
-}
-
-@media screen and (width <=600px) and (height <=960px), (width <=960px) and (height <=600px) {
-  .mapboxgl-ctrl-top-left {
-    transform: rotate(90deg) scale(0.6) translate(-5.5rem, -3rem);
-  }
-}
-
-@media screen and (width <=430px) and (height <=1024px), (width <=1024px) and (height <=430px) {
-  .mapboxgl-ctrl-top-left {
-    transform: rotate(90deg) scale(0.5) translate(-6.9rem, -2.7rem);
-  }
-
+@media screen and (orientation: landscape) and (width <= 932px) {
   .mapboxgl-ctrl-top-right {
+    right: -0.2rem;
+    top: -0.5rem;
     transform: scale(0.9);
   }
 }
 
-@media screen and (width <=392px) and (height <=800px), (width <=800px) and (height <=392px) {
-  .mapboxgl-ctrl-top-left {
-    transform: rotate(90deg) scale(0.45) translate(-8.1rem, -2.4rem);
+@media screen and (orientation: portrait) and (width <= 844px) {
+  body {
+    background-position-y: -1.5rem;
+  }
+}
+
+@media screen and (orientation: portrait) and (width <= 768px) {
+  body {
+    background-position-y: -1rem;
+  }
+}
+
+@media screen and (width <=430px) {
+  body {
+    background-position-y: -0.5rem;
+  }
+
+  .mapboxgl-ctrl-top-right {
+    right: -0.2rem;
+    top: -0.5rem;
+    transform: scale(0.9);
+  }
+}
+
+@media screen and (width <=395px) {
+  body {
+    background-position-y: 0;
+  }
+
+  .mapboxgl-ctrl-top-right {
+    top: -0.7rem;
+    transform: scale(0.85);
+  }
+}
+
+@media screen and (width <=360px) {
+  .mapboxgl-ctrl-top-right {
+    top: -1.3rem;
+    transform: scale(0.8);
   }
 }
