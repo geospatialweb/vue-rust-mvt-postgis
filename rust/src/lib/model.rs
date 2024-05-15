@@ -24,7 +24,7 @@ impl User {
     }
 }
 
-// Manually implement Debug to prevent password leakage into logs.
+/// Manually implement Debug to prevent password leakage into logs.
 #[rustfmt::skip]
 impl Debug for User {
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {

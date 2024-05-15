@@ -42,7 +42,7 @@ async fn set_server_host(service: Service) -> Result<(), Error> {
     Ok(())
 }
 
-// Start development HTTP/1.1 server.
+/// Start development HTTP/1.1 server.
 async fn start_http_server(host: &str, service: Service) {
     let acceptor = TcpListener::new(host)
         .bind()
@@ -55,7 +55,7 @@ async fn start_http_server(host: &str, service: Service) {
         .await;
 }
 
-// Start production HTTPS/1.1 server.
+/// Start production HTTPS/1.1 server.
 async fn start_https_server(host: &str, service: Service, tls_cert: &str, tls_key: &str) -> Result<(), Error> {
     let tls_config = RustlsConfig::new(
         Keycert::new()
