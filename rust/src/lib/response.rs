@@ -8,7 +8,6 @@ use salvo::{
 use serde::Serialize;
 use serde_json::json;
 use sqlx::Error as DatabaseError;
-use std::num::ParseIntError;
 use thiserror::Error;
 
 /// Response generic types.
@@ -17,7 +16,9 @@ use thiserror::Error;
 pub enum ResponseType<T> {
     Type(T),
 }
+
 impl<T> From<T> for ResponseType<T> {
+    /// Convert response generic types.
     fn from(r#type: T) -> Self {
         ResponseType::Type(r#type)
     }
@@ -29,12 +30,14 @@ pub struct ResponsePayload<T> {
     payload: ResponseType<T>,
     status_code: StatusCode,
 }
+
 impl<T> ResponsePayload<T> {
     /// Create new ResponsePayload.
     pub fn new(payload: ResponseType<T>, status_code: StatusCode) -> Self {
         Self { payload, status_code }
     }
 }
+
 #[rustfmt::skip]
 impl<T: Serialize> Scribe for ResponsePayload<T> {
     /// Write response payload and status code.
@@ -62,9 +65,6 @@ pub enum ResponseError {
     #[error("parse error: {0}")]
     Parse(#[from] ParseError),
 
-    #[error("parse int error: {0}")]
-    ParseInt(#[from] ParseIntError),
-
     #[error("jwt forbidden")]
     JwtForbidden,
 
@@ -87,7 +87,6 @@ impl ResponseError {
             Self::GeoJson(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::Jwt(_) => StatusCode::UNAUTHORIZED,
             Self::Parse(_) => StatusCode::BAD_REQUEST,
-            Self::ParseInt(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::JwtForbidden => StatusCode::FORBIDDEN,
             Self::JwtUnauthorized => StatusCode::UNAUTHORIZED,
             Self::LayerParamsValidation => StatusCode::BAD_REQUEST,
