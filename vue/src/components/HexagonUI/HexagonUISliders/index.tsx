@@ -26,7 +26,7 @@ export default defineComponent({
     }
   },
   setup(props: IHexagonUISliderProp) {
-    const { mouseover, mouseout } = styles,
+    const { header_hr, mouseover, mouseout, slider_hr } = styles,
       sliders: IHexagonUISlider[] = hexagonUISliders,
       renderHexagonLayer = ({ id, value }: IHexagonLayerStateProp): void => {
         const hexagonLayerService = Container.get(HexagonLayerService)
@@ -49,7 +49,7 @@ export default defineComponent({
       },
       jsx = ({ labelState, layerState }: IHexagonUISliderProp): JSX.Element => (
         <div>
-          <hr />
+          <hr class={header_hr} />
           {Object.values(layerState).map((value: string, idx: number) => (
             <>
               <label
@@ -73,7 +73,7 @@ export default defineComponent({
                 />
               </label>
               <output for={sliders[idx].id}>{value}</output>
-              <hr />
+              <hr class={slider_hr} />
             </>
           ))}
         </div>

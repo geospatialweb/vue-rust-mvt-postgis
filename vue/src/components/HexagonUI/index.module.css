@@ -31,6 +31,14 @@
       color: var(--white);
       text-shadow: var(--black-text-shadow);
     }
+
+    &:nth-child(3) {
+      margin-top: 0.5rem;
+    }
+
+    &:last-child {
+      margin-top: 0.8rem;
+    }
   }
 
   h1 {
@@ -38,12 +46,6 @@
     font-weight: bold;
     text-align: center;
     text-shadow: var(--cream-text-shadow);
-  }
-
-  hr {
-    &:first-child {
-      margin-top: 0.4rem;
-    }
   }
 
   input {
@@ -61,12 +63,13 @@
     text-shadow: var(--cream-text-shadow);
   }
 
-  :nth-child(3) {
-    margin-top: 0.5rem;
+  .header_hr {
+    margin-top: 0.2rem;
   }
 
-  :nth-child(4) {
-    margin-top: 1rem;
+  .slider_hr {
+    margin-bottom: 0.8rem;
+    margin-top: 0.6rem;
   }
 }
 
@@ -98,7 +101,7 @@
   }
 }
 
-@media screen and (width <=1194px) {
+@media screen and (width <=1280px) {
   .hexagon_ui {
     left: -1rem;
     top: 0.4rem;
