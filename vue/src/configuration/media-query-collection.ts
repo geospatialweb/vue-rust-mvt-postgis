@@ -9,10 +9,15 @@ export default {
     mapbox: 7.3,
     trail: 0.9
   },
-  '(width <= 768px)': {
+  '(width <= 768px) and (orientation: portrait)': {
     deckgl: 5.5,
-    mapbox: 8.1,
+    mapbox: 8.0,
     trail: 0.95
+  },
+  '(width <= 768px) and (orientation: landscape)': {
+    deckgl: 4.4,
+    mapbox: 7.4,
+    trail: 0.85
   },
   '(width <= 844px) and (orientation: portrait)': {
     deckgl: 5.4,
@@ -31,7 +36,7 @@ export default {
   },
   '(width <= 1024px) and (orientation: portrait)': {
     deckgl: 5.8,
-    mapbox: 8.4,
+    mapbox: 8.5,
     trail: 1.0
   },
   '(width <= 1024px) and (orientation: landscape)': {
