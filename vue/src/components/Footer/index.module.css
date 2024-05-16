@@ -5,14 +5,12 @@
   margin-bottom: 1.5rem;
   right: 1.5rem;
   width: 24rem;
-}
 
-.active {
-  composes: footer;
-  display: block;
-}
+  &.active {
+    display: block;
+  }
 
-.inactive {
-  composes: footer;
-  display: none;
+  &.inactive {
+    display: none;
+  }
 }

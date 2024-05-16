@@ -1,7 +1,7 @@
 .hexagon_ui {
   position: absolute;
-  -webkit-animation: fade-in 1.5s ease-out forwards;
-  animation: fade-in 1.5s ease-out forwards;
+  -webkit-animation: fade-in 1s ease-out forwards;
+  animation: fade-in 1s ease-out forwards;
   background: var(--light-taupe);
   border: var(--thick-grey-border);
   border-radius: var(--border-radius);
@@ -18,13 +18,10 @@
     border-radius: var(--border-radius);
     cursor: pointer;
     font-size: 1.7rem;
-    height: 3.5rem;
+    height: 3.6rem;
+    padding-top: 0.2rem;
     text-align: center;
     width: 100%;
-
-    &.button_text {
-      padding-top: 0.2rem;
-    }
 
     &:hover {
       background: var(--dark-taupe);
@@ -32,13 +29,13 @@
       text-shadow: var(--black-text-shadow);
     }
 
-    &:nth-child(3) {
-      margin-top: 0.5rem;
-    }
-
     &:last-child {
       margin-top: 0.8rem;
     }
+  }
+
+  div > hr {
+    margin-top: 0.2rem;
   }
 
   h1 {
@@ -53,7 +50,16 @@
     width: 100%;
   }
 
-  output,
+  output {
+    color: var(--white);
+    text-shadow: var(--black-text-shadow);
+
+    + hr {
+      margin-bottom: 0.8rem;
+      margin-top: 0.6rem;
+    }
+  }
+
   .mouseover {
     color: var(--white);
     text-shadow: var(--black-text-shadow);
@@ -63,13 +69,8 @@
     text-shadow: var(--cream-text-shadow);
   }
 
-  .header_hr {
-    margin-top: 0.2rem;
-  }
-
-  .slider_hr {
-    margin-bottom: 0.8rem;
-    margin-top: 0.6rem;
+  :nth-child(3) {
+    margin-top: 0.4rem;
   }
 }
 
@@ -96,7 +97,7 @@
 @media screen and (width <=1920px) {
   .hexagon_ui {
     left: 0;
-    top: 2.9rem;
+    top: 3rem;
     transform: scale(0.9);
   }
 }
@@ -104,46 +105,31 @@
 @media screen and (width <=1280px) {
   .hexagon_ui {
     left: -1rem;
-    top: 0.4rem;
+    top: 0.7rem;
     transform: scale(0.8);
   }
 }
 
-@media screen and (orientation: landscape) and (width <=1024px) {
+@media screen and (width <= 932px) {
   .hexagon_ui {
-    left: -2.3rem;
-    top: -2.3rem;
-    transform: scale(0.7);
-  }
-}
-
-@media screen and (orientation: landscape) and (width <= 932px) {
-  .hexagon_ui {
-    left: -4.7rem;
-    top: -7.4rem;
+    left: -4.6rem;
+    top: -6.8rem;
     transform: scale(0.5);
   }
 }
 
-@media screen and (orientation: landscape) and (width <= 844px) {
-  .hexagon_ui {
-    left: -5.1rem;
-    top: -8.5rem;
-    transform: scale(0.45);
-  }
-}
-
-@media screen and (orientation: landscape) and (width <= 740px) {
+@media screen and (width <= 844px) {
   .hexagon_ui {
     left: -5.2rem;
-    top: -8.6rem;
+    top: -8.1rem;
+    transform: scale(0.45);
   }
 }
 
 @media screen and (width <=430px) {
   .hexagon_ui {
     left: -3.6rem;
-    top: -4.9rem;
+    top: -4.5rem;
     transform: scale(0.6);
   }
 }
@@ -151,7 +137,7 @@
 @media screen and (width <=395px) {
   .hexagon_ui {
     left: -4.2rem;
-    top: -6.2rem;
+    top: -5.7rem;
     transform: scale(0.55);
   }
 }
@@ -159,7 +145,7 @@
 @media screen and (width <=360px) {
   .hexagon_ui {
     left: -4.7rem;
-    top: -7.5rem;
+    top: -6.9rem;
     transform: scale(0.5);
   }
 }

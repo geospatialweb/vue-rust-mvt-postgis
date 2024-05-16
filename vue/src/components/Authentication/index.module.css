@@ -114,26 +114,20 @@
   }
 }
 
-@media screen and (width <=1024px) {
+@media screen and (orientation: portrait) and (width <=1024px) {
   .credentials {
-    transform: scale(0.8);
+    transform: scale(1);
   }
 }
 
 @media screen and (width <=932px) {
   .credentials {
-    transform: scale(0.6);
-  }
-}
-
-@media screen and (orientation: portrait) and (width <=1194px) {
-  .credentials {
-    transform: scale(0.9);
+    transform: scale(0.7);
   }
 }
 
 @media screen and (width <=430px) {
   .credentials {
-    transform: scale(0.5);
+    transform: scale(0.6);
   }
 }

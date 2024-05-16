@@ -89,7 +89,7 @@
   }
 }
 
-@media screen and (orientation: landscape) and (width <= 932px) {
+@media screen and (width <= 932px) {
   .header {
     .name {
       font-size: 1.5rem;

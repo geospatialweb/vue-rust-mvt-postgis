@@ -70,6 +70,8 @@ button,
 input,
 select {
   font: inherit;
+  margin: 0;
+  padding: 0;
 }
 
 fieldset {
@@ -96,7 +98,7 @@ ul {
 
 .mapboxgl-ctrl-top-right {
   right: 0.3rem;
-  top: 0.8rem;
+  top: 0.6rem;
 }
 
 .mapboxgl-marker.office {
@@ -143,11 +145,11 @@ ul {
   }
 }
 
-@media screen and (orientation: landscape) and (width <= 932px) {
+@media screen and (orientation: portrait) and (width <= 932px), (orientation: landscape) and (width <= 932px) {
   .mapboxgl-ctrl-top-right {
     right: -0.2rem;
-    top: -0.5rem;
-    transform: scale(0.9);
+    top: -1.6rem;
+    transform: scale(0.8);
   }
 }
 
@@ -170,7 +172,7 @@ ul {
 
   .mapboxgl-ctrl-top-right {
     right: -0.2rem;
-    top: -0.5rem;
+    top: -0.9rem;
     transform: scale(0.9);
   }
 }
@@ -181,14 +183,14 @@ ul {
   }
 
   .mapboxgl-ctrl-top-right {
-    top: -0.7rem;
+    top: -1.2rem;
     transform: scale(0.85);
   }
 }
 
 @media screen and (width <=360px) {
   .mapboxgl-ctrl-top-right {
-    top: -1.3rem;
+    top: -1.7rem;
     transform: scale(0.8);
   }
 }

@@ -1,7 +1,7 @@
 .trail {
   position: absolute;
-  -webkit-animation: slide-in 1.5s ease-out forwards;
-  animation: slide-in 1.5s ease-out forwards;
+  -webkit-animation: slide-in 1s ease-out forwards;
+  animation: slide-in 1s ease-out forwards;
   border: var(--grey-border);
   cursor: pointer;
   left: 1rem;
@@ -39,7 +39,7 @@
   .trail {
     font-size: 1.4rem;
     margin-left: -0.2rem;
-    top: 25.5rem;
+    top: 25rem;
     width: 12.8rem;
   }
 }
@@ -47,16 +47,18 @@
 @media screen and (orientation: landscape) and (width <= 844px) {
   .trail {
     font-size: 1.3rem;
-    top: 24.5rem;
-    width: 12rem;
+    margin-left: -0.3rem;
+    top: 24rem;
+    width: 12.1rem;
   }
 }
 
 @media screen and (orientation: landscape) and (width <= 740px) {
   .trail {
     font-size: 1.2rem;
-    top: 23.5rem;
-    width: 11.6rem;
+    margin-left: -0.2rem;
+    top: 23rem;
+    width: 11.5rem;
   }
 }
 
@@ -64,7 +66,7 @@
   .trail {
     font-size: 1.4rem;
     margin-left: -0.2rem;
-    top: 25.5rem;
+    top: 25rem;
     width: 12.8rem;
   }
 }
@@ -72,7 +74,7 @@
 @media screen and (width <=395px) {
   .trail {
     font-size: 1.3rem;
-    top: 24.5rem;
+    top: 24rem;
     width: 12.1rem;
   }
 }
@@ -80,7 +82,7 @@
 @media screen and (width <=360px) {
   .trail {
     font-size: 1.2rem;
-    top: 23.5rem;
-    width: 11.3rem;
+    top: 23rem;
+    width: 11.4rem;
   }
 }
