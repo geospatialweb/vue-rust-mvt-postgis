@@ -9,13 +9,13 @@ import styles from './index.module.css'
 export default defineComponent({
   name: 'Footer Component',
   setup() {
-    const { active, inactive } = styles,
+    const { footer, active, inactive } = styles,
       getAppState = (): IAppState => {
         const { appState } = Container.get(AppService)
         return appState
       },
       jsx = ({ isMobile }: IAppState): JSX.Element => (
-        <footer class={isMobile ? inactive : active} aria-label="footer">
+        <footer class={`${footer} ${isMobile ? inactive : active}`} aria-label="footer">
           <p>Use Mouse Wheel to zoom in/out Hold down Shift key to rotate map</p>
         </footer>
       )
