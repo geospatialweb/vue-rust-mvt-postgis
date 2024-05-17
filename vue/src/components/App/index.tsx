@@ -4,17 +4,15 @@ import { defineComponent, onBeforeMount } from 'vue'
 
 import { Header } from '@/components'
 import { AppService } from '@/services'
-import styles from './index.module.css'
 
 export default defineComponent({
   name: 'App Component',
   setup() {
-    const { app } = styles,
-      appService = Container.get(AppService),
+    const appService = Container.get(AppService),
       setInitialZoom = (): void => appService.setInitialZoom()
     onBeforeMount((): void => setInitialZoom())
     return (): JSX.Element => (
-      <div class={app} role="presentation">
+      <div role="presentation">
         <Header />
         <main>
           <router-view />
