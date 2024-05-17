@@ -1,12 +1,10 @@
 .header {
-  position: fixed;
   display: flex;
   align-items: center;
   background: var(--dark-taupe);
   cursor: default;
   font-family: var(--michroma);
   height: 4.5rem;
-  width: 100vw;
 
   img {
     height: 3.5rem;
@@ -36,7 +34,7 @@
     margin-bottom: 0.3rem;
     right: 1.2rem;
 
-    > a {
+    a {
       color: var(--black);
       font-weight: bold;
       text-shadow: var(--cream-text-shadow);
@@ -107,14 +105,6 @@
 
 @media screen and (width <=844px) {
   .header {
-    .name {
-      font-size: 1.5rem;
-    }
-
-    .title {
-      font-size: 1.5rem;
-    }
-
     .repo {
       display: none;
     }
@@ -135,13 +125,17 @@
 
 @media screen and (width <=430px) {
   .header {
+    img {
+      margin: 0.2rem 0.6rem 0 1rem;
+    }
+
     .name {
       font-size: 1.2rem;
     }
 
     .title {
       font-size: 1.2rem;
-      line-height: 1.35;
+      line-height: 1.3;
       margin-left: 1rem;
     }
   }

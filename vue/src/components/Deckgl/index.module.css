@@ -1,9 +1,9 @@
 .deckgl {
-  position: absolute;
+  position: fixed;
   background: var(--black);
-  bottom: 0;
+  height: calc(100vh - 4.5rem);
   top: 4.5rem;
-  width: 100vw;
+  width: 100%;
 }
 
 .hexagonlayer {

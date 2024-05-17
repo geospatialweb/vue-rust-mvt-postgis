@@ -1,10 +1,9 @@
 .modal {
-  position: absolute;
+  position: fixed;
   background: var(--black-alpha-30);
-  bottom: 0;
+  height: calc(100vh - 4.5rem);
   top: 4.5rem;
-  width: 100vw;
-  z-index: 2;
+  width: 100%;
 }
 
 .active {

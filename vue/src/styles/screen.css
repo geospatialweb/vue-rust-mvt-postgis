@@ -53,13 +53,8 @@ body {
   font-family: var(--archivo);
   font-size: 1.6rem;
   line-height: 1.2;
-}
-
-body,
-canvas {
-  overflow: hidden;
   margin: 0;
-  padding: 0;
+  overflow: hidden;
 }
 
 a {
@@ -70,24 +65,11 @@ button,
 input,
 select {
   font: inherit;
-  margin: 0;
-  padding: 0;
-}
-
-fieldset {
-  border: none;
-  margin: 0;
-  padding: 0;
 }
 
 h1,
 p {
   margin: 0;
-}
-
-section {
-  height: 100vh;
-  width: 100vw;
 }
 
 ul {
