@@ -1,12 +1,12 @@
 {
-  "name": "rust-mvt-postgis",
-  "version": "1.0.0",
+  "name": "vue-rust-mvt-postgis",
+  "version": "2.0.0",
   "license": "MIT",
   "author": "John Campbell <johncampbell@geospatialweb.ca> <http://www.linkedin.com/in/geospatialweb>",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/geospatialweb/rust-mvt-postgis"
+    "url": "https://gitlab.com/geospatialweb/vue-rust-mvt-postgis"
   },
   "scripts": {
     "dev": "vite",
@@ -46,8 +46,8 @@
     "@types/lodash.clonedeep": "~4.5.9",
     "@types/mapbox-gl": "~3.1.0",
     "@types/mapbox__mapbox-gl-draw": "~1.4.6",
-    "@typescript-eslint/eslint-plugin": "~7.8.0",
-    "@typescript-eslint/parser": "~7.8.0",
+    "@typescript-eslint/eslint-plugin": "~7.9.0",
+    "@typescript-eslint/parser": "~7.9.0",
     "@vitejs/plugin-vue-jsx": "~3.1.0",
     "eslint": "~8.57.0",
     "eslint-config-prettier": "~9.1.0",
