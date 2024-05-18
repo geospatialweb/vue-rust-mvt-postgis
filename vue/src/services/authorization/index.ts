@@ -29,12 +29,12 @@ export default class AuthorizationService {
     mapboxgl.accessToken = mapboxAccessToken
   }
 
-  setJWTState({ token, expiry }: IJWTState): void {
-    this.#jwtState = { token, expiry }
+  setJWTState({ jwtToken, jwtExpiry }: IJWTState): void {
+    this.#jwtState = { jwtToken, jwtExpiry }
   }
 
-  async getMapboxAccessToken(token: string): Promise<void> {
-    const mapboxAccessToken = await this.#apiService.getMapboxAccessToken(token)
+  async getMapboxAccessToken(jwtToken: string): Promise<void> {
+    const mapboxAccessToken = await this.#apiService.getMapboxAccessToken(jwtToken)
     mapboxAccessToken
       ? this.#setMapboxAccessToken(mapboxAccessToken)
       : this.#consoleError(`no ${this.getMapboxAccessToken.name.slice(3)} found`)

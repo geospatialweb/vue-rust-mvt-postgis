@@ -25,9 +25,9 @@ export default class AuthenticationService {
       return this.#setCredentialsState({ isCorrect: false, isValid: true })
     }
     this.#setCredentialsState({ isCorrect: true, isValid: true, ...credentials })
-    const { token, expiry } = jwt
-    this.#setJWTState({ token, expiry })
-    await this.#setMarkerFeatures(token)
+    const { jwtToken, jwtExpiry } = jwt
+    this.#setJWTState({ jwtToken, jwtExpiry })
+    await this.#setMarkerFeatures(jwtToken)
     await this.#setRoute(this.#mapboxRoute)
   }
 
@@ -35,8 +35,8 @@ export default class AuthenticationService {
     return this.#credentialsService.login(credentials)
   }
 
-  async #setMarkerFeatures(token: string): Promise<void> {
-    await this.#markerService.setMarkerFeatures(token)
+  async #setMarkerFeatures(jwtToken: string): Promise<void> {
+    await this.#markerService.setMarkerFeatures(jwtToken)
   }
 
   async #setRoute(route: string): Promise<void> {
@@ -51,8 +51,8 @@ export default class AuthenticationService {
     this.#credentialsService.setCredentialsState(state)
   }
 
-  #setJWTState({ token, expiry }: IJWTState): void {
-    this.#authorizationService.setJWTState({ token, expiry })
+  #setJWTState({ jwtToken, jwtExpiry }: IJWTState): void {
+    this.#authorizationService.setJWTState({ jwtToken, jwtExpiry })
   }
 
   #consoleError(msg: string): void {

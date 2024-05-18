@@ -43,18 +43,18 @@ export default class MarkerService {
     }
   }
 
-  async setMarkerFeatures(token: string): Promise<void> {
+  async setMarkerFeatures(jwtToken: string): Promise<void> {
     for (const params of this.#markerParams) {
       const { id } = params,
-        { features } = await this.#getMarkerFeatureCollection(token, params)
+        { features } = await this.#getMarkerFeatureCollection(jwtToken, params)
       features?.length
         ? this.#setMarkers(id, cloneDeep(features))
         : this.#consoleError(`No ${id.toUpperCase()} Features Found`)
     }
   }
 
-  async #getMarkerFeatureCollection(token: string, params: IQueryParam): Promise<FeatureCollection> {
-    return this.#apiService.getGeoJSONFeatureCollection(token, params)
+  async #getMarkerFeatureCollection(jwtToken: string, params: IQueryParam): Promise<FeatureCollection> {
+    return this.#apiService.getGeoJSONFeatureCollection(jwtToken, params)
   }
 
   #setMarkers(id: string, features: Feature<Geometry, GeoJsonProperties>[]): void {

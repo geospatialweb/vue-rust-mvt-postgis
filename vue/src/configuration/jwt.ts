@@ -1,4 +1,4 @@
 export default {
-  expiry: 0,
-  token: ''
+  jwtExpiry: 0,
+  jwtToken: ''
 }

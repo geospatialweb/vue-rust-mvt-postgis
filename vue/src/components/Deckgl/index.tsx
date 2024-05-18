@@ -23,8 +23,8 @@ export default defineComponent({
       getMapboxAccessToken = async (): Promise<void> => {
         /* prettier-ignore */
         const authorizationService = Container.get(AuthorizationService),
-          { jwtState: { token }, mapboxAccessToken } = authorizationService
-        if (!mapboxAccessToken) await authorizationService.getMapboxAccessToken(token)
+          { jwtState: { jwtToken }, mapboxAccessToken } = authorizationService
+        if (!mapboxAccessToken) await authorizationService.getMapboxAccessToken(jwtToken)
       },
       loadHexagonLayer = (): void => deckglService.loadHexagonLayer(),
       removeMapResources = (): void => deckglService.removeMapResources(),

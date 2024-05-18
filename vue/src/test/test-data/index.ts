@@ -8,10 +8,10 @@ export default {
     password: 'Click_Login',
     username: 'johncampbell@geospatialweb.ca'
   },
-  expiry: 1681334027,
   initialZoom: 10,
   initialZoomFactor: 0.9,
-  token:
+  jwtExpiry: 1681334027,
+  jwtToken:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiYXVkIjoiZ2Vvc3BhdGlhbHdlYi5jYSIsImV4cCI6MTY4MDgwNzg3NCwiaXNzIjoiZ2Vvc3BhdGlhbHdlYi5jYSIsIm5hbWUiOiJqb2huY2FtcGJlbGxAZ2Vvc3BhdGlhbHdlYi5jYSIsInN1YiI6IjEifQ.1zNsIABBvgKvm2F4Z_Gf78f-MgoPqJcuFQKU_fhbZz8',
   layer: {
     type: 'FeatureCollection',

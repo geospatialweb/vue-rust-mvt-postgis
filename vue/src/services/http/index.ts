@@ -19,40 +19,40 @@ export default class HttpService {
     this.#httpClient = httpClient
   }
 
-  async delete(endpoint: string, token: string, params: AxiosRequestConfig): Promise<HttpResponse> {
-    if (token) this.#httpClient.defaults.headers.delete['Authorization'] = `Bearer ${token}`
+  async delete(endpoint: string, jwtToken: string, params: AxiosRequestConfig): Promise<HttpResponse> {
+    if (jwtToken) this.#httpClient.defaults.headers.delete['Authorization'] = `Bearer ${jwtToken}`
     return this.#httpClient
       .delete<HttpResponse>(endpoint, params)
       .then(({ data }) => data)
       .catch(async ({ message, response }: IHttpResponseError) => await this.#catchError({ message, response }))
   }
 
-  async get(endpoint: string, token: string, params: AxiosRequestConfig): Promise<HttpResponse> {
-    if (token) this.#httpClient.defaults.headers.get['Authorization'] = `Bearer ${token}`
+  async get(endpoint: string, jwtToken: string, params: AxiosRequestConfig): Promise<HttpResponse> {
+    if (jwtToken) this.#httpClient.defaults.headers.get['Authorization'] = `Bearer ${jwtToken}`
     return this.#httpClient
       .get<HttpResponse>(endpoint, params)
       .then(({ data }) => data)
       .catch(async ({ message, response }: IHttpResponseError) => await this.#catchError({ message, response }))
   }
 
-  async patch(endpoint: string, token: string, body: AxiosRequestConfig): Promise<HttpResponse> {
-    if (token) this.#httpClient.defaults.headers.patch['Authorization'] = `Bearer ${token}`
+  async patch(endpoint: string, jwtToken: string, body: AxiosRequestConfig): Promise<HttpResponse> {
+    if (jwtToken) this.#httpClient.defaults.headers.patch['Authorization'] = `Bearer ${jwtToken}`
     return this.#httpClient
       .patch<HttpResponse>(endpoint, body)
       .then(({ data }) => data)
       .catch(async ({ message, response }: IHttpResponseError) => await this.#catchError({ message, response }))
   }
 
-  async post(endpoint: string, token: string, body: AxiosRequestConfig): Promise<HttpResponse> {
-    if (token) this.#httpClient.defaults.headers.post['Authorization'] = `Bearer ${token}`
+  async post(endpoint: string, jwtToken: string, body: AxiosRequestConfig): Promise<HttpResponse> {
+    if (jwtToken) this.#httpClient.defaults.headers.post['Authorization'] = `Bearer ${jwtToken}`
     return this.#httpClient
       .post<HttpResponse>(endpoint, body)
       .then(({ data }) => data)
       .catch(async ({ message, response }: IHttpResponseError) => await this.#catchError({ message, response }))
   }
 
-  async put(endpoint: string, token: string, body: AxiosRequestConfig): Promise<HttpResponse> {
-    if (token) this.#httpClient.defaults.headers.put['Authorization'] = `Bearer ${token}`
+  async put(endpoint: string, jwtToken: string, body: AxiosRequestConfig): Promise<HttpResponse> {
+    if (jwtToken) this.#httpClient.defaults.headers.put['Authorization'] = `Bearer ${jwtToken}`
     return this.#httpClient
       .put<HttpResponse>(endpoint, body)
       .then(({ data }) => data)

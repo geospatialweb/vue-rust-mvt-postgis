@@ -16,28 +16,28 @@ export default class ApiService {
   #mapboxAccessTokenEnpoint: string = Endpoint.MAPBOX_ACCESS_TOKEN_ENDPOINT
   #updatePasswordEndpoint: string = Endpoint.UPDATE_PASSWORD_ENDPOINT
 
-  async deleteUser(token: string, username: string): Promise<string> {
+  async deleteUser(jwtToken: string, username: string): Promise<string> {
     const params = <AxiosRequestConfig>{ params: { username } }
-    return <string>await this.#httpService.delete(this.#deleteUserEndpoint, token, params)
+    return <string>await this.#httpService.delete(this.#deleteUserEndpoint, jwtToken, params)
   }
 
-  async getGeoJSONFeatureCollection(token: string, { columns, id }: IQueryParam): Promise<FeatureCollection> {
+  async getGeoJSONFeatureCollection(jwtToken: string, { columns, id }: IQueryParam): Promise<FeatureCollection> {
     const params = <AxiosRequestConfig>{ params: { columns, table: id.split('-')[0] } }
-    return <FeatureCollection>await this.#httpService.get(this.#geoJsonEndpoint, token, params)
+    return <FeatureCollection>await this.#httpService.get(this.#geoJsonEndpoint, jwtToken, params)
   }
 
-  async getMapboxAccessToken(token: string): Promise<string> {
+  async getMapboxAccessToken(jwtToken: string): Promise<string> {
     const params = <AxiosRequestConfig>{ params: {} }
-    return <string>await this.#httpService.get(this.#mapboxAccessTokenEnpoint, token, params)
+    return <string>await this.#httpService.get(this.#mapboxAccessTokenEnpoint, jwtToken, params)
   }
 
-  async getUser(token: string, username: string): Promise<string> {
+  async getUser(jwtToken: string, username: string): Promise<string> {
     const params = <AxiosRequestConfig>{ params: { username } }
-    return <string>await this.#httpService.get(this.#getUserEndpoint, token, params)
+    return <string>await this.#httpService.get(this.#getUserEndpoint, jwtToken, params)
   }
 
-  async updatePassword(token: string, credentials: ICredentialState): Promise<string> {
+  async updatePassword(jwtToken: string, credentials: ICredentialState): Promise<string> {
     const body = <AxiosRequestConfig>{ ...credentials }
-    return <string>await this.#httpService.patch(this.#updatePasswordEndpoint, token, body)
+    return <string>await this.#httpService.patch(this.#updatePasswordEndpoint, jwtToken, body)
   }
 }

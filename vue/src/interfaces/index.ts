@@ -107,8 +107,8 @@ export interface IHttpResponseError {
 }
 
 export interface IJWTState {
-  expiry: number
-  token: string
+  jwtExpiry: number
+  jwtToken: string
 }
 
 export interface ILayer {

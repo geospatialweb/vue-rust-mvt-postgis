@@ -10,9 +10,9 @@ const baseURL = import.meta.env.BASE_URL,
   beforeEnter = () => () => {
     /* prettier-ignore */
     const authorizationService = Container.get(AuthorizationService),
-      { jwtState: { expiry } } = authorizationService,
+      { jwtState: { jwtExpiry } } = authorizationService,
       currentTimestamp = Math.floor(Date.now() / 1000)
-    if (currentTimestamp > expiry) return { name: Route.LOGIN }
+    if (currentTimestamp > jwtExpiry) return { name: Route.LOGIN }
   },
   routes: RouteRecordRaw[] = [
     {
