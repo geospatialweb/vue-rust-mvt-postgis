@@ -32,28 +32,24 @@
     }
   }
 
-  img.deckgl-icon,
-  img.places-icon,
-  img.trails-icon {
-    position: absolute;
-    margin: 0.8rem 0 0 1.2rem;
-  }
-
-  img.office-icon,
-  img.satellite-icon {
-    position: absolute;
-    margin: 0.7rem 0 0 1.2rem;
-  }
-
-  img.biosphere-icon {
-    position: absolute;
-    margin: 0.9rem 0 0 1.3rem;
-  }
-
   img:hover + .inactive {
     background: var(--taupe);
     color: var(--white);
     text-shadow: var(--black-text-shadow);
+  }
+
+  .biosphere-icon {
+    position: absolute;
+    margin: 0.9rem 0 0 1.3rem;
+  }
+
+  .deckgl-icon,
+  .office-icon,
+  .places-icon,
+  .satellite-icon,
+  .trails-icon {
+    position: absolute;
+    margin: 0.8rem 0 0 1.2rem;
   }
 }
 

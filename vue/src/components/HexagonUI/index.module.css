@@ -34,8 +34,12 @@
     }
   }
 
+  div > hr {
+    margin-top: 0.3rem;
+  }
+
   h1 {
-    font-size: 1.9rem;
+    font-size: 1.85rem;
     font-weight: bold;
     text-align: center;
     text-shadow: var(--cream-text-shadow);
