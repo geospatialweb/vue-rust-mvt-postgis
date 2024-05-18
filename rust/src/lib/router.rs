@@ -129,7 +129,7 @@ mod test {
     fn get_jwt_token() -> String {
         let username = "foo@bar.com";
         let jwt = auth::get_jwt(username).unwrap();
-        jwt.token
+        jwt.jwt_token
     }
 
     fn get_service() -> Service {
@@ -198,7 +198,7 @@ mod test {
         let env = Env::get_env();
         let service = get_service();
         let username = "foo@bar.com";
-        let password = "passwordSecret";
+        let password = "secretPassword";
         let url = format!("{}{}", &get_credentials_url(), &env.login_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .queries(&[("username", username), ("password", password)])
@@ -213,7 +213,7 @@ mod test {
         let env = Env::get_env();
         let service = get_service();
         let username = "bar@foo.com";
-        let password = "passwordSecret";
+        let password = "secretPassword";
         let url = format!("{}{}", &get_credentials_url(), &env.login_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .queries(&[("username", username), ("password", password)])
@@ -227,12 +227,12 @@ mod test {
     async fn g_geojson_endpoint_ok() {
         let env = Env::get_env();
         let service = get_service();
-        let token = get_jwt_token();
+        let jwt_token = get_jwt_token();
         let columns = "name,description,geom";
         let table = "office";
         let url = format!("{}{}", &get_api_url(), &env.geojson_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
-            .bearer_auth(&token)
+            .bearer_auth(&jwt_token)
             .queries(&[("columns", columns), ("table", table)])
             .send(&service)
             .await;
@@ -244,12 +244,12 @@ mod test {
     async fn h_geojson_endpoint_err() {
         let env = Env::get_env();
         let service = get_service();
-        let token = get_jwt_token();
+        let jwt_token = get_jwt_token();
         let columns = "name,description,geom";
         let table = "offices";
         let url = format!("{}{}", &get_api_url(), &env.geojson_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
-            .bearer_auth(&token)
+            .bearer_auth(&jwt_token)
             .queries(&[("columns", columns), ("table", table)])
             .send(&service)
             .await;
@@ -261,10 +261,10 @@ mod test {
     async fn i_mapbox_access_token_endpoint_ok() {
         let env = Env::get_env();
         let service = get_service();
-        let token = get_jwt_token();
+        let jwt_token = get_jwt_token();
         let url = format!("{}{}", &get_api_url(), &env.mapbox_access_token_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
-            .bearer_auth(&token)
+            .bearer_auth(&jwt_token)
             .send(&service)
             .await;
         let status_code = res.status_code.unwrap();
@@ -315,11 +315,11 @@ mod test {
     async fn m_get_user_endpoint_ok() {
         let env = Env::get_env();
         let service = get_service();
-        let token = get_jwt_token();
+        let jwt_token = get_jwt_token();
         let username = "foo@bar.com";
         let url = format!("{}{}", &get_api_url(), &env.get_user_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
-            .bearer_auth(&token)
+            .bearer_auth(&jwt_token)
             .query("username", username)
             .send(&service)
             .await;
@@ -331,11 +331,11 @@ mod test {
     async fn n_get_user_endpoint_err() {
         let env = Env::get_env();
         let service = get_service();
-        let token = get_jwt_token();
+        let jwt_token = get_jwt_token();
         let username = "bar@foo.com";
         let url = format!("{}{}", &get_api_url(), &env.get_user_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
-            .bearer_auth(&token)
+            .bearer_auth(&jwt_token)
             .query("username", username)
             .send(&service)
             .await;
@@ -347,11 +347,11 @@ mod test {
     async fn o_update_password_endpoint_ok() {
         let env = Env::get_env();
         let service = get_service();
-        let token = get_jwt_token();
+        let jwt_token = get_jwt_token();
         let body = r#"{"username":"foo@bar.com","password":"newSecretPassword"}"#;
         let url = format!("{}{}", &get_api_url(), &env.update_password_endpoint);
         let res = RequestBuilder::new(&url, Method::PATCH)
-            .bearer_auth(&token)
+            .bearer_auth(&jwt_token)
             .raw_json(body)
             .send(&service)
             .await;
@@ -363,11 +363,11 @@ mod test {
     async fn p_update_password_endpoint_err() {
         let env = Env::get_env();
         let service = get_service();
-        let token = get_jwt_token();
+        let jwt_token = get_jwt_token();
         let body = r#"{"username":"bar@foo.com","password":"newSecretPassword"}"#;
         let url = format!("{}{}", &get_api_url(), &env.update_password_endpoint);
         let res = RequestBuilder::new(&url, Method::PATCH)
-            .bearer_auth(&token)
+            .bearer_auth(&jwt_token)
             .raw_json(body)
             .send(&service)
             .await;
@@ -379,11 +379,11 @@ mod test {
     async fn q_delete_user_endpoint_ok() {
         let env = Env::get_env();
         let service = get_service();
-        let token = get_jwt_token();
+        let jwt_token = get_jwt_token();
         let username = "foo@bar.com";
         let url = format!("{}{}", &get_api_url(), &env.delete_user_endpoint);
         let res = RequestBuilder::new(&url, Method::DELETE)
-            .bearer_auth(&token)
+            .bearer_auth(&jwt_token)
             .query("username", username)
             .send(&service)
             .await;
@@ -395,11 +395,11 @@ mod test {
     async fn r_delete_user_endpoint_err() {
         let env = Env::get_env();
         let service = get_service();
-        let token = get_jwt_token();
+        let jwt_token = get_jwt_token();
         let username = "bar@foo.com";
         let url = format!("{}{}", &get_api_url(), &env.delete_user_endpoint);
         let res = RequestBuilder::new(&url, Method::DELETE)
-            .bearer_auth(&token)
+            .bearer_auth(&jwt_token)
             .query("username", username)
             .send(&service)
             .await;

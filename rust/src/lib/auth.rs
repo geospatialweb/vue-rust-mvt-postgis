@@ -39,17 +39,18 @@ impl Debug for Credential {
 
 /// Auth JWT token and expiry.
 #[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Jwt {
-    expiry: i64,
-    pub token: String,
+    jwt_expiry: i64,
+    pub jwt_token: String,
 }
 
 impl Jwt {
     /// Create new JWT.
-    fn new(expiry: &i64, token: &str) -> Self {
+    fn new(jwt_expiry: &i64, jwt_token: &str) -> Self {
         Self {
-            expiry: expiry.to_owned(),
-            token: token.to_owned(),
+            jwt_expiry: jwt_expiry.to_owned(),
+            jwt_token: jwt_token.to_owned(),
         }
     }
 }
@@ -87,21 +88,21 @@ pub fn generate_hashed_password_from_password(password: &TextPassword) -> Result
 /// Return JWT HS256 token and expiry.
 pub fn get_jwt(username: &str) -> Result<Jwt, ResponseError> {
     let env = Env::get_env();
-    let minutes = env.jwt_claims_expiry.parse::<i64>().unwrap();
-    let expiry = (Utc::now() + Duration::minutes(minutes)).timestamp();
-    let issuer = &env.jwt_claims_issuer;
-    let jwt_claims = JwtClaims::new(&expiry, issuer, username);
-    let secret = env.jwt_secret.as_bytes();
-    let token = jsonwebtoken::encode(&Header::default(), &jwt_claims, &EncodingKey::from_secret(secret))?;
-    let jwt = Jwt::new(&expiry, &token);
+    let minutes = env.jwt_expiry.parse::<i64>().unwrap();
+    let jwt_expiry = (Utc::now() + Duration::minutes(minutes)).timestamp();
+    let jwt_issuer =  &env.jwt_issuer;
+    let jwt_claims = JwtClaims::new(&jwt_expiry, jwt_issuer, username);
+    let jwt_secret = env.jwt_secret.as_bytes();
+    let jwt_token = jsonwebtoken::encode(&Header::default(), &jwt_claims, &EncodingKey::from_secret(jwt_secret))?;
+    let jwt = Jwt::new(&jwt_expiry, &jwt_token);
     Ok(jwt)
 }
 
 /// Router authentication middleware.
 pub fn handle_auth() -> JwtAuth<JwtClaims, ConstDecoder> {
     let env = Env::get_env();
-    let secret = env.jwt_secret.as_bytes();
-    JwtAuth::new(ConstDecoder::from_secret(secret))
+    let jwt_secret = env.jwt_secret.as_bytes();
+    JwtAuth::new(ConstDecoder::from_secret(jwt_secret))
         .finders(vec![Box::new(HeaderFinder::new())])
         .force_passed(true)
 }
