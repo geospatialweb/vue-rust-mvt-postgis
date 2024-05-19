@@ -1,8 +1,8 @@
 postgres:
   auto_publish: false
   connection_string: $POSTGRES_URI
-  # ssl_cert: $SSL_CERT_FILE
-  # ssl_key: $SSL_KEY_FILE
+  # ssl_cert: $TLS_CERT
+  # ssl_key: $TLS_KEY
   tables:
     biosphere:
       id_column: id
