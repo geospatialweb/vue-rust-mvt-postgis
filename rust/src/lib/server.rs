@@ -33,8 +33,8 @@ async fn set_server_host(service: Service) -> Result<(), Error> {
         start_http_server(&host, service).await;
     } else if env.app_mode == env.app_mode_prod {
         let host = format!("{}:{}", &env.server_host_prod, &env.server_port);
-        let tls_cert = &env.server_tls_cert;
-        let tls_key = &env.server_tls_key;
+        let tls_cert = &env.tls_cert;
+        let tls_key = &env.tls_key;
         start_https_server(&host, service, tls_cert, tls_key).await?;
     } else {
         error!("app mode set incorrctly: {}", &env.app_mode);
@@ -113,21 +113,21 @@ mod test {
 
     #[tokio::test]
     async fn tls_cert_err() {
-        let env = Env::get_env();
         let host = get_host();
         let service = get_service();
         let tls_cert = "/etc/letsencrypt/fullchain.pem";
-        let result = start_https_server(&host, service, tls_cert, &env.server_tls_key).await;
+        let tls_key = "/etc/letsencrypt/live/geospatialweb.ca/privkey.pem";
+        let result = start_https_server(&host, service, tls_cert, tls_key).await;
         assert!(matches!(result, Err(_)));
     }
 
     #[tokio::test]
     async fn tls_key_err() {
-        let env = Env::get_env();
         let host = get_host();
         let service = get_service();
+        let tls_cert = "/etc/letsencrypt/live/geospatialweb.ca/cert.pem";
         let tls_key = "/etc/letsencrypt/privkey.pem";
-        let result = start_https_server(&host, service, &env.server_tls_cert, tls_key).await;
+        let result = start_https_server(&host, service, tls_cert, tls_key).await;
         assert!(matches!(result, Err(_)));
     }
 }

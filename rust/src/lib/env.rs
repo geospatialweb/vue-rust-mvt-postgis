@@ -30,8 +30,8 @@ pub struct Env {
     pub server_host_dev: String,
     pub server_host_prod: String,
     pub server_port: String,
-    pub server_tls_cert: String,
-    pub server_tls_key: String,
+    pub tls_cert: String,
+    pub tls_key: String,
     pub update_password_endpoint: String,
     pub validate_user_endpoint: String,
 }
