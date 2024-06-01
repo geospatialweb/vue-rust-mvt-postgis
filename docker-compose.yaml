@@ -23,7 +23,7 @@ services:
     build:
       context: ./rust
       target: app
-    # image: geospatialweb/rust-mvt-postgis:latest
+    # image: geospatialweb/vue-rust-mvt-postgis:latest
     restart: unless-stopped
     depends_on:
       postgis:
