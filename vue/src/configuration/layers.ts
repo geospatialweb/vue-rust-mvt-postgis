@@ -1,6 +1,6 @@
 import { Layer, Url } from '@/enums'
 
-const mvtBaseURLDev: string = Url.MVT_BASE_URL_DEV,
+const mvtBaseURL: string = Url.MVT_BASE_URL,
   biosphereLayer: string = Layer.BIOSPHERE,
   trailsLayer: string = Layer.TRAILS
 
@@ -10,7 +10,7 @@ export default [
     type: 'fill',
     source: {
       type: 'vector',
-      url: `${mvtBaseURLDev}/${biosphereLayer}`
+      url: `${mvtBaseURL}/${biosphereLayer}`
     },
     'source-layer': 'biosphere',
     layout: {
@@ -27,7 +27,7 @@ export default [
     type: 'line',
     source: {
       type: 'vector',
-      url: `${mvtBaseURLDev}/${biosphereLayer}`
+      url: `${mvtBaseURL}/${biosphereLayer}`
     },
     'source-layer': 'biosphere',
     layout: {
@@ -43,7 +43,7 @@ export default [
     type: 'line',
     source: {
       type: 'vector',
-      url: `${mvtBaseURLDev}/${trailsLayer}`
+      url: `${mvtBaseURL}/${trailsLayer}`
     },
     'source-layer': 'trails',
     layout: {

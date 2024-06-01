@@ -45,7 +45,6 @@ export enum State {
 export enum Url {
   API_BASE_URL_DEV = 'http://localhost:8000',
   API_BASE_URL_PROD = 'https://geospatialweb.ca:8000',
-  MVT_BASE_URL_DEV = 'http://localhost:3000',
-  MVT_BASE_URL_PROD = 'https://geospatialweb.ca:3000',
+  MVT_BASE_URL = 'http://localhost:3000',
   HEXAGON_LAYER_DATA_URL = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/3d-heatmap/heatmap-data.csv'
 }
