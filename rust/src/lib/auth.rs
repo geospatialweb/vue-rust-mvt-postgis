@@ -38,7 +38,7 @@ impl Debug for Credential {
 }
 
 /// Auth JWT token and expiry.
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Jwt {
     jwt_expiry: i64,
@@ -90,7 +90,7 @@ pub fn get_jwt(username: &str) -> Result<Jwt, ResponseError> {
     let env = Env::get_env();
     let minutes = env.jwt_expiry.parse::<i64>().unwrap();
     let jwt_expiry = (Utc::now() + Duration::minutes(minutes)).timestamp();
-    let jwt_issuer =  &env.jwt_issuer;
+    let jwt_issuer = &env.jwt_issuer;
     let jwt_claims = JwtClaims::new(&jwt_expiry, jwt_issuer, username);
     let jwt_secret = env.jwt_secret.as_bytes();
     let jwt_token = jsonwebtoken::encode(&Header::default(), &jwt_claims, &EncodingKey::from_secret(jwt_secret))?;

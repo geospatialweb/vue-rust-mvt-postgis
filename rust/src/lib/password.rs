@@ -1,9 +1,9 @@
 use garde::Validate;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use std::fmt::{Debug, Formatter, Result};
 
 /// Plain text password.
-#[derive(Clone, Deserialize, PartialEq, Serialize, Validate)]
+#[derive(Clone, Deserialize, PartialEq, Validate)]
 pub struct TextPassword(#[garde(ascii)] String);
 
 impl TextPassword {

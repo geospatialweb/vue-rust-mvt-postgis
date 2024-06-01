@@ -1,12 +1,11 @@
 use garde::Validate;
-use serde::{Deserialize, Serialize};
-use sqlx::FromRow;
+use serde::Deserialize;
 use std::fmt::{Debug, Formatter, Result};
 
 use super::password::TextPassword;
 
 /// Username and password.
-#[derive(Deserialize, FromRow, PartialEq, Serialize, Validate)]
+#[derive(Deserialize, PartialEq, Validate)]
 pub struct User {
     #[garde(email)]
     pub username: String,
