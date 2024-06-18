@@ -1,3 +1,3 @@
 app:
-	@docker-compose up -d
+	@cd rust; make docker
 	@cd vue; make start

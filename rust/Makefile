@@ -7,6 +7,9 @@ check:
 clippy:
 	@cargo clippy
 
+docker:
+	@docker compose up -d
+
 release:
 	@cargo build --bin main --release
 
