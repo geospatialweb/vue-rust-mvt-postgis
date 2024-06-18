@@ -21,7 +21,7 @@ services:
   rust:
     container_name: rust
     build:
-      context: ./rust
+      context: .
       target: app
     # image: geospatialweb/vue-rust-mvt-postgis:latest
     restart: unless-stopped
@@ -33,7 +33,7 @@ services:
     ports:
       - "8000:8000"
     # volumes:
-    #   - /etc/letsencrypt:/etc/letsencrypt:ro
+    #   - /etc/letsencrypt:/etc/letsencrypt:rw
 
   mvt:
     container_name: martin
@@ -50,8 +50,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./mvt:/config:ro
-      # - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ../mvt:/config:ro
+      # - /etc/letsencrypt:/etc/letsencrypt:rw
 
   postgis:
     container_name: postgis
@@ -61,15 +61,15 @@ services:
       - .env
     healthcheck:
       test: pg_isready -d $POSTGRES_URI
-      interval: 20s
+      interval: 15s
       timeout: 5s
     networks:
       - app-network
     ports:
       - "5432:5432"
     volumes:
-      - ./postgis:/docker-entrypoint-initdb.d:ro
-      # - /etc/letsencrypt:/etc/letsencrypt:ro
+      - ../postgis:/docker-entrypoint-initdb.d:ro
+      # - /etc/letsencrypt:/etc/letsencrypt:rw
 
 networks:
   app-network:
