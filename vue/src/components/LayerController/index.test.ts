@@ -2,15 +2,15 @@ import userEvent from '@testing-library/user-event'
 import { render, screen, within } from '@testing-library/vue'
 import { createPinia, setActivePinia } from 'pinia'
 
-import { LayerElements } from '@/components'
+import { LayerController } from '@/components'
 import { Layer } from '@/enums'
 import { testData } from '@/test'
 
-describe('LayerElements component static test suite', (): void => {
+describe('LayerController component static test suite', (): void => {
   let listItems: HTMLElement[]
-  const { layerElements } = testData,
+  const { layers } = testData,
     setup = (): void => {
-      render(LayerElements)
+      render(LayerController)
       const list = screen.getByTestId('layers')
       listItems = within(list) && screen.getAllByRole('listitem')
     }
@@ -19,48 +19,48 @@ describe('LayerElements component static test suite', (): void => {
     setActivePinia(createPinia())
   })
 
-  it(`should render list of ${layerElements.length} layers`, (): void => {
+  it(`should render list of ${layers.length} layers`, (): void => {
     setup()
-    expect(listItems.length).toBe(layerElements.length)
+    expect(listItems.length).toBe(layers.length)
   })
 
   it('should render list of layers in a specific order', (): void => {
     setup()
-    const layers = listItems.map(({ textContent }) => textContent)
-    expect(layers).toEqual(layerElements.map(({ name }) => name))
+    const testLayers = listItems.map(({ textContent }) => textContent)
+    expect(testLayers).toEqual(layers.map(({ name }) => name))
   })
 
   it('should render list of layers with icon class set correctly for each layer icon', (): void => {
     setup()
-    const layers = listItems.map(({ firstChild }) => <HTMLElement>firstChild)
-    for (const [idx, layer] of layers.entries()) {
-      expect(layer.className).toMatch(new RegExp(`_${layerElements[idx].id}-icon`))
+    const testLayers = listItems.map(({ firstChild }) => <HTMLElement>firstChild)
+    for (const [idx, layer] of testLayers.entries()) {
+      expect(layer.className).toMatch(new RegExp(`_${layers[idx].id}-icon`))
     }
   })
 
   it("should render list of layers with an initial class 'active' or 'inactive') for each layer", (): void => {
     setup()
-    const layers = listItems.map(({ lastChild }) => <HTMLElement>lastChild)
-    for (const [idx, layer] of layers.entries()) {
-      expect(layer.className).toMatch(new RegExp(`_${layerElements[idx].className}`))
+    const testLayers = listItems.map(({ lastChild }) => <HTMLElement>lastChild)
+    for (const [idx, layer] of testLayers.entries()) {
+      expect(layer.className).toMatch(new RegExp(`_${layers[idx].className}`))
     }
   })
 })
 
-describe('LayerElements component click event test suite', (): void => {
-  const { layerElements } = testData,
+describe('LayerController component click event test suite', (): void => {
+  const { layers } = testData,
     user = userEvent.setup()
 
   test("Deck.GL layer class remains 'inactive' when clicked", async (): Promise<void> => {
-    render(LayerElements)
-    const layer = screen.getByText(layerElements[5].name)
+    render(LayerController)
+    const layer = screen.getByText(layers[5].name)
     await user.click(layer)
     expect(layer.className).toMatch(/_inactive/)
   })
 
   test("Biosphere layer class changes to 'inactive' on click and 'active' on click again", async (): Promise<void> => {
-    render(LayerElements)
-    const layer = screen.getByText(layerElements[1].name)
+    render(LayerController)
+    const layer = screen.getByText(layers[1].name)
     await user.click(layer)
     expect(layer.className).toMatch(/_inactive/)
     await user.click(layer)
@@ -68,10 +68,10 @@ describe('LayerElements component click event test suite', (): void => {
   })
 
   test("Remaining layers class changes to 'active' on click and 'inactive' on click again", async (): Promise<void> => {
-    render(LayerElements)
-    for (const { id, name } of layerElements) {
-      const biosphereLayer: string = Layer.BIOSPHERE,
-        deckglLayer: string = Layer.DECKGL
+    render(LayerController)
+    for (const { id, name } of layers) {
+      const biosphereLayer = `${Layer.BIOSPHERE}`,
+        deckglLayer = `${Layer.DECKGL}`
       if (id !== biosphereLayer && id !== deckglLayer) {
         const layer = screen.getByText(name)
         await user.click(layer)

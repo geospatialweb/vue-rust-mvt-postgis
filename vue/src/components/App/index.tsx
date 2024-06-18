@@ -8,9 +8,8 @@ import { AppService } from '@/services'
 export default defineComponent({
   name: 'App Component',
   setup() {
-    const appService = Container.get(AppService),
-      setInitialZoom = (): void => appService.setInitialZoom()
-    onBeforeMount((): void => setInitialZoom())
+    const appService = Container.get(AppService)
+    onBeforeMount((): void => appService.setInitialZoom())
     return (): JSX.Element => (
       <div role="presentation">
         <Header />

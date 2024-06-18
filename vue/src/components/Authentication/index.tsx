@@ -3,7 +3,7 @@ import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
 import { Route } from '@/enums'
-import { ICredentialState } from '@/interfaces'
+import { ICredentialsState } from '@/interfaces'
 import { AuthenticationService, CredentialsService } from '@/services'
 import styles from './index.module.css'
 
@@ -12,29 +12,21 @@ export default defineComponent({
   setup() {
     const { active, credentials, doublespacer, inactive, spacer } = styles,
       credentialsService = Container.get(CredentialsService),
-      getCredentialsState = (): ICredentialState => {
+      getCredentialsState = (): ICredentialsState => {
         const { credentialsState } = credentialsService
         return credentialsState
       },
-      setCredentialsState = (state: ICredentialState): void => credentialsService.setCredentialsState({ ...state }),
-      /* eslint-disable */
-      getCredentials = (evt: any): void | ICredentialState => {
-        const username = evt.target[1].value as string,
-          password = evt.target[2].value as string
-        /* eslint-enable */
-        if (!username || !password) return setCredentialsState({ isCorrect: false, isValid: true })
-        return { username, password }
-      },
-      login = (credentials: ICredentialState): void => {
-        const authenticationService = Container.get(AuthenticationService)
-        void authenticationService.login({ ...credentials })
-      },
+      setCredentialsState = (state: ICredentialsState): void => credentialsService.setCredentialsState({ ...state }),
       onSubmitHandler = (evt: Event): void => {
         evt.preventDefault()
-        const credentials = getCredentials(evt)
-        credentials && login(credentials)
+        const authenticationService = Container.get(AuthenticationService),
+          /* eslint-disable */
+          username = (evt as any).target[1].value as string,
+          password = (evt as any).target[2].value as string
+        /* eslint-enable */
+        void authenticationService.login({ username, password })
       },
-      jsx = ({ isAdmin, isCorrect, isValid, password, username }: ICredentialState): JSX.Element => (
+      jsx = ({ isAdmin, isCorrect, isValid, password, username }: ICredentialsState): JSX.Element => (
         <div class={credentials} role="presentation">
           <p class={isCorrect ? inactive : active}>Username/password incorrect</p>
           <p class={isValid ? inactive : active}>Username is not registered</p>

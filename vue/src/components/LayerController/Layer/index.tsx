@@ -1,11 +1,11 @@
 import 'vue/jsx'
 import { defineComponent } from 'vue'
 
-import { ILayerElementsState } from '@/interfaces'
+import { ILayerControllerState } from '@/interfaces'
 import styles from '../index.module.css'
 
 export default defineComponent({
-  name: 'LayerElement Component',
+  name: 'Layer Component',
   props: {
     id: {
       type: String,
@@ -20,9 +20,9 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props: ILayerElementsState) {
+  setup(props: ILayerControllerState) {
     const { active, inactive } = styles,
-      jsx = ({ id, isActive, name }: ILayerElementsState): JSX.Element => (
+      jsx = ({ id, isActive, name }: ILayerControllerState): JSX.Element => (
         <div id={id} class={isActive ? active : inactive}>
           {name}
         </div>

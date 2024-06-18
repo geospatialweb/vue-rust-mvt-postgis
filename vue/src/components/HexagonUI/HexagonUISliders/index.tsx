@@ -3,13 +3,7 @@ import { Container } from 'typedi'
 import { defineComponent, PropType } from 'vue'
 
 import { hexagonUISliders } from '@/configuration'
-import {
-  IHexagonLayerState,
-  IHexagonLayerStateProp,
-  IHexagonUILabelState,
-  IHexagonUISlider,
-  IHexagonUISliderProp
-} from '@/interfaces'
+import { IHexagonLayerState, IHexagonUILabelState, IHexagonUISlider, IHexagonUISliderProp } from '@/interfaces'
 import { HexagonLayerService, HexagonUIService } from '@/services'
 import styles from '../index.module.css'
 
@@ -28,24 +22,18 @@ export default defineComponent({
   setup(props: IHexagonUISliderProp) {
     const { mouseover, mouseout } = styles,
       sliders: IHexagonUISlider[] = hexagonUISliders,
-      renderHexagonLayer = ({ id, value }: IHexagonLayerStateProp): void => {
-        const hexagonLayerService = Container.get(HexagonLayerService)
+      onInputHandler = (evt: Event): void => {
+        evt.stopPropagation()
+        const hexagonLayerService = Container.get(HexagonLayerService),
+          { id, value } = evt.target as HTMLInputElement
         hexagonLayerService.setHexagonLayerState({ id, value })
         hexagonLayerService.renderHexagonLayer()
       },
-      setHexagonUILabelState = (id: string): void => {
-        const hexagonUIService = Container.get(HexagonUIService)
-        hexagonUIService.setHexagonUILabelState(id)
-      },
-      onInputHandler = (evt: Event): void => {
-        evt.stopPropagation()
-        const { id, value } = evt.target as HTMLInputElement
-        renderHexagonLayer({ id, value })
-      },
       onMouseover_onMouseoutHandler = (evt: MouseEvent): void => {
         evt.stopPropagation()
-        const { id } = evt.target as HTMLInputElement
-        setHexagonUILabelState(id)
+        const hexagonUIService = Container.get(HexagonUIService),
+          { id } = evt.target as HTMLInputElement
+        hexagonUIService.setHexagonUILabelState(id)
       },
       jsx = ({ labelState, layerState }: IHexagonUISliderProp): JSX.Element => (
         <div>

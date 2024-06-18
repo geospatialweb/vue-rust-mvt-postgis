@@ -10,8 +10,7 @@ export default defineComponent({
   name: 'PageNotFound Component',
   setup() {
     const { page_not_found } = styles,
-      route = Route.LOGIN,
-      routeTimeout = window.setTimeout((): void => setRoute(route), 2000),
+      routeTimeout = window.setTimeout((): void => setRoute(Route.LOGIN), 2000),
       setRoute = (route: string): void => {
         const routerService = Container.get(RouterService)
         void routerService.setRoute(route)
