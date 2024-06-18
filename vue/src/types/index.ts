@@ -4,15 +4,15 @@ import { StoreDefinition } from 'pinia'
 
 import {
   IAppState,
-  ICredentialState,
-  IDeckglSettingState,
+  ICredentialsState,
+  IDeckglSettingsState,
   IHexagonLayerState,
   IHexagonUILabelState,
   IJWTState,
-  ILayerElementsState,
+  ILayerControllerState,
   ILayerVisibilityState,
-  IMapboxSettingState,
-  IMapboxStyleState,
+  IMapboxSettingsState,
+  IMapboxStylesState,
   IMarkerVisibilityState,
   IModalState,
   IState
@@ -21,21 +21,21 @@ import {
 export type CsvResponse = DSVRowArray<string> | void
 export type HexagonLayerData = number[][]
 export type HttpResponse = FeatureCollection | IJWTState | string | void
-export type LayerElementsHashmap = Record<string, (id: string) => void>
+export type LayerControllerHashmap = Record<string, (id: string) => void>
 export type MediaQuery = Record<string, number> | undefined
 export type MediaQueryCollection = Record<string, MediaQuery>
 export type NavigationControlPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 export type State =
   | IAppState
-  | ICredentialState
-  | IDeckglSettingState
+  | ICredentialsState
+  | IDeckglSettingsState
   | IHexagonLayerState
   | IHexagonUILabelState
   | IJWTState
-  | ILayerElementsState[]
+  | ILayerControllerState[]
   | ILayerVisibilityState
-  | IMapboxSettingState
-  | IMapboxStyleState
+  | IMapboxSettingsState
+  | IMapboxStylesState
   | IMarkerVisibilityState
   | IModalState
 export type UseStoreDefinition = StoreDefinition<
