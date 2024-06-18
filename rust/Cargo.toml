@@ -13,7 +13,7 @@ publish = false
 chrono = "0.4"
 dotenvy = "0.15"
 envy = "0.4"
-garde = { version = "0.18", features = ["derive", "email"] }
+garde = { version = "0.19", features = ["derive", "email"] }
 geojson = "0.24"
 jsonwebtoken = "9"
 once_cell = "1"
