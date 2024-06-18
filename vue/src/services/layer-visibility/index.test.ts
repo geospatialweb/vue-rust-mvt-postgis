@@ -8,7 +8,7 @@ describe('LayerVisibilityService test suite', (): void => {
   setActivePinia(createPinia())
 
   test('setLayerVisibilityState method should be called', (): void => {
-    const bioshpereLayer: string = Layer.BIOSPHERE,
+    const bioshpereLayer = `${Layer.BIOSPHERE}`,
       layerVisibilityService = Container.get(LayerVisibilityService),
       spy = vi.spyOn(layerVisibilityService, 'setLayerVisibilityState')
     layerVisibilityService.setLayerVisibilityState(bioshpereLayer)

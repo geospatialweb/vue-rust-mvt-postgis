@@ -1,7 +1,6 @@
 import { AxiosRequestConfig } from 'axios'
 import { Container } from 'typedi'
 
-import { Endpoint } from '@/enums'
 import { HttpService } from '@/services'
 import { testData } from '@/test'
 
@@ -15,7 +14,7 @@ describe('HttpService test suite', (): void => {
   test('delete method should be called', async (): Promise<void> => {
     /* prettier-ignore */
     const { credentials: { username }, jwtToken } = testData,
-      deleteUserEndpoint = Endpoint.DELETE_USER_ENDPOINT,
+      deleteUserEndpoint = `${import.meta.env.VITE_DELETE_USER_ENDPOINT}`,
       params = { params: { username } },
       spy = vi.spyOn(httpService, 'delete')
     await httpService.delete(deleteUserEndpoint, jwtToken, <AxiosRequestConfig>params)
@@ -27,7 +26,7 @@ describe('HttpService test suite', (): void => {
   test('get method should be called', async (): Promise<void> => {
     /* prettier-ignore */
     const { queryParams: { columns, id }, jwtToken } = testData,
-      geoJsonEndpoint = Endpoint.GEOJSON_ENDPOINT,
+      geoJsonEndpoint = `${import.meta.env.VITE_GEOJSON_ENDPOINT}`,
       params = { params: { columns, table: id } },
       spy = vi.spyOn(httpService, 'get')
     await httpService.get(geoJsonEndpoint, jwtToken, <AxiosRequestConfig>params)
@@ -38,7 +37,7 @@ describe('HttpService test suite', (): void => {
 
   test('patch method should be called', async (): Promise<void> => {
     const { credentials, jwtToken } = testData,
-      updatePasswordEndpoint = Endpoint.UPDATE_PASSWORD_ENDPOINT,
+      updatePasswordEndpoint = `${import.meta.env.VITE_UPDATE_PASSWORD_ENDPOINT}`,
       params = { params: { ...credentials } },
       spy = vi.spyOn(httpService, 'patch')
     await httpService.patch(updatePasswordEndpoint, jwtToken, <AxiosRequestConfig>params)
@@ -49,7 +48,7 @@ describe('HttpService test suite', (): void => {
 
   test('post method should be called', async (): Promise<void> => {
     const { requestBody, jwtToken } = testData,
-      registerEndpoint = Endpoint.REGISTER_ENDPOINT,
+      registerEndpoint = `${import.meta.env.VITE_REGISTER_ENDPOINT}`,
       body = { ...requestBody },
       spy = vi.spyOn(httpService, 'post')
     await httpService.post(registerEndpoint, jwtToken, <AxiosRequestConfig>body)
@@ -60,7 +59,7 @@ describe('HttpService test suite', (): void => {
 
   test('put method should be called', async (): Promise<void> => {
     const { requestBody, jwtToken } = testData,
-      registerEndpoint = Endpoint.REGISTER_ENDPOINT,
+      registerEndpoint = `${import.meta.env.VITE_REGISTER_ENDPOINT}`,
       body = { ...requestBody },
       spy = vi.spyOn(httpService, 'put')
     await httpService.put(registerEndpoint, jwtToken, <AxiosRequestConfig>body)

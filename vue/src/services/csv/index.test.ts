@@ -1,11 +1,10 @@
 import { Container } from 'typedi'
 
-import { Url } from '@/enums'
 import { CsvService } from '@/services'
 
 describe('CsvService test suite', (): void => {
   test('fetchCsv method should be called', async (): Promise<void> => {
-    const hexagonLayerDataURL = Url.HEXAGON_LAYER_DATA_URL,
+    const hexagonLayerDataURL = `${import.meta.env.VITE_HEXAGON_LAYER_DATA_URL}`,
       csvService = Container.get(CsvService),
       spy = vi.spyOn(csvService, 'fetchCsv')
     await csvService.fetchCsv(hexagonLayerDataURL)

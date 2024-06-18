@@ -1,6 +1,6 @@
 import { Container } from 'typedi'
 
-import { ICredentialState, IQueryParam } from '@/interfaces'
+import { ICredentialsState, IQueryParam } from '@/interfaces'
 import { ApiService } from '@/services'
 import { testData } from '@/test'
 
@@ -52,9 +52,9 @@ describe('ApiService test suite', (): void => {
   test('updatePassword method should be called', async (): Promise<void> => {
     const { jwtToken, credentials } = testData,
       spy = vi.spyOn(apiService, 'updatePassword')
-    await apiService.updatePassword(jwtToken, <ICredentialState>credentials)
+    await apiService.updatePassword(jwtToken, <ICredentialsState>credentials)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(jwtToken, <ICredentialState>credentials)
+    expect(spy).toHaveBeenCalledWith(jwtToken, <ICredentialsState>credentials)
     expect(spy).toHaveReturnedTimes(1)
   })
 })

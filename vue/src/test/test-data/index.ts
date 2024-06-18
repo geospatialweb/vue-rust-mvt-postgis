@@ -51,7 +51,7 @@ export default {
       }
     ]
   },
-  layerElements: [
+  layers: [
     {
       id: 'satellite',
       name: 'Satellite',

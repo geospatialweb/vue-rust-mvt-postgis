@@ -18,9 +18,9 @@ describe('MapboxStyleService test suite', (): void => {
     expect(spy).toHaveReturnedTimes(1)
   })
 
-  test('setMapboxStylesState method should be called', (): void => {
-    const spy = vi.spyOn(mapboxStyleService, 'setMapboxStylesState')
-    mapboxStyleService.setMapboxStylesState()
+  test('setMapboxStyleState method should be called', (): void => {
+    const spy = vi.spyOn(mapboxStyleService, 'setMapboxStyleState')
+    mapboxStyleService.setMapboxStyleState()
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveReturnedTimes(1)
   })
