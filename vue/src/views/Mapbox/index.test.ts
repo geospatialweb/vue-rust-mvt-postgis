@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/vue'
 import { createPinia, setActivePinia } from 'pinia'
 
-import { LayerElements, Mapbox, Modal, Trails } from '@/components'
+import { LayerController, Mapbox, Modal, Trails } from '@/components'
 import { mapbox } from '@/configuration'
 import { Mapbox as MapboxView } from '@/views'
 
@@ -25,8 +25,8 @@ describe('Mapbox view test suite', (): void => {
     expect(mapboxComponent).toBeInTheDocument()
   })
 
-  test('LayerElements component renders successfully', (): void => {
-    render(LayerElements)
+  test('LayerController component renders successfully', (): void => {
+    render(LayerController)
     const list = screen.getByTestId('layers')
     expect(list).toBeInTheDocument()
   })

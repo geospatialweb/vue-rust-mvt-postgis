@@ -1,7 +1,7 @@
 import 'vue/jsx'
 import { defineComponent } from 'vue'
 
-import { LayerElements, Mapbox, Modal, Trails } from '@/components'
+import { LayerController, Mapbox, Modal, Trails } from '@/components'
 import { mapbox } from '@/configuration'
 
 export default defineComponent({
@@ -12,7 +12,7 @@ export default defineComponent({
     return (): JSX.Element => (
       <section role="presentation">
         <Mapbox container={container} />
-        <LayerElements />
+        <LayerController />
         <Trails />
         <Modal />
       </section>
