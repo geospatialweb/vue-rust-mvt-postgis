@@ -7,7 +7,7 @@ export interface IAppState {
   isMobile: boolean
 }
 
-export interface ICredentialState {
+export interface ICredentialsState {
   isAdmin?: boolean | undefined
   isCorrect?: boolean | undefined
   isValid?: boolean | undefined
@@ -29,7 +29,7 @@ export interface IDeckglOption {
   style: string
 }
 
-export interface IDeckglSettingState {
+export interface IDeckglSettingsState {
   bearing: number
   center: LngLatLike
   latitude: number
@@ -111,27 +111,7 @@ export interface IJWTState {
   jwtToken: string
 }
 
-export interface ILayer {
-  id: string
-  type: string
-  source: {
-    type: string
-    url: string
-  }
-  'source-layer': string
-  layout: {
-    visibility: string
-  }
-  paint: {
-    'fill-color'?: string | undefined
-    'fill-opacity'?: number | undefined
-    'fill-outline-color'?: string | undefined
-    'line-color'?: string | undefined
-    'line-width'?: number | undefined
-  }
-}
-
-export interface ILayerElementsState {
+export interface ILayerControllerState {
   id: string
   isActive: boolean
   name: string
@@ -162,7 +142,7 @@ export interface IMapboxOption {
   doubleClickZoom: boolean
 }
 
-export interface IMapboxSettingState {
+export interface IMapboxSettingsState {
   bearing: number
   center: LngLatLike
   maxPitch: number
@@ -179,7 +159,7 @@ export interface IMapStyle {
   url: string
 }
 
-export interface IMapboxStyleState {
+export interface IMapboxStylesState {
   outdoors: IMapStyle
   satellite: IMapStyle
 }
@@ -215,15 +195,15 @@ export interface IQueryParam {
 
 export interface IState {
   app: IAppState
-  credentials: ICredentialState
-  deckglSettings: IDeckglSettingState
+  credentials: ICredentialsState
+  deckglSettings: IDeckglSettingsState
   hexagonLayer: IHexagonLayerState
   hexagonUILabel: IHexagonUILabelState
-  JWT: IJWTState
-  layerElements: ILayerElementsState[]
+  jwt: IJWTState
+  layerController: ILayerControllerState[]
   layerVisibility: ILayerVisibilityState
-  mapboxSettings: IMapboxSettingState
-  mapboxStyles: IMapboxStyleState
+  mapboxSettings: IMapboxSettingsState
+  mapboxStyles: IMapboxStylesState
   markerVisibility: IMarkerVisibilityState
   modal: IModalState
 }
@@ -232,4 +212,24 @@ export interface ITrail {
   center: LngLatLike
   name: string
   zoom: number
+}
+
+export interface IVectorLayer {
+  id: string
+  type: string
+  source: {
+    type: string
+    url: string
+  }
+  'source-layer': string
+  layout: {
+    visibility: string
+  }
+  paint: {
+    'fill-color'?: string | undefined
+    'fill-opacity'?: number | undefined
+    'fill-outline-color'?: string | undefined
+    'line-color'?: string | undefined
+    'line-width'?: number | undefined
+  }
 }
