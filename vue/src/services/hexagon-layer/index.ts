@@ -17,33 +17,18 @@ export default class HexagonLayerService {
   #hexagonLayerDataService = Container.get(HexagonLayerDataService)
   #storeService = Container.get(StoreService)
 
-  #hexagonLayer: string = State.HEXAGON_LAYER
   #hexagonLayerData: HexagonLayerData = []
-  #props: IHexagonLayerProp = hexagonLayer.props
-  #state: IHexagonLayerState = { ...hexagonLayer.state }
+  #hexagonLayerInitialState: IHexagonLayerState = hexagonLayer.state
+  #hexagonLayerProps: IHexagonLayerProp = hexagonLayer.props
 
   get hexagonLayerState() {
-    return <IHexagonLayerState>this.#storeService.getState(this.#hexagonLayer)
+    return <IHexagonLayerState>this.#storeService.getState(State.HEXAGON_LAYER)
   }
 
   set #hexagonLayerState(state: IHexagonLayerState) {
-    this.#storeService.setState(this.#hexagonLayer, state)
+    this.#storeService.setState(State.HEXAGON_LAYER, state)
   }
 
-  setHexagonLayerState({ id, value }: IHexagonLayerStateProp): void {
-    const state: IHexagonLayerState = { ...this.hexagonLayerState }
-    state[id as keyof IHexagonLayerState] = Number(value)
-    this.#hexagonLayerState = state
-  }
-
-  resetHexagonLayerState(): void {
-    this.#hexagonLayerState = this.#state
-  }
-
-  #setHexagonLayerData(): void {
-    const { hexagonLayerData } = this.#hexagonLayerDataService
-    this.#hexagonLayerData = hexagonLayerData
-  }
   /* eslint-disable */
   renderHexagonLayer(): void {
     !this.#hexagonLayerData.length && this.#setHexagonLayerData()
@@ -52,9 +37,25 @@ export default class HexagonLayerService {
       hexagonLayer = new HexagonLayer({
         data: this.#hexagonLayerData,
         getPosition: (d: number[]): number[] => d,
-        ...this.#props,
+        ...this.#hexagonLayerProps,
         ...this.hexagonLayerState
       })
     deck.setProps({ layers: [hexagonLayer] })
+  }
+  /* eslint-enable */
+
+  setHexagonLayerState({ id, value }: IHexagonLayerStateProp): void {
+    const state = <IHexagonLayerState>{ ...this.hexagonLayerState }
+    state[id as keyof IHexagonLayerState] = Number(value)
+    this.#hexagonLayerState = state
+  }
+
+  resetHexagonLayerState(): void {
+    this.#hexagonLayerState = this.#hexagonLayerInitialState
+  }
+
+  #setHexagonLayerData(): void {
+    const { hexagonLayerData } = this.#hexagonLayerDataService
+    this.#hexagonLayerData = hexagonLayerData
   }
 }

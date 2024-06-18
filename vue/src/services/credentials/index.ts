@@ -1,8 +1,8 @@
 import { AxiosRequestConfig } from 'axios'
 import { Container, Service } from 'typedi'
 
-import { Endpoint, State } from '@/enums'
-import { ICredentialState, IJWTState } from '@/interfaces'
+import { State } from '@/enums'
+import { ICredentialsState, IJWTState } from '@/interfaces'
 import { HttpService, StoreService } from '@/services'
 
 @Service()
@@ -10,25 +10,24 @@ export default class CredentialsService {
   #httpService = Container.get(HttpService)
   #storeService = Container.get(StoreService)
 
-  #credentials: string = State.CREDENTIALS
-  #loginEndpoint: string = Endpoint.LOGIN_ENDPOINT
-  #registerEndpoint: string = Endpoint.REGISTER_ENDPOINT
-  #validateEndpoint: string = Endpoint.VALIDATE_USER_ENDPOINT
+  #loginEndpoint = `${import.meta.env.VITE_LOGIN_ENDPOINT}`
+  #registerEndpoint: string = `${import.meta.env.VITE_REGISTER_ENDPOINT}`
+  #validateEndpoint: string = `${import.meta.env.VITE_VALIDATE_USER_ENDPOINT}`
 
   get credentialsState() {
-    return <ICredentialState>this.#storeService.getState(this.#credentials)
+    return <ICredentialsState>this.#storeService.getState(State.CREDENTIALS)
   }
 
-  set #credentialsState(state: ICredentialState) {
-    this.#storeService.setState(this.#credentials, state)
+  set #credentialsState(state: ICredentialsState) {
+    this.#storeService.setState(State.CREDENTIALS, state)
   }
 
-  async login(credentials: ICredentialState): Promise<IJWTState> {
+  async login(credentials: ICredentialsState): Promise<IJWTState> {
     const params = <AxiosRequestConfig>{ params: { ...credentials } }
     return <IJWTState>await this.#httpService.get(this.#loginEndpoint, '', params)
   }
 
-  async register(credentials: ICredentialState): Promise<string> {
+  async register(credentials: ICredentialsState): Promise<string> {
     const body = <AxiosRequestConfig>{ ...credentials }
     return <string>await this.#httpService.post(this.#registerEndpoint, '', body)
   }
@@ -38,7 +37,7 @@ export default class CredentialsService {
     return <string>await this.#httpService.get(this.#validateEndpoint, '', params)
   }
 
-  setCredentialsState(state: ICredentialState): void {
+  setCredentialsState(state: ICredentialsState): void {
     this.#credentialsState = { ...this.credentialsState, ...state }
   }
 }

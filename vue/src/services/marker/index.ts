@@ -6,26 +6,35 @@ import { Container, Service } from 'typedi'
 import { markerParams } from '@/configuration'
 import { State } from '@/enums'
 import { IMarkerVisibilityState, IQueryParam } from '@/interfaces'
-import { ApiService, MapboxService, PopupService, StoreService } from '@/services'
+import { ApiService, AuthorizationService, MapboxService, PopupService, StoreService } from '@/services'
 
 @Service()
 export default class MarkerService {
   #apiService = Container.get(ApiService)
+  #authorizationService = Container.get(AuthorizationService)
   #popupService = Container.get(PopupService)
   #storeService = Container.get(StoreService)
 
   #markerParams: IQueryParam[] = markerParams
-  #markerVisibility: string = State.MARKER_VISIBILITY
   #markers: Marker[][] = []
   #markersHashmap: Map<string, number> = new Map()
   #reverseMarkersHashmap: Map<number, string> = new Map()
 
   get #markerVisibilityState() {
-    return <IMarkerVisibilityState>this.#storeService.getState(this.#markerVisibility)
+    return <IMarkerVisibilityState>this.#storeService.getState(State.MARKER_VISIBILITY)
   }
 
   set #markerVisibilityState(state: IMarkerVisibilityState) {
-    this.#storeService.setState(this.#markerVisibility, state)
+    this.#storeService.setState(State.MARKER_VISIBILITY, state)
+  }
+
+  async setMarkerFeatures(): Promise<void> {
+    const jwtToken = this.#getJwtToken()
+    for (const params of this.#markerParams) {
+      const { id } = params,
+        { features } = await this.#getMarkerFeatureCollection(jwtToken, params)
+      features?.length ? this.#setMarkers(id, features) : this.#consoleError(`No ${id.toUpperCase()} Features Found`)
+    }
   }
 
   setHiddenMarkersVisibility(): void {
@@ -43,14 +52,10 @@ export default class MarkerService {
     }
   }
 
-  async setMarkerFeatures(jwtToken: string): Promise<void> {
-    for (const params of this.#markerParams) {
-      const { id } = params,
-        { features } = await this.#getMarkerFeatureCollection(jwtToken, params)
-      features?.length
-        ? this.#setMarkers(id, cloneDeep(features))
-        : this.#consoleError(`No ${id.toUpperCase()} Features Found`)
-    }
+  #getJwtToken(): string {
+    /* prettier-ignore */
+    const { jwtState: { jwtToken } } = this.#authorizationService
+    return jwtToken
   }
 
   async #getMarkerFeatureCollection(jwtToken: string, params: IQueryParam): Promise<FeatureCollection> {
@@ -96,7 +101,7 @@ export default class MarkerService {
   }
 
   #setMarkerVisibilityState(id: string): void {
-    const state: IMarkerVisibilityState = { ...this.#markerVisibilityState }
+    const state = cloneDeep(this.#markerVisibilityState)
     state[id as keyof IMarkerVisibilityState].isActive = !state[id as keyof IMarkerVisibilityState].isActive
     this.#markerVisibilityState = state
   }
@@ -109,7 +114,7 @@ export default class MarkerService {
   }
 
   #setHiddenMarkerVisibilityState(id: string): void {
-    const state: IMarkerVisibilityState = { ...this.#markerVisibilityState }
+    const state = cloneDeep(this.#markerVisibilityState)
     state[id as keyof IMarkerVisibilityState].isHidden = !state[id as keyof IMarkerVisibilityState].isHidden
     this.#markerVisibilityState = state
   }

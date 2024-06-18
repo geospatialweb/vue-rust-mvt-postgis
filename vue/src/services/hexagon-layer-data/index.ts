@@ -1,7 +1,6 @@
 import { DSVRowArray } from 'd3-dsv'
 import { Container, Service } from 'typedi'
 
-import { Url } from '@/enums'
 import { CsvService } from '@/services'
 import { CsvResponse, HexagonLayerData } from '@/types'
 
@@ -10,7 +9,7 @@ export default class HexagonLayerDataService {
   #csvService = Container.get(CsvService)
 
   #hexagonLayerData: HexagonLayerData = []
-  #hexagonLayerDataUrl: string = Url.HEXAGON_LAYER_DATA_URL
+  #hexagonLayerDataUrl = `${import.meta.env.VITE_HEXAGON_LAYER_DATA_URL}`
 
   constructor() {
     void this.#loadHexagonLayerData()
@@ -21,8 +20,8 @@ export default class HexagonLayerDataService {
   }
 
   async #loadHexagonLayerData(): Promise<void> {
-    const data = await this.#getHexagonLayerData(this.#hexagonLayerDataUrl)
-    this.#setHexagonLayerData(<DSVRowArray<string>>data)
+    const data = <DSVRowArray<string>>await this.#getHexagonLayerData(this.#hexagonLayerDataUrl)
+    this.#setHexagonLayerData(data)
   }
 
   async #getHexagonLayerData(url: string): Promise<CsvResponse> {

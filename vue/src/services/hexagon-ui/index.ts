@@ -8,18 +8,16 @@ import { StoreService } from '@/services'
 export default class HexagonUIService {
   #storeService = Container.get(StoreService)
 
-  #hexagonUILabel: string = State.HEXAGON_UI_LABEL
-
   get hexagonUILabelState() {
-    return <IHexagonUILabelState>this.#storeService.getState(this.#hexagonUILabel)
+    return <IHexagonUILabelState>this.#storeService.getState(State.HEXAGON_UI_LABEL)
   }
 
   set #hexagonUILabelState(state: IHexagonUILabelState) {
-    this.#storeService.setState(this.#hexagonUILabel, state)
+    this.#storeService.setState(State.HEXAGON_UI_LABEL, state)
   }
 
   setHexagonUILabelState(id: string): void {
-    const state: IHexagonUILabelState = { ...this.hexagonUILabelState }
+    const state = <IHexagonUILabelState>{ ...this.hexagonUILabelState }
     state[id as keyof IHexagonUILabelState] = !state[id as keyof IHexagonUILabelState]
     this.#hexagonUILabelState = state
   }

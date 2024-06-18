@@ -2,19 +2,18 @@ import { AxiosRequestConfig } from 'axios'
 import { FeatureCollection } from 'geojson'
 import { Container, Service } from 'typedi'
 
-import { Endpoint } from '@/enums'
-import { ICredentialState, IQueryParam } from '@/interfaces'
+import { ICredentialsState, IQueryParam } from '@/interfaces'
 import { HttpService } from '@/services'
 
 @Service()
 export default class ApiService {
   #httpService = Container.get(HttpService)
 
-  #deleteUserEndpoint: string = Endpoint.DELETE_USER_ENDPOINT
-  #geoJsonEndpoint: string = Endpoint.GEOJSON_ENDPOINT
-  #getUserEndpoint: string = Endpoint.GET_USER_ENDPOINT
-  #mapboxAccessTokenEnpoint: string = Endpoint.MAPBOX_ACCESS_TOKEN_ENDPOINT
-  #updatePasswordEndpoint: string = Endpoint.UPDATE_PASSWORD_ENDPOINT
+  #deleteUserEndpoint = `${import.meta.env.VITE_DELETE_USER_ENDPOINT}`
+  #geoJsonEndpoint = `${import.meta.env.VITE_GEOJSON_ENDPOINT}`
+  #getUserEndpoint = `${import.meta.env.VITE_GET_USER_ENDPOINT}`
+  #mapboxAccessTokenEnpoint = `${import.meta.env.VITE_MAPBOX_ACCESS_TOKEN_ENDPOINT}`
+  #updatePasswordEndpoint = `${import.meta.env.VITE_UPDATE_PASSWORD_ENDPOINT}`
 
   async deleteUser(jwtToken: string, username: string): Promise<string> {
     const params = <AxiosRequestConfig>{ params: { username } }
@@ -36,7 +35,7 @@ export default class ApiService {
     return <string>await this.#httpService.get(this.#getUserEndpoint, jwtToken, params)
   }
 
-  async updatePassword(jwtToken: string, credentials: ICredentialState): Promise<string> {
+  async updatePassword(jwtToken: string, credentials: ICredentialsState): Promise<string> {
     const body = <AxiosRequestConfig>{ ...credentials }
     return <string>await this.#httpService.patch(this.#updatePasswordEndpoint, jwtToken, body)
   }

@@ -13,7 +13,6 @@ export default class AppService {
   #storeService = Container.get(StoreService)
   #trailService = Container.get(TrailService)
 
-  #app: string = State.APP
   #mediaQueryCollection: MediaQueryCollection = mediaQueryCollection
 
   constructor() {
@@ -21,11 +20,11 @@ export default class AppService {
   }
 
   get appState() {
-    return <IAppState>this.#storeService.getState(this.#app)
+    return <IAppState>this.#storeService.getState(State.APP)
   }
 
   set #appState(state: IAppState) {
-    this.#storeService.setState(this.#app, state)
+    this.#storeService.setState(State.APP, state)
   }
 
   setInitialZoom(): void {
@@ -39,7 +38,7 @@ export default class AppService {
   }
 
   #setAppState(): void {
-    const state: IAppState = { ...this.appState }
+    const state = <IAppState>{ ...this.appState }
     state.initialZoom = this.#getInitialZoom()
     state.isMobile = this.#isMobile()
     this.#appState = state

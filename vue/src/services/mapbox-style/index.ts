@@ -1,7 +1,8 @@
+import cloneDeep from 'lodash.clonedeep'
 import { Container, Service } from 'typedi'
 
 import { State } from '@/enums'
-import { IMapStyle, IMapboxStyleState } from '@/interfaces'
+import { IMapStyle, IMapboxStylesState } from '@/interfaces'
 import { StoreService } from '@/services'
 
 @Service()
@@ -9,7 +10,6 @@ export default class MapboxStyleService {
   #storeService = Container.get(StoreService)
 
   #activeMapboxStyle = ''
-  #mapboxStyles: string = State.MAPBOX_STYLES
 
   constructor() {
     this.setActiveMapboxStyle()
@@ -20,24 +20,24 @@ export default class MapboxStyleService {
   }
 
   get mapboxStylesState() {
-    return <IMapboxStyleState>this.#storeService.getState(this.#mapboxStyles)
+    return <IMapboxStylesState>this.#storeService.getState(State.MAPBOX_STYLES)
   }
 
-  set #mapboxStylesState(state: IMapboxStyleState) {
-    this.#storeService.setState(this.#mapboxStyles, state)
+  set #mapboxStylesState(state: IMapboxStylesState) {
+    this.#storeService.setState(State.MAPBOX_STYLES, state)
   }
 
   setActiveMapboxStyle(): void {
-    const mapboxStyles = this.mapboxStylesState,
+    const mapboxStylesState = this.mapboxStylesState,
       isActive = ({ isActive }: IMapStyle): boolean => isActive,
-      { id } = <IMapStyle>Object.values(mapboxStyles).find(isActive)
+      { id } = <IMapStyle>Object.values(mapboxStylesState).find(isActive)
     this.#activeMapboxStyle = id
   }
 
-  setMapboxStylesState(): void {
-    const mapboxStyles: IMapboxStyleState = { ...this.mapboxStylesState },
+  setMapboxStyleState(): void {
+    const mapboxStylesState = cloneDeep(this.mapboxStylesState),
       isActive = (mapStyle: IMapStyle): boolean => (mapStyle.isActive = !mapStyle.isActive)
-    Object.values(mapboxStyles).forEach(isActive)
-    this.#mapboxStylesState = mapboxStyles
+    Object.values(mapboxStylesState).forEach(isActive)
+    this.#mapboxStylesState = mapboxStylesState
   }
 }

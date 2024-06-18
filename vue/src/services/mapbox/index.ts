@@ -5,41 +5,42 @@ import { Container, Service } from 'typedi'
 import { mapbox, mapboxDraw } from '@/configuration'
 import { Layer, State } from '@/enums'
 import {
-  ILayerElementsState,
+  ILayerControllerState,
   ILayerVisibilityState,
   IMapboxOption,
-  IMapboxSettingState,
-  IMapboxStyleState,
+  IMapboxSettingsState,
+  IMapboxStylesState,
   INavigationControl,
   ITrail
 } from '@/interfaces'
 import {
   AppService,
-  LayerElementService,
-  LayerService,
+  AuthorizationService,
+  LayerControllerService,
   LayerVisibilityService,
   MapboxStyleService,
   MarkerService,
   ModalService,
   PopupService,
-  StoreService
+  StoreService,
+  VectorLayerService
 } from '@/services'
 import { NavigationControlPosition } from '@/types'
 
 @Service()
 export default class MapboxService {
-  #layerService = Container.get(LayerService)
+  #authorizationService = Container.get(AuthorizationService)
   #layerVisibilityService = Container.get(LayerVisibilityService)
   #mapboxStyleService = Container.get(MapboxStyleService)
   #markerService = Container.get(MarkerService)
   #modalService = Container.get(ModalService)
   #popupService = Container.get(PopupService)
   #storeService = Container.get(StoreService)
+  #vectorLayerService = Container.get(VectorLayerService)
 
-  #biosphereLayer: string = Layer.BIOSPHERE
-  #mapboxDraw: MapboxDraw = new MapboxDraw(mapboxDraw.options)
+  #biosphereLayer = `${Layer.BIOSPHERE}`
+  #mapboxDraw = new MapboxDraw(mapboxDraw.options)
   #mapboxOptions: IMapboxOption = mapbox.options
-  #mapboxSettings: string = State.MAPBOX_SETTINGS
   #navigationControl: INavigationControl = mapbox.navigationControl
   #skyLayer: SkyLayer = <SkyLayer>mapbox.skyLayer
 
@@ -50,29 +51,16 @@ export default class MapboxService {
   }
 
   get #mapboxSettingsState() {
-    return <IMapboxSettingState>this.#storeService.getState(this.#mapboxSettings)
+    return <IMapboxSettingsState>this.#storeService.getState(State.MAPBOX_SETTINGS)
   }
 
-  set #mapboxSettingsState(state: IMapboxSettingState) {
-    this.#storeService.setState(this.#mapboxSettings, state)
+  set #mapboxSettingsState(state: IMapboxSettingsState) {
+    this.#storeService.setState(State.MAPBOX_SETTINGS, state)
   }
 
   loadMap(): void {
-    const { position, visualizePitch } = this.#navigationControl
-    this._map = new Map({ ...this.#mapboxOptions, ...this.#mapboxSettingsState })
-      .addControl(this.#mapboxDraw)
-      .addControl(new NavigationControl({ visualizePitch }), <NavigationControlPosition>position)
-      .on('draw.modechange', (): void => this.#drawModeChange())
-      .on('idle', (): void => this.#setMapboxSettingsState())
-      .on('load', (): void => {
-        this.#setMapLayers()
-        this.#hideModal()
-      })
-  }
-
-  resetMap(): void {
-    this.#setMapboxStyle()
-    this.#resetMapLayers()
+    this.#showModal()
+    void this.#loadMap()
   }
 
   mapFlyTo({ center, zoom }: ITrail): void {
@@ -81,6 +69,11 @@ export default class MapboxService {
 
   removeMapResources(): void {
     this._map && this._map.remove()
+  }
+
+  resetMap(): void {
+    this.#setMapboxStyle()
+    this.#resetMapLayers()
   }
 
   setInitialZoomState(zoom: number): void {
@@ -92,7 +85,6 @@ export default class MapboxService {
     const appService = Container.get(AppService),
       { appState: { isMobile }} = appService,
       { layerVisibilityState } = this.#layerVisibilityService
-
     if (layerVisibilityState[id as keyof ILayerVisibilityState].isActive) {
       this.#setMapLayoutProperty(id, 'visible')
       id === this.#biosphereLayer && !isMobile && this.#addLayerVisibilityEventListeners(id)
@@ -103,18 +95,47 @@ export default class MapboxService {
     }
   }
 
+  async #loadMap(): Promise<void> {
+    const { position, visualizePitch } = this.#navigationControl
+    await this.#getMapboxAccessToken()
+    this._map = new Map({ ...this.#mapboxOptions, ...this.#mapboxSettingsState })
+      .addControl(this.#mapboxDraw)
+      .addControl(new NavigationControl({ visualizePitch }), <NavigationControlPosition>position)
+      .on('draw.modechange', (): void => this.#drawModeChange())
+      .on('idle', (): void => this.#setMapboxSettingsState())
+      .on('load', (): void => {
+        this.#setMapLayers()
+        this.#hideModal()
+      })
+  }
+
+  #getMapboxAccessToken = async (): Promise<void> => {
+    const authorizationService = this.#authorizationService,
+      { mapboxAccessToken } = authorizationService
+    if (!mapboxAccessToken) {
+      /* prettier-ignore */
+      const { jwtState: { jwtToken } } = authorizationService
+      await authorizationService.getMapboxAccessToken(jwtToken)
+    }
+  }
+
   #drawModeChange(): void {
-    const layerElementService = Container.get(LayerElementService),
-      { layerElementsState } = layerElementService,
-      layerElement = (layerElement: ILayerElementsState): boolean => layerElement.id === this.#biosphereLayer,
-      idx = layerElementsState.findIndex(layerElement)
-    if (idx >= 0 && layerElementsState[idx].isActive) {
-      layerElementService.displayLayerElement(this.#biosphereLayer)
+    const id = this.#biosphereLayer,
+      layerControllerService = Container.get(LayerControllerService),
+      { layerControllerState } = layerControllerService,
+      layer = (layer: ILayerControllerState): boolean => layer.id === id,
+      idx = layerControllerState.findIndex(layer)
+    if (idx >= 0 && layerControllerState[idx].isActive) {
+      layerControllerService.displayLayer(id)
     }
   }
 
   #hideModal(): void {
     this.#modalService.hideModal()
+  }
+
+  #showModal = (): void => {
+    this.#modalService.showModal()
   }
 
   #setMapLayoutProperty(id: string, visibility: string): void {
@@ -123,7 +144,7 @@ export default class MapboxService {
 
   #setMapboxSettingsState(): void {
     const { activeMapboxStyle, mapboxStylesState } = this.#mapboxStyleService,
-      style = mapboxStylesState[activeMapboxStyle as keyof IMapboxStyleState].url
+      style = mapboxStylesState[activeMapboxStyle as keyof IMapboxStylesState].url
     this.#mapboxSettingsState = {
       ...this.#mapboxSettingsState,
       bearing: this._map.getBearing(),
@@ -135,10 +156,10 @@ export default class MapboxService {
   }
 
   #setMapboxStyle(): void {
-    this.#mapboxStyleService.setMapboxStylesState()
+    this.#mapboxStyleService.setMapboxStyleState()
     this.#mapboxStyleService.setActiveMapboxStyle()
     const { activeMapboxStyle, mapboxStylesState } = this.#mapboxStyleService,
-      style = mapboxStylesState[activeMapboxStyle as keyof IMapboxStyleState].url
+      style = mapboxStylesState[activeMapboxStyle as keyof IMapboxStylesState].url
     this._map.setStyle(style)
   }
 
@@ -163,8 +184,8 @@ export default class MapboxService {
   }
 
   #addFeatureLayers(): void {
-    const { layers } = this.#layerService
-    for (const layer of layers) {
+    const { vectorLayers } = this.#vectorLayerService
+    for (const layer of vectorLayers) {
       const { id } = layer
       if (!this.#getLayer(id)) {
         this.#addLayer(<FillLayer | LineLayer>layer)

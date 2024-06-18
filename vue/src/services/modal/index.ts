@@ -8,28 +8,27 @@ import { StoreService } from '@/services'
 export default class ModalService {
   #storeService = Container.get(StoreService)
 
-  #modal: string = State.MODAL
-
   get modalState() {
-    return <IModalState>this.#storeService.getState(this.#modal)
+    return <IModalState>this.#storeService.getState(State.MODAL)
   }
 
   set #modalState(state: IModalState) {
-    this.#storeService.setState(this.#modal, state)
+    this.#storeService.setState(State.MODAL, state)
   }
 
   hideModal(): void {
-    const state: IModalState = { ...this.modalState }
-    state.isActive && this.#setModalState(state)
+    const state = <IModalState>{ ...this.modalState }
+    if (state.isActive) {
+      state.isActive = !state.isActive
+      this.#modalState = state
+    }
   }
 
   showModal(): void {
-    const state: IModalState = { ...this.modalState }
-    !state.isActive && this.#setModalState(state)
-  }
-
-  #setModalState(state: IModalState): void {
-    state.isActive = !state.isActive
-    this.#modalState = state
+    const state = <IModalState>{ ...this.modalState }
+    if (!state.isActive) {
+      state.isActive = !state.isActive
+      this.#modalState = state
+    }
   }
 }

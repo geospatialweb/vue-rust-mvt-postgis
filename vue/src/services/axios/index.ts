@@ -1,14 +1,13 @@
 import axios from 'axios'
 import { Service } from 'typedi'
 
-import { Url } from '@/enums'
-
 @Service()
 export default class AxiosService {
   #axios = axios
-  #apiBaseUrlDev: string = Url.API_BASE_URL_DEV
-  #apiBaseUrlProd: string = Url.API_BASE_URL_PROD
   #httpClient = this.#axios.create()
+
+  #apiBaseUrlDev = `${import.meta.env.VITE_API_BASE_URL_DEV}`
+  #apiBaseUrlProd = `${import.meta.env.VITE_API_BASE_URL_PROD}`
 
   constructor() {
     this.#createHttpClient()

@@ -9,7 +9,7 @@ import {
   hexagonLayer,
   hexagonUILabel,
   jwt,
-  layerElements,
+  layers,
   layerVisibility,
   mapbox,
   markerVisibility,
@@ -17,15 +17,15 @@ import {
 } from '@/configuration'
 import {
   IAppState,
-  ICredentialState,
-  IDeckglSettingState,
+  ICredentialsState,
+  IDeckglSettingsState,
   IHexagonLayerState,
   IHexagonUILabelState,
   IJWTState,
-  ILayerElementsState,
+  ILayerControllerState,
   ILayerVisibilityState,
-  IMapboxSettingState,
-  IMapboxStyleState,
+  IMapboxSettingsState,
+  IMapboxStylesState,
   IMarkerVisibilityState,
   IModalState,
   IState
@@ -35,15 +35,15 @@ import { State, UseStoreDefinition } from '@/types'
 @Service()
 export default class StoreService {
   #app: IAppState = { ...app }
-  #credentials: ICredentialState = { ...credentials }
-  #deckglSettings: IDeckglSettingState = { ...deckgl.settings }
+  #credentials: ICredentialsState = { ...credentials }
+  #deckglSettings: IDeckglSettingsState = { ...deckgl.settings }
   #hexagonLayer: IHexagonLayerState = { ...hexagonLayer.state }
   #hexagonUILabel: IHexagonUILabelState = { ...hexagonUILabel }
-  #JWT: IJWTState = { ...jwt }
-  #layerElements: ILayerElementsState[] = cloneDeep(layerElements)
+  #jwt: IJWTState = { ...jwt }
+  #layerController: ILayerControllerState[] = cloneDeep(layers)
   #layerVisibility: ILayerVisibilityState = cloneDeep(layerVisibility)
-  #mapboxSettings: IMapboxSettingState = { ...mapbox.settings }
-  #mapboxStyles: IMapboxStyleState = cloneDeep(mapbox.styles)
+  #mapboxSettings: IMapboxSettingsState = { ...mapbox.settings }
+  #mapboxStyles: IMapboxStylesState = cloneDeep(mapbox.styles)
   #markerVisibility: IMarkerVisibilityState = cloneDeep(markerVisibility)
   #modal: IModalState = { ...modal }
   #useStore: UseStoreDefinition = defineStore('store', {})
@@ -68,8 +68,8 @@ export default class StoreService {
         deckglSettings: this.#deckglSettings,
         hexagonLayer: this.#hexagonLayer,
         hexagonUILabel: this.#hexagonUILabel,
-        JWT: this.#JWT,
-        layerElements: this.#layerElements,
+        jwt: this.#jwt,
+        layerController: this.#layerController,
         layerVisibility: this.#layerVisibility,
         mapboxSettings: this.#mapboxSettings,
         mapboxStyles: this.#mapboxStyles,
@@ -83,7 +83,7 @@ export default class StoreService {
       },
       getters: {
         getState: (state: IState) => {
-          return (id: string): State => <State>cloneDeep(state[id as keyof IState])
+          return (id: string): State => cloneDeep(state[id as keyof IState])
         }
       }
     })

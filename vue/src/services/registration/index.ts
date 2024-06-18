@@ -1,7 +1,7 @@
 import { Container, Service } from 'typedi'
 
 import { Route } from '@/enums'
-import { ICredentialState } from '@/interfaces'
+import { ICredentialsState } from '@/interfaces'
 import { CredentialsService, RouterService } from '@/services'
 
 @Service()
@@ -9,9 +9,7 @@ export default class RegistrationService {
   #credentialsService = Container.get(CredentialsService)
   #routerService = Container.get(RouterService)
 
-  #loginRoute = Route.LOGIN
-
-  async register(credentials: ICredentialState): Promise<void> {
+  async register(credentials: ICredentialsState): Promise<void> {
     let { username } = credentials
     username = await this.#validateUser(<string>username)
     if (username) {
@@ -22,10 +20,10 @@ export default class RegistrationService {
       return this.#setCredentialsState({ isCorrect: false, isValid: true })
     }
     this.#setCredentialsState({ isAdmin: false, isCorrect: true, isValid: true, ...credentials })
-    await this.#setRoute(this.#loginRoute)
+    await this.#setRoute(Route.LOGIN)
   }
 
-  async #register(credentials: ICredentialState): Promise<string> {
+  async #register(credentials: ICredentialsState): Promise<string> {
     return this.#credentialsService.register(credentials)
   }
 
@@ -37,7 +35,7 @@ export default class RegistrationService {
     return this.#credentialsService.validateUser(username)
   }
 
-  #setCredentialsState(state: ICredentialState): void {
+  #setCredentialsState(state: ICredentialsState): void {
     this.#credentialsService.setCredentialsState(state)
   }
 }

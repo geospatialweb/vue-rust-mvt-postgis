@@ -12,7 +12,6 @@ export default class HttpService {
   #routerService = Container.get(RouterService)
 
   #httpClient: AxiosInstance
-  #loginRoute = Route.LOGIN
 
   constructor() {
     const { httpClient } = this.#axiosService
@@ -62,7 +61,7 @@ export default class HttpService {
   async #catchError({ message, response }: IHttpResponseError): Promise<void> {
     if (!response) return this.#consoleError(message)
     const { data, status } = response
-    if (status === 401) await this.#setRoute(this.#loginRoute)
+    if (status === 401) await this.#setRoute(Route.LOGIN)
     this.#consoleError(<string>data)
   }
 

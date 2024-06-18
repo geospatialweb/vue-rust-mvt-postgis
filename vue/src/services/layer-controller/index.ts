@@ -2,46 +2,46 @@ import cloneDeep from 'lodash.clonedeep'
 import { Container, Service } from 'typedi'
 
 import { Layer, State } from '@/enums'
-import { ILayerElementsState } from '@/interfaces'
+import { ILayerControllerState } from '@/interfaces'
 import { LayerVisibilityService, MapboxService, MarkerService, RouterService, StoreService } from '@/services'
-import { LayerElementsHashmap } from '@/types'
+import { LayerControllerHashmap } from '@/types'
 
 @Service()
-export default class LayerElementService {
+export default class LayerControllerService {
   #layerVisibilityService = Container.get(LayerVisibilityService)
   #mapboxService = Container.get(MapboxService)
   #markerService = Container.get(MarkerService)
   #routerService = Container.get(RouterService)
   #storeService = Container.get(StoreService)
 
-  #biosphereLayer: string = Layer.BIOSPHERE
-  #biosphereBorderLayer: string = Layer.BIOSPHERE_BORDER
-  #deckglLayer: string = Layer.DECKGL
-  #layerElements: string = State.LAYER_ELEMENTS
-  #layerElementsHashmap: LayerElementsHashmap = {}
-  #officeLayer: string = Layer.OFFICE
-  #placesLayer: string = Layer.PLACES
-  #satelliteLayer: string = Layer.SATELLITE
-  #trailsLayer: string = Layer.TRAILS
+  #layerControllerHashmap: LayerControllerHashmap = {}
+
+  #biosphereLayer = `${Layer.BIOSPHERE}`
+  #biosphereBorderLayer = `${Layer.BIOSPHERE_BORDER}`
+  #deckglLayer = `${Layer.DECKGL}`
+  #officeLayer = `${Layer.OFFICE}`
+  #placesLayer = `${Layer.PLACES}`
+  #satelliteLayer = `${Layer.SATELLITE}`
+  #trailsLayer = `${Layer.TRAILS}`
 
   constructor() {
-    this.#createLayerElementsHashmap()
+    this.#createLayerControllerHashmap()
   }
 
-  get layerElementsState() {
-    return <ILayerElementsState[]>this.#storeService.getState(this.#layerElements)
+  get layerControllerState() {
+    return <ILayerControllerState[]>this.#storeService.getState(State.LAYER_CONTROLLER)
   }
 
-  set #layerElementsState(state: ILayerElementsState[]) {
-    this.#storeService.setState(this.#layerElements, state)
+  set #layerControllerState(state: ILayerControllerState[]) {
+    this.#storeService.setState(State.LAYER_CONTROLLER, state)
   }
 
-  displayLayerElement(id: string): void {
-    this.#layerElementsHashmap[id](id)
+  displayLayer(id: string): void {
+    this.#layerControllerHashmap[id](id)
   }
 
-  #createLayerElementsHashmap(): void {
-    this.#layerElementsHashmap = {
+  #createLayerControllerHashmap(): void {
+    this.#layerControllerHashmap = {
       [this.#biosphereLayer]: this.#layer,
       [this.#deckglLayer]: this.#deckgl,
       [this.#officeLayer]: this.#marker,
@@ -56,7 +56,7 @@ export default class LayerElementService {
   }
 
   #layer = (id: string): void => {
-    this.#setLayerElementsState(id)
+    this.#setLayerControllerState(id)
     this.#setLayerVisibilityState(id)
     this.#setLayerVisibility(id)
     id === this.#biosphereLayer && this.#setLayerVisibility(this.#biosphereBorderLayer)
@@ -64,12 +64,12 @@ export default class LayerElementService {
   }
 
   #marker = (id: string): void => {
-    this.#setLayerElementsState(id)
+    this.#setLayerControllerState(id)
     this.#toggleMarkerVisibility(id)
   }
 
   #satellite = (id: string): void => {
-    this.#setLayerElementsState(id)
+    this.#setLayerControllerState(id)
     this.#setHiddenMarkersVisibility()
     this.#resetMap()
   }
@@ -82,12 +82,12 @@ export default class LayerElementService {
     this.#markerService.setHiddenMarkersVisibility()
   }
 
-  #setLayerElementsState(id: string): void {
-    const state = cloneDeep(this.layerElementsState),
-      layerElement = (layerElement: ILayerElementsState): boolean => layerElement.id === id,
-      idx = state.findIndex(layerElement)
+  #setLayerControllerState(id: string): void {
+    const state = cloneDeep(this.layerControllerState),
+      layer = (layer: ILayerControllerState): boolean => layer.id === id,
+      idx = state.findIndex(layer)
     if (idx >= 0) state[idx].isActive = !state[idx].isActive
-    this.#layerElementsState = state
+    this.#layerControllerState = state
   }
 
   #setLayerVisibility(id: string): void {

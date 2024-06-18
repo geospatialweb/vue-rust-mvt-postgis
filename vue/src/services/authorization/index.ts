@@ -10,10 +10,8 @@ export default class AuthorizationService {
   #apiService = Container.get(ApiService)
   #storeService = Container.get(StoreService)
 
-  #jwt: string = State.JWT
-
   get jwtState() {
-    return <IJWTState>this.#storeService.getState(this.#jwt)
+    return <IJWTState>this.#storeService.getState(State.JWT)
   }
 
   get mapboxAccessToken() {
@@ -22,15 +20,15 @@ export default class AuthorizationService {
   }
 
   set #jwtState(state: IJWTState) {
-    this.#storeService.setState(this.#jwt, state)
+    this.#storeService.setState(State.JWT, state)
   }
 
   set #mapboxAccessToken(mapboxAccessToken: string) {
     mapboxgl.accessToken = mapboxAccessToken
   }
 
-  setJWTState({ jwtToken, jwtExpiry }: IJWTState): void {
-    this.#jwtState = { jwtToken, jwtExpiry }
+  setJWTState(jwtState: IJWTState): void {
+    this.#jwtState = jwtState
   }
 
   async getMapboxAccessToken(jwtToken: string): Promise<void> {

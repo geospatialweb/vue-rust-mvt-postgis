@@ -11,10 +11,8 @@ export default class CsvService {
   async fetchCsv(url: string): Promise<CsvResponse> {
     return this.#csv(url)
       .then((data) => data)
-      .catch(({ message, response }: ICsvResponseError) => {
-        if (!response) return this.#consoleError(message)
-        const { data } = response
-        this.#consoleError(data)
+      .catch(({ message, response: { data } }: ICsvResponseError) => {
+        data ? this.#consoleError(data) : this.#consoleError(message)
       })
   }
 

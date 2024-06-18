@@ -20,9 +20,11 @@ export default class TrailService {
   setInitialZoom(factor: number): void {
     const trails = cloneDeep(this.#trails)
     for (const trail of trails) {
-      trail.zoom && (trail.zoom = Number((trail.zoom * factor).toFixed(1)))
+      if (trail.zoom) {
+        trail.zoom = Number((trail.zoom * factor).toFixed(1))
+      }
     }
-    this.#trails = cloneDeep(trails)
+    this.#trails = trails
   }
 
   #mapFlyTo(trail: ITrail): void {
