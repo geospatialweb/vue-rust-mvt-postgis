@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash.clonedeep'
 import { Container, Service } from 'typedi'
 
 import { State } from '@/enums'
@@ -35,7 +34,7 @@ export default class MapboxStyleService {
   }
 
   setMapboxStyleState(): void {
-    const mapboxStylesState = cloneDeep(this.mapboxStylesState),
+    const mapboxStylesState = <IMapboxStylesState>{ ...this.mapboxStylesState },
       isActive = (mapStyle: IMapStyle): boolean => (mapStyle.isActive = !mapStyle.isActive)
     Object.values(mapboxStylesState).forEach(isActive)
     this.#mapboxStylesState = mapboxStylesState

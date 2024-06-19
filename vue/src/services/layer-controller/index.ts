@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash.clonedeep'
 import { Container, Service } from 'typedi'
 
 import { Layer, State } from '@/enums'
@@ -83,7 +82,7 @@ export default class LayerControllerService {
   }
 
   #setLayerControllerState(id: string): void {
-    const state = cloneDeep(this.layerControllerState),
+    const state = <ILayerControllerState[]>[...this.layerControllerState],
       layer = (layer: ILayerControllerState): boolean => layer.id === id,
       idx = state.findIndex(layer)
     if (idx >= 0) state[idx].isActive = !state[idx].isActive

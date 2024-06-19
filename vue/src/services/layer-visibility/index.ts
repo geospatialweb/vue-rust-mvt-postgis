@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash.clonedeep'
 import { Container, Service } from 'typedi'
 
 import { Layer, State } from '@/enums'
@@ -21,7 +20,7 @@ export default class LayerVisibilityService {
   }
 
   setLayerVisibilityState(id: string): void {
-    const state = cloneDeep(this.layerVisibilityState)
+    const state = <ILayerVisibilityState>{ ...this.layerVisibilityState }
     state[id as keyof ILayerVisibilityState].isActive = !state[id as keyof ILayerVisibilityState].isActive
     if (id === this.#biosphereLayer) {
       state[this.#biosphereBorderLayer as keyof ILayerVisibilityState].isActive =

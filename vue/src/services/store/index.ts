@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash.clonedeep'
 import { defineStore } from 'pinia'
 import { Service } from 'typedi'
 
@@ -40,11 +39,11 @@ export default class StoreService {
   #hexagonLayer: IHexagonLayerState = { ...hexagonLayer.state }
   #hexagonUILabel: IHexagonUILabelState = { ...hexagonUILabel }
   #jwt: IJWTState = { ...jwt }
-  #layerController: ILayerControllerState[] = cloneDeep(layers)
-  #layerVisibility: ILayerVisibilityState = cloneDeep(layerVisibility)
+  #layerController: ILayerControllerState[] = [...layers]
+  #layerVisibility: ILayerVisibilityState = { ...layerVisibility }
   #mapboxSettings: IMapboxSettingsState = { ...mapbox.settings }
-  #mapboxStyles: IMapboxStylesState = cloneDeep(mapbox.styles)
-  #markerVisibility: IMarkerVisibilityState = cloneDeep(markerVisibility)
+  #mapboxStyles: IMapboxStylesState = { ...mapbox.styles }
+  #markerVisibility: IMarkerVisibilityState = { ...markerVisibility }
   #modal: IModalState = { ...modal }
   #useStore: UseStoreDefinition = defineStore('store', {})
 
@@ -78,12 +77,12 @@ export default class StoreService {
       }),
       actions: {
         setState(id: string, state: State): void {
-          this.$patch({ [id]: cloneDeep(state) })
+          this.$patch({ [id]: state })
         }
       },
       getters: {
         getState: (state: IState) => {
-          return (id: string): State => cloneDeep(state[id as keyof IState])
+          return (id: string): State => state[id as keyof IState]
         }
       }
     })

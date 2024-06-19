@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash.clonedeep'
 import { Feature, FeatureCollection, GeoJsonProperties, Geometry, Point } from 'geojson'
 import { LngLat, LngLatLike, Marker } from 'mapbox-gl'
 import { Container, Service } from 'typedi'
@@ -101,7 +100,7 @@ export default class MarkerService {
   }
 
   #setMarkerVisibilityState(id: string): void {
-    const state = cloneDeep(this.#markerVisibilityState)
+    const state = <IMarkerVisibilityState>{ ...this.#markerVisibilityState }
     state[id as keyof IMarkerVisibilityState].isActive = !state[id as keyof IMarkerVisibilityState].isActive
     this.#markerVisibilityState = state
   }
@@ -114,7 +113,7 @@ export default class MarkerService {
   }
 
   #setHiddenMarkerVisibilityState(id: string): void {
-    const state = cloneDeep(this.#markerVisibilityState)
+    const state = <IMarkerVisibilityState>{ ...this.#markerVisibilityState }
     state[id as keyof IMarkerVisibilityState].isHidden = !state[id as keyof IMarkerVisibilityState].isHidden
     this.#markerVisibilityState = state
   }

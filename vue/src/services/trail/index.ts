@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash.clonedeep'
 import { Container, Service } from 'typedi'
 
 import { trails } from '@/configuration'
@@ -9,7 +8,7 @@ import { MapboxService } from '@/services'
 export default class TrailService {
   #mapboxService = Container.get(MapboxService)
 
-  #trails: ITrail[] = <ITrail[]>cloneDeep(trails)
+  #trails = <ITrail[]>[...trails]
 
   selectTrail(name: string): void {
     const isSelected = (trail: ITrail): boolean => trail.name === name,
@@ -18,7 +17,7 @@ export default class TrailService {
   }
 
   setInitialZoom(factor: number): void {
-    const trails = cloneDeep(this.#trails)
+    const trails = [...this.#trails]
     for (const trail of trails) {
       if (trail.zoom) {
         trail.zoom = Number((trail.zoom * factor).toFixed(1))
