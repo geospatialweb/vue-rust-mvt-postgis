@@ -5,7 +5,7 @@ import { ILayerControllerState } from '@/interfaces'
 import styles from '../index.module.css'
 
 export default defineComponent({
-  name: 'Layer Component',
+  name: 'LayerControllerLayerListItem Component',
   props: {
     id: {
       type: String,

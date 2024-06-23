@@ -2,8 +2,8 @@ import 'vue/jsx'
 import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
-import { Layer, LayerIcon } from '@/components'
-import { layerIcons } from '@/configuration'
+import { LayerControllerIconListItem, LayerControllerLayerListItem } from '@/components'
+import { layerControllerIcons } from '@/configuration'
 import { ILayerControllerState } from '@/interfaces'
 import { LayerControllerService } from '@/services'
 import styles from './index.module.css'
@@ -11,7 +11,7 @@ import styles from './index.module.css'
 export default defineComponent({
   name: 'LayerController Component',
   setup() {
-    const { layer } = styles,
+    const { layer_controller } = styles,
       layerControllerService = Container.get(LayerControllerService),
       getLayerControllerState = (): ILayerControllerState[] => {
         const { layerControllerState } = layerControllerService
@@ -19,24 +19,24 @@ export default defineComponent({
       },
       onClickHandler = (evt: MouseEvent): void => {
         evt.stopPropagation()
-        const { id } = evt.target as HTMLDivElement
+        const { id } = evt.target as HTMLElement
         layerControllerService.displayLayer(id.split('-icon')[0])
       },
       listItem = ({ id, isActive, name }: ILayerControllerState, idx: number): JSX.Element => (
         <li>
-          <LayerIcon
+          <LayerControllerIconListItem
             id={`${id}-icon`}
             key={id}
             name={name}
-            src={layerIcons[idx].src}
-            height={layerIcons[idx].height}
-            width={layerIcons[idx].width}
+            src={layerControllerIcons[idx].src}
+            height={layerControllerIcons[idx].height}
+            width={layerControllerIcons[idx].width}
           />
-          <Layer id={id} key={id} name={name} isActive={isActive} />
+          <LayerControllerLayerListItem id={id} key={id} name={name} isActive={isActive} />
         </li>
       ),
       jsx = (layers: ILayerControllerState[]): JSX.Element => (
-        <ul class={layer} data-testid="layers" onClick={(evt): void => onClickHandler(evt)}>
+        <ul class={layer_controller} data-testid="layers" onClick={(evt): void => onClickHandler(evt)}>
           {layers.map(listItem)}
         </ul>
       )
