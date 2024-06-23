@@ -46,6 +46,31 @@ export interface IGeoJSONProperty {
   name: string
 }
 
+export interface IHexagonLayerControllerButton {
+  id: string
+  text: string
+}
+
+export interface IHexagonLayerControllerSlider {
+  id: string
+  min: string
+  max: string
+  step: string
+  text: string
+}
+
+export interface IHexagonLayerControllerSliderInput {
+  id: string
+  value: string
+}
+
+export interface IHexagonLayerControllerSliderLabelsState {
+  coverage: boolean
+  elevationScale: boolean
+  radius: boolean
+  upperPercentile: boolean
+}
+
 export interface IHexagonLayerProp {
   colorRange: number[][]
   elevationRange: number[]
@@ -71,36 +96,6 @@ export interface IHexagonLayerState {
   upperPercentile: number
 }
 
-export interface IHexagonLayerStateProp {
-  id: string
-  value: string
-}
-
-export interface IHexagonUIButton {
-  id: string
-  text: string
-}
-
-export interface IHexagonUILabelState {
-  coverage: boolean
-  elevationScale: boolean
-  radius: boolean
-  upperPercentile: boolean
-}
-
-export interface IHexagonUISlider {
-  id: string
-  min: string
-  max: string
-  step: string
-  text: string
-}
-
-export interface IHexagonUISliderProp {
-  labelState: IHexagonUILabelState
-  layerState: IHexagonLayerState
-}
-
 export interface IHttpResponseError {
   message: string
   response: Record<string, string | number>
@@ -111,18 +106,18 @@ export interface IJWTState {
   jwtToken: string
 }
 
-export interface ILayerControllerState {
-  id: string
-  isActive: boolean
-  name: string
-}
-
-export interface ILayerIcon {
+export interface ILayerControllerIcon {
   height: string
   id: string
   name: string
   src: string
   width: string
+}
+
+export interface ILayerControllerState {
+  id: string
+  isActive: boolean
+  name: string
 }
 
 export interface ILayerVisibilityState {
@@ -135,6 +130,12 @@ export interface ILayerVisibilityState {
   trails: {
     isActive: boolean
   }
+}
+
+export interface IMapStyle {
+  id: string
+  isActive: boolean
+  url: string
 }
 
 export interface IMapboxOption {
@@ -151,12 +152,6 @@ export interface IMapboxSettingsState {
   pitch: number
   style: string
   zoom: number
-}
-
-export interface IMapStyle {
-  id: string
-  isActive: boolean
-  url: string
 }
 
 export interface IMapboxStylesState {
@@ -198,7 +193,7 @@ export interface IState {
   credentials: ICredentialsState
   deckglSettings: IDeckglSettingsState
   hexagonLayer: IHexagonLayerState
-  hexagonUILabel: IHexagonUILabelState
+  hexagonLayerControllerSliderLabels: IHexagonLayerControllerSliderLabelsState
   jwt: IJWTState
   layerController: ILayerControllerState[]
   layerVisibility: ILayerVisibilityState
