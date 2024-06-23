@@ -1,4 +1,4 @@
-.layer {
+.layer_controller {
   position: absolute;
   -webkit-animation: fade-in 2s ease-out forwards;
   animation: fade-in 2s ease-out forwards;
