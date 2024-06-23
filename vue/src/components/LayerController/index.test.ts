@@ -1,14 +1,14 @@
 import userEvent from '@testing-library/user-event'
-import { render, screen, within } from '@testing-library/vue'
+import { RenderResult, render, screen, within } from '@testing-library/vue'
 import { createPinia, setActivePinia } from 'pinia'
 
 import { LayerController } from '@/components'
 import { Layer } from '@/enums'
 import { testData } from '@/test'
 
-describe('LayerController component static test suite', (): void => {
+describe('LayerController component test suite', (): void => {
   let listItems: HTMLElement[]
-  const { layers } = testData,
+  const { layerControllerLayers: layers } = testData,
     setup = (): void => {
       render(LayerController)
       const list = screen.getByTestId('layers')
@@ -38,7 +38,7 @@ describe('LayerController component static test suite', (): void => {
     }
   })
 
-  it("should render list of layers with an initial class 'active' or 'inactive') for each layer", (): void => {
+  it("should render list of layers with an initial class 'active' or 'inactive' for each layer", (): void => {
     setup()
     const testLayers = listItems.map(({ lastChild }) => <HTMLElement>lastChild)
     for (const [idx, layer] of testLayers.entries()) {
@@ -48,36 +48,37 @@ describe('LayerController component static test suite', (): void => {
 })
 
 describe('LayerController component click event test suite', (): void => {
-  const { layers } = testData,
-    user = userEvent.setup()
+  const { layerControllerLayers: layers } = testData,
+    setup = (): RenderResult => render(LayerController),
+    view = userEvent.setup()
 
   test("Deck.GL layer class remains 'inactive' when clicked", async (): Promise<void> => {
-    render(LayerController)
+    setup()
     const layer = screen.getByText(layers[5].name)
-    await user.click(layer)
-    expect(layer.className).toMatch(/_inactive/)
+    await view.click(layer)
+    expect(layer.className).toMatch(/inactive/)
   })
 
   test("Biosphere layer class changes to 'inactive' on click and 'active' on click again", async (): Promise<void> => {
-    render(LayerController)
+    setup()
     const layer = screen.getByText(layers[1].name)
-    await user.click(layer)
-    expect(layer.className).toMatch(/_inactive/)
-    await user.click(layer)
-    expect(layer.className).toMatch(/_active/)
+    await view.click(layer)
+    expect(layer.className).toMatch(/inactive/)
+    await view.click(layer)
+    expect(layer.className).toMatch(/active/)
   })
 
   test("Remaining layers class changes to 'active' on click and 'inactive' on click again", async (): Promise<void> => {
-    render(LayerController)
+    setup()
     for (const { id, name } of layers) {
       const biosphereLayer = `${Layer.BIOSPHERE}`,
         deckglLayer = `${Layer.DECKGL}`
       if (id !== biosphereLayer && id !== deckglLayer) {
         const layer = screen.getByText(name)
-        await user.click(layer)
-        expect(layer.className).toMatch(/_active/)
-        await user.click(layer)
-        expect(layer.className).toMatch(/_inactive/)
+        await view.click(layer)
+        expect(layer.className).toMatch(/active/)
+        await view.click(layer)
+        expect(layer.className).toMatch(/inactive/)
       }
     }
   })

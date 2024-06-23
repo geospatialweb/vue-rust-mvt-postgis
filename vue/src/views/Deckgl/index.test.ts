@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/vue'
 import { createPinia, setActivePinia } from 'pinia'
 
-import { Deckgl, Footer, HexagonUI, Modal } from '@/components'
+import { Deckgl, Footer, HexagonLayerController, Modal } from '@/components'
 import { deckgl } from '@/configuration'
 import { Deckgl as DeckglView } from '@/views'
 
@@ -25,10 +25,10 @@ describe('Deck view test suite', (): void => {
     expect(deckglComponent).toBeInTheDocument()
   })
 
-  test('HexagonUI component renders successfully', (): void => {
-    render(HexagonUI)
-    const hexagonUI = screen.getAllByRole('presentation')[0]
-    expect(hexagonUI).toBeInTheDocument()
+  test('HexagonLayerController component renders successfully', (): void => {
+    render(HexagonLayerController)
+    const hexagonLayer = screen.getAllByRole('presentation')[0]
+    expect(hexagonLayer).toBeInTheDocument()
   })
 
   test('Footer component renders successfully', (): void => {

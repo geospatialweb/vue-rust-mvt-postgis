@@ -7,7 +7,7 @@ import { Registration } from '@/components'
 describe('Registration component test suite', (): void => {
   setActivePinia(createPinia())
 
-  test('Registration renders successfully', (): void => {
+  it('should render successfully', (): void => {
     render(Registration)
     const registration = screen.getByRole('presentation')
     expect(registration).toBeInTheDocument()

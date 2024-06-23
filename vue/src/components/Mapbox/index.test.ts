@@ -13,6 +13,6 @@ describe('Mapbox component test suite', (): void => {
     render(Mapbox, { props: { container } })
     const el = screen.getByRole('presentation')
     expect(el.id).toBe(container)
-    expect(el.className).toMatch(/mapbox/)
+    expect(el.className).toMatch(new RegExp(container))
   })
 })

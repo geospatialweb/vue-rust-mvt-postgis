@@ -5,11 +5,9 @@ import { createPinia, setActivePinia } from 'pinia'
 import { Authentication } from '@/components'
 
 describe('Authentication component test suite', (): void => {
-  beforeEach((): void => {
-    setActivePinia(createPinia())
-  })
+  setActivePinia(createPinia())
 
-  test('Authentication renders successfully', (): void => {
+  it('should render successfully', (): void => {
     render(Authentication)
     const authentication = screen.getByRole('presentation')
     expect(authentication).toBeInTheDocument()

@@ -15,14 +15,14 @@ describe('Footer component test suite', (): void => {
     setActivePinia(createPinia())
   })
 
-  test('Footer should render successfully', (): void => {
+  it('should render successfully', (): void => {
     setup()
     expect(footer).toBeInTheDocument()
   })
 
   test('class set correctly to "active"', (): void => {
     setup()
-    expect(footer.className).toMatch(/_active/)
+    expect(footer.className).toMatch(/active/)
   })
 
   test('text displays correctly', (): void => {

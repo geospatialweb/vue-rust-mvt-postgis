@@ -1,8 +1,8 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
-import { hexagonUISliders } from '@/configuration'
-import { IHexagonUISlider } from '@/interfaces'
+import { hexagonLayerControllerSliders } from '@/configuration'
+import { IHexagonLayerControllerSlider } from '@/interfaces'
 import { HexagonLayerService } from '@/services'
 import { mockDeckImplementation } from '@/test'
 
@@ -29,7 +29,7 @@ describe('HexagonLayerService test suite', (): void => {
   })
 
   test('setHexagonLayerState method should be called', (): void => {
-    const sliders: IHexagonUISlider[] = hexagonUISliders,
+    const sliders: IHexagonLayerControllerSlider[] = hexagonLayerControllerSliders,
       { id, min: value } = sliders[0],
       spy = vi.spyOn(hexagonLayerService, 'setHexagonLayerState').mockImplementation(mockDeckImplementation)
     hexagonLayerService.setHexagonLayerState({ id, value })

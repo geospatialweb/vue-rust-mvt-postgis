@@ -1,13 +1,13 @@
 import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
-import { layers } from '@/configuration'
+import { layerControllerLayers } from '@/configuration'
 import { ILayerControllerState } from '@/interfaces'
 import { LayerControllerService } from '@/services'
 import { mockMapImplementation } from '@/test'
 
 describe('LayerControllerService test suite', (): void => {
-  const ids = layers.map((layer: ILayerControllerState): string => <string>Object.values(layer)[0])
+  const ids = layerControllerLayers.map((layer: ILayerControllerState): string => <string>Object.values(layer)[0])
 
   setActivePinia(createPinia())
 
