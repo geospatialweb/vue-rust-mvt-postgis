@@ -8,6 +8,18 @@ export default {
     password: 'Click_Login',
     username: 'johncampbell@geospatialweb.ca'
   },
+  hexagonLayerControllerSliderLabelsState: {
+    coverage: false,
+    elevationScale: false,
+    radius: false,
+    upperPercentile: false
+  },
+  hexagonLayerState: {
+    coverage: 1,
+    elevationScale: 100,
+    radius: 1000,
+    upperPercentile: 100
+  },
   initialZoom: 10,
   initialZoomFactor: 0.9,
   jwtExpiry: 1681334027,
@@ -51,7 +63,51 @@ export default {
       }
     ]
   },
-  layers: [
+  layerControllerIcons: [
+    {
+      id: 'satellite',
+      name: 'Satellite',
+      src: '/assets/icons/satellite.png',
+      height: '20',
+      width: '20'
+    },
+    {
+      id: 'biosphere',
+      name: 'Biosphere',
+      src: '/assets/icons/biosphere.png',
+      height: '16',
+      width: '16'
+    },
+    {
+      id: 'office',
+      name: 'Office',
+      src: '/assets/icons/office.png',
+      height: '20',
+      width: '18'
+    },
+    {
+      id: 'places',
+      name: 'Places',
+      src: '/assets/icons/places.png',
+      height: '20',
+      width: '18'
+    },
+    {
+      id: 'trails',
+      name: 'Trails',
+      src: '/assets/icons/trails.png',
+      height: '20',
+      width: '18'
+    },
+    {
+      id: 'deckgl',
+      name: 'Deck.GL',
+      src: '/assets/icons/deckgl.png',
+      height: '18',
+      width: '18'
+    }
+  ],
+  layerControllerLayers: [
     {
       id: 'satellite',
       name: 'Satellite',
