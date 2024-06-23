@@ -8,7 +8,7 @@ import { Container, Service } from 'typedi'
 
 import { hexagonLayer } from '@/configuration'
 import { State } from '@/enums'
-import { IHexagonLayerProp, IHexagonLayerState, IHexagonLayerStateProp } from '@/interfaces'
+import { IHexagonLayerControllerSliderInput, IHexagonLayerProp, IHexagonLayerState } from '@/interfaces'
 import { DeckglService, HexagonLayerDataService, StoreService } from '@/services'
 import { HexagonLayerData } from '@/types'
 
@@ -44,7 +44,7 @@ export default class HexagonLayerService {
   }
   /* eslint-enable */
 
-  setHexagonLayerState({ id, value }: IHexagonLayerStateProp): void {
+  setHexagonLayerState({ id, value }: IHexagonLayerControllerSliderInput): void {
     const state = <IHexagonLayerState>{ ...this.hexagonLayerState }
     state[id as keyof IHexagonLayerState] = Number(value)
     this.#hexagonLayerState = state
@@ -52,6 +52,7 @@ export default class HexagonLayerService {
 
   resetHexagonLayerState(): void {
     this.#hexagonLayerState = this.#hexagonLayerInitialState
+    this.renderHexagonLayer()
   }
 
   #setHexagonLayerData(): void {

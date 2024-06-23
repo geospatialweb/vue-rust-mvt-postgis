@@ -6,9 +6,9 @@ import {
   credentials,
   deckgl,
   hexagonLayer,
-  hexagonUILabel,
+  hexagonLayerControllerSliderLabels,
   jwt,
-  layers,
+  layerControllerLayers,
   layerVisibility,
   mapbox,
   markerVisibility,
@@ -19,7 +19,7 @@ import {
   ICredentialsState,
   IDeckglSettingsState,
   IHexagonLayerState,
-  IHexagonUILabelState,
+  IHexagonLayerControllerSliderLabelsState,
   IJWTState,
   ILayerControllerState,
   ILayerVisibilityState,
@@ -37,9 +37,11 @@ export default class StoreService {
   #credentials: ICredentialsState = { ...credentials }
   #deckglSettings: IDeckglSettingsState = { ...deckgl.settings }
   #hexagonLayer: IHexagonLayerState = { ...hexagonLayer.state }
-  #hexagonUILabel: IHexagonUILabelState = { ...hexagonUILabel }
+  #hexagonLayerControllerSliderLabels: IHexagonLayerControllerSliderLabelsState = {
+    ...hexagonLayerControllerSliderLabels
+  }
   #jwt: IJWTState = { ...jwt }
-  #layerController: ILayerControllerState[] = [...layers]
+  #layerController: ILayerControllerState[] = [...layerControllerLayers]
   #layerVisibility: ILayerVisibilityState = { ...layerVisibility }
   #mapboxSettings: IMapboxSettingsState = { ...mapbox.settings }
   #mapboxStyles: IMapboxStylesState = { ...mapbox.styles }
@@ -66,7 +68,7 @@ export default class StoreService {
         credentials: this.#credentials,
         deckglSettings: this.#deckglSettings,
         hexagonLayer: this.#hexagonLayer,
-        hexagonUILabel: this.#hexagonUILabel,
+        hexagonLayerControllerSliderLabels: this.#hexagonLayerControllerSliderLabels,
         jwt: this.#jwt,
         layerController: this.#layerController,
         layerVisibility: this.#layerVisibility,
