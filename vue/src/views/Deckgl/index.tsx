@@ -1,7 +1,7 @@
 import 'vue/jsx'
 import { defineComponent } from 'vue'
 
-import { Deckgl, Footer, HexagonUI, Modal } from '@/components'
+import { Deckgl, Footer, HexagonLayerController, Modal } from '@/components'
 import { deckgl } from '@/configuration'
 
 export default defineComponent({
@@ -12,7 +12,7 @@ export default defineComponent({
     return (): JSX.Element => (
       <section role="presentation">
         <Deckgl canvas={canvas} container={container} />
-        <HexagonUI />
+        <HexagonLayerController />
         <Footer />
         <Modal />
       </section>
