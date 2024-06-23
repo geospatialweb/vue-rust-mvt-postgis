@@ -6,8 +6,8 @@ import {
   IAppState,
   ICredentialsState,
   IDeckglSettingsState,
+  IHexagonLayerControllerSliderLabelsState,
   IHexagonLayerState,
-  IHexagonUILabelState,
   IJWTState,
   ILayerControllerState,
   ILayerVisibilityState,
@@ -29,8 +29,8 @@ export type State =
   | IAppState
   | ICredentialsState
   | IDeckglSettingsState
+  | IHexagonLayerControllerSliderLabelsState
   | IHexagonLayerState
-  | IHexagonUILabelState
   | IJWTState
   | ILayerControllerState[]
   | ILayerVisibilityState
