@@ -21,7 +21,7 @@ export enum State {
   CREDENTIALS = 'credentials',
   DECKGL_SETTINGS = 'deckglSettings',
   HEXAGON_LAYER = 'hexagonLayer',
-  HEXAGON_UI_LABEL = 'hexagonUILabel',
+  HEXAGON_LAYER_CONTROLLER_SLIDER_LABELS = 'hexagonLayerControllerSliderLabels',
   JWT = 'jwt',
   LAYER_CONTROLLER = 'layerController',
   LAYER_VISIBILITY = 'layerVisibility',
