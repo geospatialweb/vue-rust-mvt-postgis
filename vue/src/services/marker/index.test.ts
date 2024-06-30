@@ -8,7 +8,7 @@ import { mockMapImplementation } from '@/test'
 describe('MarkerService test suite', (): void => {
   let markerService: MarkerService
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
     markerService = Container.get(MarkerService)
   })

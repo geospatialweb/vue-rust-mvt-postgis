@@ -6,9 +6,7 @@ import { Registration } from '@/components'
 import { Registration as RegistrationView } from '@/views'
 
 describe('Registration view test suite', (): void => {
-  beforeEach((): void => {
-    setActivePinia(createPinia())
-  })
+  setActivePinia(createPinia())
 
   it('should render successfully', (): void => {
     render(RegistrationView)

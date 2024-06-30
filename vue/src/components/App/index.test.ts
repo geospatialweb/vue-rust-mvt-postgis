@@ -7,16 +7,15 @@ import { App, Header } from '@/components'
 import { testData } from '@/test'
 
 describe('App component test suite', (): void => {
-  const { routes } = testData,
-    baseURL = import.meta.env.BASE_URL,
-    history = createWebHistory(baseURL),
-    router = createRouter({ history, routes })
-
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
   })
 
   test('App should render successfully', (): void => {
+    const { routes } = testData,
+      baseURL = import.meta.env.BASE_URL,
+      history = createWebHistory(baseURL),
+      router = createRouter({ history, routes })
     render(App, { global: { plugins: [router] } })
     const app = screen.getByRole('presentation')
     expect(app).toBeInTheDocument()

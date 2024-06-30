@@ -6,18 +6,19 @@ import { LayerController } from '@/components'
 import { Layer } from '@/enums'
 import { testData } from '@/test'
 
+const { layerControllerLayers: layers } = testData
+
+beforeAll((): void => {
+  setActivePinia(createPinia())
+})
+
 describe('LayerController component test suite', (): void => {
   let listItems: HTMLElement[]
-  const { layerControllerLayers: layers } = testData,
-    setup = (): void => {
-      render(LayerController)
-      const list = screen.getByTestId('layers')
-      listItems = within(list) && screen.getAllByRole('listitem')
-    }
-
-  beforeEach((): void => {
-    setActivePinia(createPinia())
-  })
+  const setup = (): void => {
+    render(LayerController)
+    const list = screen.getByTestId('layers')
+    listItems = within(list) && screen.getAllByRole('listitem')
+  }
 
   it(`should render list of ${layers.length} layers`, (): void => {
     setup()
@@ -48,8 +49,7 @@ describe('LayerController component test suite', (): void => {
 })
 
 describe('LayerController component click event test suite', (): void => {
-  const { layerControllerLayers: layers } = testData,
-    setup = (): RenderResult => render(LayerController),
+  const setup = (): RenderResult => render(LayerController),
     view = userEvent.setup()
 
   test("Deck.GL layer class remains 'inactive' when clicked", async (): Promise<void> => {

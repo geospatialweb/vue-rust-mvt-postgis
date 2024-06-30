@@ -9,7 +9,7 @@ describe('Deckgl component test suite', (): void => {
   const { options: { canvas, container } } = deckgl,
     setup = (): RenderResult => render(Deckgl, { props: { canvas, container } })
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
   })
 

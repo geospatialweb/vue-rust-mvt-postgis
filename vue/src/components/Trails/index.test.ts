@@ -10,7 +10,7 @@ describe('Trails component test suite', (): void => {
   const setup = (): RenderResult => render(Trails),
     names = <string[]>trails.map((trail) => Object.values(trail)[0])
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
   })
 

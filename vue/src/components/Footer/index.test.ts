@@ -11,7 +11,7 @@ describe('Footer component test suite', (): void => {
     footer = screen.getByRole('contentinfo', { name: 'footer' })
   }
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
   })
 

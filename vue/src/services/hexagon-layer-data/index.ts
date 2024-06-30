@@ -29,11 +29,11 @@ export default class HexagonLayerDataService {
   }
 
   #setHexagonLayerData(data: DSVRowArray<string>): void {
-    if (!data?.length) return this.#consoleError(`no ${this.#setHexagonLayerData.name.slice(4)} found`)
+    if (!data?.length) return this.#logConsoleErrorMessage(`no ${this.#setHexagonLayerData.name.slice(4)} found`)
     this.#hexagonLayerData = data.map((d): number[] => [Number(d.lng), Number(d.lat)])
   }
 
-  #consoleError(msg: string): void {
-    import.meta.env.DEV && console.error(msg)
+  #logConsoleErrorMessage(msg: string): void {
+    console.error(msg)
   }
 }

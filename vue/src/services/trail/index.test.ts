@@ -7,7 +7,7 @@ import { mockMapImplementation, testData } from '@/test'
 describe('TrailService test suite', (): void => {
   let trailService: TrailService
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
     trailService = Container.get(TrailService)
   })

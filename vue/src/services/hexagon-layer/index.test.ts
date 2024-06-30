@@ -9,9 +9,16 @@ import { mockDeckImplementation } from '@/test'
 describe('HexagonLayerService test suite', (): void => {
   let hexagonLayerService: HexagonLayerService
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
     hexagonLayerService = Container.get(HexagonLayerService)
+  })
+
+  test('hexagonLayerState getter should be called', (): void => {
+    const spy = vi.spyOn(hexagonLayerService, 'hexagonLayerState', 'get')
+    hexagonLayerService.hexagonLayerState
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveReturnedTimes(1)
   })
 
   test('renderHexagonLayer method should be called', (): void => {

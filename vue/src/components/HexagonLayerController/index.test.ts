@@ -16,7 +16,7 @@ import { testData } from '@/test'
 describe('HexagonLayerController component test suite', (): void => {
   const setup = (): RenderResult => render(HexagonLayerController)
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
   })
 

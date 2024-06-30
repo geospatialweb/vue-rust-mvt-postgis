@@ -5,11 +5,7 @@ import { HttpService } from '@/services'
 import { testData } from '@/test'
 
 describe('HttpService test suite', (): void => {
-  let httpService: HttpService
-
-  beforeEach((): void => {
-    httpService = Container.get(HttpService)
-  })
+  const httpService = Container.get(HttpService)
 
   test('delete method should be called', async (): Promise<void> => {
     /* prettier-ignore */

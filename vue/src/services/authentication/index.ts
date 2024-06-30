@@ -14,13 +14,11 @@ export default class AuthenticationService {
   async login(credentials: ICredentialsState): Promise<void> {
     let { username } = credentials
     username = await this.#validateUser(<string>username)
-    if (!username) {
-      return this.#setCredentialsState({ isCorrect: true, isValid: false })
-    }
+    if (!username) return this.#setCredentialsState({ isCorrect: true, isValid: false })
     const jwtState = await this.#login(credentials)
     if (!jwtState) {
-      this.#setCredentialsState({ isCorrect: false, isValid: true })
-      return this.#consoleError('undefined JWT')
+      this.#logConsoleErrorMessage('undefined JWT')
+      return this.#setCredentialsState({ isCorrect: false, isValid: true })
     }
     this.#setCredentialsState({ isCorrect: true, isValid: true, ...credentials })
     this.#setJWTState(jwtState)
@@ -52,7 +50,7 @@ export default class AuthenticationService {
     this.#authorizationService.setJWTState(jwtState)
   }
 
-  #consoleError(msg: string): void {
-    import.meta.env.DEV && console.error(msg)
+  #logConsoleErrorMessage(msg: string): void {
+    console.error(msg)
   }
 }

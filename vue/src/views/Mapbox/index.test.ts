@@ -7,9 +7,7 @@ import { mapbox } from '@/configuration'
 import { Mapbox as MapboxView } from '@/views'
 
 describe('Mapbox view test suite', (): void => {
-  beforeEach((): void => {
-    setActivePinia(createPinia())
-  })
+  setActivePinia(createPinia())
 
   it('should render successfully', (): void => {
     render(MapboxView)

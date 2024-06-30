@@ -6,9 +6,7 @@ import { Authentication } from '@/components'
 import { Authentication as AuthenticationView } from '@/views'
 
 describe('Authentication view test suite', (): void => {
-  beforeEach((): void => {
-    setActivePinia(createPinia())
-  })
+  setActivePinia(createPinia())
 
   it('should render successfully', (): void => {
     render(AuthenticationView)

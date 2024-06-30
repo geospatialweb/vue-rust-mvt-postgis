@@ -9,9 +9,16 @@ import { mockMapImplementation, testData } from '@/test'
 describe('MapboxService test suite', (): void => {
   let mapboxService: MapboxService
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
     mapboxService = Container.get(MapboxService)
+  })
+
+  test('map getter should be called', (): void => {
+    const spy = vi.spyOn(mapboxService, 'map', 'get')
+    mapboxService.map
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveReturnedTimes(1)
   })
 
   test('loadMap method should be called', (): void => {

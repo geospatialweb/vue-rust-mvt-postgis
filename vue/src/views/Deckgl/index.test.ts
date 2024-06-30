@@ -7,9 +7,7 @@ import { deckgl } from '@/configuration'
 import { Deckgl as DeckglView } from '@/views'
 
 describe('Deck view test suite', (): void => {
-  beforeEach((): void => {
-    setActivePinia(createPinia())
-  })
+  setActivePinia(createPinia())
 
   it('should render successfully', (): void => {
     render(DeckglView)

@@ -59,17 +59,17 @@ export default class HttpService {
   }
 
   async #catchError({ message, response }: IHttpResponseError): Promise<void> {
-    if (!response) return this.#consoleError(message)
+    if (!response) return this.#logConsoleErrorMessage(message)
     const { data, status } = response
     if (status === 401) await this.#setRoute(Route.LOGIN)
-    this.#consoleError(<string>data)
+    this.#logConsoleErrorMessage(<string>data)
   }
 
   async #setRoute(route: string): Promise<void> {
     await this.#routerService.setRoute(route)
   }
 
-  #consoleError(msg: string): void {
-    import.meta.env.DEV && console.error(msg)
+  #logConsoleErrorMessage(msg: string): void {
+    console.error(msg)
   }
 }

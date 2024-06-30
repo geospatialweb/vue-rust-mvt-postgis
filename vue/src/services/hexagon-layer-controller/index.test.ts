@@ -9,8 +9,8 @@ describe('HexagonLayerControllerService test suite', (): void => {
   setActivePinia(createPinia())
 
   test('setHexagonLayerControllerSliderLabel method should be called', (): void => {
-    const sliders: IHexagonLayerControllerSlider[] = hexagonLayerControllerSliders,
-      id = sliders[0].id,
+    const [slider]: IHexagonLayerControllerSlider[] = hexagonLayerControllerSliders,
+      id = slider.id,
       hexagonLayerControllerService = Container.get(HexagonLayerControllerService),
       spy = vi.spyOn(hexagonLayerControllerService, 'setHexagonLayerControllerSliderLabel')
     hexagonLayerControllerService.setHexagonLayerControllerSliderLabel(id)

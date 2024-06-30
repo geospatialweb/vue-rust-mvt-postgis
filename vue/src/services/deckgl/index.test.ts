@@ -7,9 +7,23 @@ import { mockDeckImplementation, testData } from '@/test'
 describe('DeckglService test suite', (): void => {
   let deckglService: DeckglService
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
     deckglService = Container.get(DeckglService)
+  })
+
+  test('deck getter should be called', (): void => {
+    const spy = vi.spyOn(deckglService, 'deck', 'get')
+    deckglService.deck
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveReturnedTimes(1)
+  })
+
+  test('map getter should be called', (): void => {
+    const spy = vi.spyOn(deckglService, 'map', 'get')
+    deckglService.map
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveReturnedTimes(1)
   })
 
   test('loadHexagonLayer method should be called', (): void => {

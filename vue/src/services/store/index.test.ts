@@ -7,7 +7,7 @@ import { testData } from '@/test'
 describe('StoreService test suite', (): void => {
   let storeService: StoreService
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
     storeService = Container.get(StoreService)
   })

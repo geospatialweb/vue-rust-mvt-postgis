@@ -35,14 +35,14 @@ export default class AuthorizationService {
     const mapboxAccessToken = await this.#apiService.getMapboxAccessToken(jwtToken)
     mapboxAccessToken
       ? this.#setMapboxAccessToken(mapboxAccessToken)
-      : this.#consoleError(`no ${this.getMapboxAccessToken.name.slice(3)} found`)
+      : this.#logConsoleErrorMessage(`no ${this.getMapboxAccessToken.name.slice(3)} found`)
   }
 
   #setMapboxAccessToken(mapboxAccessToken: string): void {
     this.#mapboxAccessToken = mapboxAccessToken
   }
 
-  #consoleError(msg: string): void {
-    import.meta.env.DEV && console.error(msg)
+  #logConsoleErrorMessage(msg: string): void {
+    console.error(msg)
   }
 }

@@ -8,9 +8,16 @@ import { testData } from '@/test'
 describe('CredentialService test suite', (): void => {
   let credentialsService: CredentialsService
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
     credentialsService = Container.get(CredentialsService)
+  })
+
+  test('credentialsState getter should be called', (): void => {
+    const spy = vi.spyOn(credentialsService, 'credentialsState', 'get')
+    credentialsService.credentialsState
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveReturnedTimes(1)
   })
 
   test('login method should be called', async (): Promise<void> => {

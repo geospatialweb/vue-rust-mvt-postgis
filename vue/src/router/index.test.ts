@@ -12,7 +12,7 @@ describe('router test suite', (): void => {
     history = createWebHistory(baseURL),
     router = createRouter({ history, routes })
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
   })
 

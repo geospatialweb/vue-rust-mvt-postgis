@@ -32,7 +32,9 @@ export default class MarkerService {
     for (const params of this.#markerParams) {
       const { id } = params,
         { features } = await this.#getMarkerFeatureCollection(jwtToken, params)
-      features?.length ? this.#setMarkers(id, features) : this.#consoleError(`No ${id.toUpperCase()} Features Found`)
+      features?.length
+        ? this.#setMarkers(id, features)
+        : this.#logConsoleErrorMessage(`No ${id.toUpperCase()} Features Found`)
     }
   }
 
@@ -62,7 +64,7 @@ export default class MarkerService {
   }
 
   #setMarkers(id: string, features: Feature<Geometry, GeoJsonProperties>[]): void {
-    if (!features?.length) return this.#consoleError(`no ${this.#setMarkers.name.slice(4)} features found`)
+    if (!features?.length) return this.#logConsoleErrorMessage(`no ${this.#setMarkers.name.slice(4)} features found`)
     this.#markers = [...this.#markers, this.#createMarkers(id, features)]
     this.#setMarkersHashmaps(id)
   }
@@ -140,7 +142,7 @@ export default class MarkerService {
     marker && marker.remove()
   }
 
-  #consoleError(msg: string): void {
-    import.meta.env.DEV && console.error(msg)
+  #logConsoleErrorMessage(msg: string): void {
+    console.error(msg)
   }
 }

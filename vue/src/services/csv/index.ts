@@ -12,11 +12,11 @@ export default class CsvService {
     return this.#csv(url)
       .then((data) => data)
       .catch(({ message, response: { data } }: ICsvResponseError) => {
-        data ? this.#consoleError(data) : this.#consoleError(message)
+        data ? this.#logConsoleErrorMessage(data) : this.#logConsoleErrorMessage(message)
       })
   }
 
-  #consoleError(msg: string): void {
-    import.meta.env.DEV && console.error(msg)
+  #logConsoleErrorMessage(msg: string): void {
+    console.error(msg)
   }
 }

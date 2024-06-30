@@ -5,11 +5,7 @@ import { ApiService } from '@/services'
 import { testData } from '@/test'
 
 describe('ApiService test suite', (): void => {
-  let apiService: ApiService
-
-  beforeEach((): void => {
-    apiService = Container.get(ApiService)
-  })
+  const apiService = Container.get(ApiService)
 
   test('deleteUser method should be called', async (): Promise<void> => {
     /* prettier-ignore */

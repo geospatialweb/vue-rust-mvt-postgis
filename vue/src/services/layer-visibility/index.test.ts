@@ -5,11 +5,22 @@ import { Layer } from '@/enums'
 import { LayerVisibilityService } from '@/services'
 
 describe('LayerVisibilityService test suite', (): void => {
-  setActivePinia(createPinia())
+  let layerVisibilityService: LayerVisibilityService
+
+  beforeAll((): void => {
+    setActivePinia(createPinia())
+    layerVisibilityService = Container.get(LayerVisibilityService)
+  })
+
+  test('layerVisibilityState getter should be called', (): void => {
+    const spy = vi.spyOn(layerVisibilityService, 'layerVisibilityState', 'get')
+    layerVisibilityService.layerVisibilityState
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveReturnedTimes(1)
+  })
 
   test('setLayerVisibilityState method should be called', (): void => {
     const bioshpereLayer = `${Layer.BIOSPHERE}`,
-      layerVisibilityService = Container.get(LayerVisibilityService),
       spy = vi.spyOn(layerVisibilityService, 'setLayerVisibilityState')
     layerVisibilityService.setLayerVisibilityState(bioshpereLayer)
     expect(spy).toHaveBeenCalledTimes(1)

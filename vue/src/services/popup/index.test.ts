@@ -9,7 +9,7 @@ import { mockMapImplementation, testData } from '@/test'
 describe('PopupService test suite', (): void => {
   let popupService: PopupService
 
-  beforeEach((): void => {
+  beforeAll((): void => {
     setActivePinia(createPinia())
     popupService = Container.get(PopupService)
   })
