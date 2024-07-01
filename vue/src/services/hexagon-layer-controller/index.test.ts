@@ -1,4 +1,3 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { hexagonLayerControllerSliders } from '@/configuration'
@@ -6,8 +5,6 @@ import { IHexagonLayerControllerSlider } from '@/interfaces'
 import { HexagonLayerControllerService } from '@/services'
 
 describe('HexagonLayerControllerService test suite', (): void => {
-  setActivePinia(createPinia())
-
   test('setHexagonLayerControllerSliderLabel method should be called', (): void => {
     const [slider]: IHexagonLayerControllerSlider[] = hexagonLayerControllerSliders,
       id = slider.id,

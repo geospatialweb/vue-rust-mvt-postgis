@@ -1,4 +1,3 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { hexagonLayerControllerSliders } from '@/configuration'
@@ -7,12 +6,7 @@ import { HexagonLayerService } from '@/services'
 import { mockDeckImplementation } from '@/test'
 
 describe('HexagonLayerService test suite', (): void => {
-  let hexagonLayerService: HexagonLayerService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-    hexagonLayerService = Container.get(HexagonLayerService)
-  })
+  const hexagonLayerService = Container.get(HexagonLayerService)
 
   test('hexagonLayerState getter should be called', (): void => {
     const spy = vi.spyOn(hexagonLayerService, 'hexagonLayerState', 'get')

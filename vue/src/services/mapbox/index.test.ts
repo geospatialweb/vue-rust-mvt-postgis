@@ -1,4 +1,3 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { Layer } from '@/enums'
@@ -7,12 +6,7 @@ import { MapboxService } from '@/services'
 import { mockMapImplementation, testData } from '@/test'
 
 describe('MapboxService test suite', (): void => {
-  let mapboxService: MapboxService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-    mapboxService = Container.get(MapboxService)
-  })
+  const mapboxService = Container.get(MapboxService)
 
   test('map getter should be called', (): void => {
     const spy = vi.spyOn(mapboxService, 'map', 'get')

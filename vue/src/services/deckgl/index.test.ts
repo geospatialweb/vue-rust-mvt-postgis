@@ -1,16 +1,10 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { DeckglService } from '@/services'
 import { mockDeckImplementation, testData } from '@/test'
 
 describe('DeckglService test suite', (): void => {
-  let deckglService: DeckglService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-    deckglService = Container.get(DeckglService)
-  })
+  const deckglService = Container.get(DeckglService)
 
   test('deck getter should be called', (): void => {
     const spy = vi.spyOn(deckglService, 'deck', 'get')

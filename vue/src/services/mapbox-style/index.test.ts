@@ -1,15 +1,9 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { MapboxStyleService } from '@/services'
 
 describe('MapboxStyleService test suite', (): void => {
-  let mapboxStyleService: MapboxStyleService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-    mapboxStyleService = Container.get(MapboxStyleService)
-  })
+  const mapboxStyleService = Container.get(MapboxStyleService)
 
   test('activeMapboxStyle getter should be called', (): void => {
     const spy = vi.spyOn(mapboxStyleService, 'activeMapboxStyle', 'get')

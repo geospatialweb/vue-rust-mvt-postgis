@@ -1,16 +1,10 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { StoreService } from '@/services'
 import { testData } from '@/test'
 
 describe('StoreService test suite', (): void => {
-  let storeService: StoreService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-    storeService = Container.get(StoreService)
-  })
+  const storeService = Container.get(StoreService)
 
   test('getState method should be called', (): void => {
     /* prettier-ignore */

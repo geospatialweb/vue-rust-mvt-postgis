@@ -1,5 +1,4 @@
 import { RenderResult, render, screen } from '@testing-library/vue'
-import { createPinia, setActivePinia } from 'pinia'
 
 import { Deckgl } from '@/components'
 import { deckgl } from '@/configuration'
@@ -8,10 +7,6 @@ describe('Deckgl component test suite', (): void => {
   /* prettier-ignore */
   const { options: { canvas, container } } = deckgl,
     setup = (): RenderResult => render(Deckgl, { props: { canvas, container } })
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-  })
 
   test('container attributes set correctly', (): void => {
     setup()

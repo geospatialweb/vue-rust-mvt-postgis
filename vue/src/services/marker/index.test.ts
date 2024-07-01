@@ -1,4 +1,3 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { Layer } from '@/enums'
@@ -6,12 +5,7 @@ import { MarkerService } from '@/services'
 import { mockMapImplementation } from '@/test'
 
 describe('MarkerService test suite', (): void => {
-  let markerService: MarkerService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-    markerService = Container.get(MarkerService)
-  })
+  const markerService = Container.get(MarkerService)
 
   test('setHiddenMarkersVisibility method should be called', (): void => {
     const spy = vi.spyOn(markerService, 'setHiddenMarkersVisibility')

@@ -1,18 +1,12 @@
 import { Feature } from 'geojson'
 import { LngLatLike } from 'mapbox-gl'
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { PopupService } from '@/services'
 import { mockMapImplementation, testData } from '@/test'
 
 describe('PopupService test suite', (): void => {
-  let popupService: PopupService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-    popupService = Container.get(PopupService)
-  })
+  const popupService = Container.get(PopupService)
 
   test('addLayerPopup method should be called', (): void => {
     /* prettier-ignore */

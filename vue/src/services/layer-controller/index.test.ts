@@ -1,4 +1,3 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { layerControllerLayers } from '@/configuration'
@@ -7,13 +6,8 @@ import { LayerControllerService } from '@/services'
 import { mockMapImplementation } from '@/test'
 
 describe('LayerControllerService test suite', (): void => {
-  const ids = layerControllerLayers.map((layer: ILayerControllerState): string => <string>Object.values(layer)[0])
-  let layerControllerService: LayerControllerService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
+  const ids = layerControllerLayers.map((layer: ILayerControllerState): string => <string>Object.values(layer)[0]),
     layerControllerService = Container.get(LayerControllerService)
-  })
 
   test('layerControllerState getter should be called', (): void => {
     const spy = vi.spyOn(layerControllerService, 'layerControllerState', 'get')

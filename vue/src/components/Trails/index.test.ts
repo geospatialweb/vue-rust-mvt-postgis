@@ -1,18 +1,13 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { RenderResult, render, screen } from '@testing-library/vue'
-import { createPinia, setActivePinia } from 'pinia'
 
 import { Trails } from '@/components'
 import { trails } from '@/configuration'
 
 describe('Trails component test suite', (): void => {
-  const setup = (): RenderResult => render(Trails),
-    names = <string[]>trails.map((trail) => Object.values(trail)[0])
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-  })
+  const names = <string[]>trails.map((trail) => Object.values(trail)[0]),
+    setup = (): RenderResult => render(Trails)
 
   it('should display the correct number of options', (): void => {
     setup()

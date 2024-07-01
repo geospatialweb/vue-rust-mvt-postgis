@@ -1,15 +1,9 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { ModalService } from '@/services'
 
 describe('ModalService test suite', (): void => {
-  let modalService: ModalService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-    modalService = Container.get(ModalService)
-  })
+  const modalService = Container.get(ModalService)
 
   test('modalState getter should be called', (): void => {
     const spy = vi.spyOn(modalService, 'modalState', 'get')

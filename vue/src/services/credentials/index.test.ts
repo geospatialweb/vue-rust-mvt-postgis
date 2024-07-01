@@ -1,4 +1,3 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { ICredentialsState } from '@/interfaces'
@@ -6,12 +5,7 @@ import { CredentialsService } from '@/services'
 import { testData } from '@/test'
 
 describe('CredentialService test suite', (): void => {
-  let credentialsService: CredentialsService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-    credentialsService = Container.get(CredentialsService)
-  })
+  const credentialsService = Container.get(CredentialsService)
 
   test('credentialsState getter should be called', (): void => {
     const spy = vi.spyOn(credentialsService, 'credentialsState', 'get')

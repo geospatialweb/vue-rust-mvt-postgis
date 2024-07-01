@@ -1,12 +1,9 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { layerControllerLayers } from '@/configuration'
 import { RouterService } from '@/services'
 
 describe('RouterService test suite', (): void => {
-  setActivePinia(createPinia())
-
   test('setRoute method should be called', async (): Promise<void> => {
     const { id } = layerControllerLayers[5],
       routerService = Container.get(RouterService),

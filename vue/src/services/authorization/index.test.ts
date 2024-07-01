@@ -1,16 +1,10 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { AuthorizationService } from '@/services'
 import { testData } from '@/test'
 
 describe('AuthorizationService test suite', (): void => {
-  let authorizationService: AuthorizationService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-    authorizationService = Container.get(AuthorizationService)
-  })
+  const authorizationService = Container.get(AuthorizationService)
 
   test('jwtState getter should be called', (): void => {
     const spy = vi.spyOn(authorizationService, 'jwtState', 'get')

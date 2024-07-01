@@ -1,16 +1,10 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { TrailService } from '@/services'
 import { mockMapImplementation, testData } from '@/test'
 
 describe('TrailService test suite', (): void => {
-  let trailService: TrailService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-    trailService = Container.get(TrailService)
-  })
+  const trailService = Container.get(TrailService)
 
   test('selectTrail method should be called', (): void => {
     /* prettier-ignore */

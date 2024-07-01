@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom'
 import { RenderResult, fireEvent, render, screen } from '@testing-library/vue'
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { HexagonLayerController } from '@/components'
@@ -15,10 +14,6 @@ import { testData } from '@/test'
 
 describe('HexagonLayerController component test suite', (): void => {
   const setup = (): RenderResult => render(HexagonLayerController)
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-  })
 
   test('heading text set correctly', (): void => {
     setup()

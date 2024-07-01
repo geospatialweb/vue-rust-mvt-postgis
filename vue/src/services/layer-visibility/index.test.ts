@@ -1,16 +1,10 @@
-import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
 import { Layer } from '@/enums'
 import { LayerVisibilityService } from '@/services'
 
 describe('LayerVisibilityService test suite', (): void => {
-  let layerVisibilityService: LayerVisibilityService
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-    layerVisibilityService = Container.get(LayerVisibilityService)
-  })
+  const layerVisibilityService = Container.get(LayerVisibilityService)
 
   test('layerVisibilityState getter should be called', (): void => {
     const spy = vi.spyOn(layerVisibilityService, 'layerVisibilityState', 'get')

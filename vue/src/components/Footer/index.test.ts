@@ -1,6 +1,5 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/vue'
-import { createPinia, setActivePinia } from 'pinia'
 
 import { Footer } from '@/components'
 
@@ -10,10 +9,6 @@ describe('Footer component test suite', (): void => {
     render(Footer)
     footer = screen.getByRole('contentinfo', { name: 'footer' })
   }
-
-  beforeAll((): void => {
-    setActivePinia(createPinia())
-  })
 
   it('should render successfully', (): void => {
     setup()
