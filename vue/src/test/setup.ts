@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+import { createPinia, setActivePinia } from 'pinia'
 
 window.matchMedia = (query) => ({
   matches: false,
@@ -13,6 +14,7 @@ window.matchMedia = (query) => ({
 
 /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 window.URL.createObjectURL = (): any => {
-  // Do nothing
   // Mock this function for mapbox-gl to work
 }
+
+setActivePinia(createPinia())
