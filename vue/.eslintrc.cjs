@@ -17,6 +17,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true
     },
+    ecmaVersion: 2022,
     project: './tsconfig.json',
     sourceType: 'module',
     tsconfigRootDir: __dirname
@@ -31,5 +32,7 @@ module.exports = {
       }
     }
   ],
-  rules: {}
+  rules: {
+    '@typescript-eslint/no-unused-expressions': 'off'
+  }
 }

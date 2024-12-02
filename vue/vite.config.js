@@ -11,7 +11,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           deckgl: ['@deck.gl/aggregation-layers', '@deck.gl/core', '@deck.gl/layers'],
-          mapboxgl: ['mapbox-gl', '@mapbox/mapbox-gl-draw'],
+          mapboxgl: ['mapbox-gl'],
           vue: ['vue', 'vue-router', 'pinia']
         }
       }

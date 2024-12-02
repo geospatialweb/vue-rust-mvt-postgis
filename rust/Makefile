@@ -18,3 +18,9 @@ run:
 
 test:
 	@cargo test --lib -- --test-threads=1
+
+update:
+	@cargo update
+
+upgrade:
+	@rustup update stable

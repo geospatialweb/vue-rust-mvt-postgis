@@ -6,7 +6,7 @@ Development sandbox website to showcase the application integration of Vue 3 Com
 
 This implementation embodies what I _consider_ to be the major tenets of the three leading JavaScript front-end frameworks, namely:
 
--   Angular: TypeScript, Dependency Injection and RxJS asynchronous programming
+-   Angular: TypeScript, Dependency Injection and Signals
 
 -   React: Functional components, Declarative UI and JSX/TSX
 

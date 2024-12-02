@@ -3,10 +3,12 @@
     "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
+    "fill-labs.dependi",
     "ms-azuretools.vscode-docker",
     "rust-lang.rust-analyzer",
     "stylelint.vscode-stylelint",
     "tamasfe.even-better-toml",
-    "vadimcn.vscode-lldb"
+    "vadimcn.vscode-lldb",
+    "vitest.explorer"
   ]
 }
