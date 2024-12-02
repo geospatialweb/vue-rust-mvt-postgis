@@ -3,68 +3,51 @@ import { LngLat, LngLatLike, Marker } from 'mapbox-gl'
 import { Container, Service } from 'typedi'
 
 import { markerParams } from '@/configuration'
-import { State } from '@/enums'
-import { IMarkerVisibilityState, IQueryParam } from '@/interfaces'
-import { ApiService, AuthorizationService, MapboxService, PopupService, StoreService } from '@/services'
+import { IQueryParam } from '@/interfaces'
+import { ApiService, LogService, PopupService } from '@/services'
 
 @Service()
 export default class MarkerService {
-  #apiService = Container.get(ApiService)
-  #authorizationService = Container.get(AuthorizationService)
-  #popupService = Container.get(PopupService)
-  #storeService = Container.get(StoreService)
-
   #markerParams: IQueryParam[] = markerParams
   #markers: Marker[][] = []
   #markersHashmap: Map<string, number> = new Map()
   #reverseMarkersHashmap: Map<number, string> = new Map()
 
-  get #markerVisibilityState() {
-    return <IMarkerVisibilityState>this.#storeService.getState(State.MARKER_VISIBILITY)
+  get markers(): Marker[][] {
+    return this.#markers
   }
 
-  set #markerVisibilityState(state: IMarkerVisibilityState) {
-    this.#storeService.setState(State.MARKER_VISIBILITY, state)
+  get markersHashmap(): Map<string, number> {
+    return this.#markersHashmap
   }
 
-  async setMarkerFeatures(): Promise<void> {
-    const jwtToken = this.#getJwtToken()
+  get reverseMarkersHashmap(): Map<number, string> {
+    return this.#reverseMarkersHashmap
+  }
+
+  async setMarkerFeatures(jwtToken: string): Promise<void> {
     for (const params of this.#markerParams) {
       const { id } = params,
         { features } = await this.#getMarkerFeatureCollection(jwtToken, params)
-      features?.length
-        ? this.#setMarkers(id, features)
-        : this.#logConsoleErrorMessage(`No ${id.toUpperCase()} Features Found`)
+      if (features?.length) {
+        this.#setMarkers(id, features)
+      } else {
+        const logService = Container.get(LogService)
+        logService.logMarkersError(`No ${id.toUpperCase()} Features Found`)
+      }
     }
-  }
-
-  setHiddenMarkersVisibility(): void {
-    for (const [idx, markers] of this.#markers.entries()) {
-      const id = <string>this.#reverseMarkersHashmap.get(idx),
-        { isActive } = this.#markerVisibilityState[id as keyof IMarkerVisibilityState]
-      isActive && this.#setHiddenMarkers(id, markers)
-    }
-  }
-
-  toggleMarkerVisibility(id: string): void {
-    this.#setMarkerVisibilityState(id)
-    for (const marker of this.#markers[<number>this.#markersHashmap.get(id)]) {
-      this.#addRemoveMarkers(id, marker)
-    }
-  }
-
-  #getJwtToken(): string {
-    /* prettier-ignore */
-    const { jwtState: { jwtToken } } = this.#authorizationService
-    return jwtToken
   }
 
   async #getMarkerFeatureCollection(jwtToken: string, params: IQueryParam): Promise<FeatureCollection> {
-    return this.#apiService.getGeoJSONFeatureCollection(jwtToken, params)
+    const apiService = Container.get(ApiService)
+    return apiService.getGeoJSONFeatureCollection(jwtToken, params)
   }
 
   #setMarkers(id: string, features: Feature<Geometry, GeoJsonProperties>[]): void {
-    if (!features?.length) return this.#logConsoleErrorMessage(`no ${this.#setMarkers.name.slice(4)} features found`)
+    if (!features?.length) {
+      const logService = Container.get(LogService)
+      return logService.logMarkersError(`no ${this.#setMarkers.name.slice(4)} features found`)
+    }
     this.#markers = [...this.#markers, this.#createMarkers(id, features)]
     this.#setMarkersHashmaps(id)
   }
@@ -78,12 +61,13 @@ export default class MarkerService {
   }
 
   #createMarkerElement(id: string, feature: Feature): HTMLDivElement {
-    const el = document.createElement('div')
+    const popupService = Container.get(PopupService),
+      el = document.createElement('div')
     el.className = id
-    el.addEventListener('mouseenter', (): void => this.#popupService.addMarkerPopup(feature), { passive: true })
-    el.addEventListener('touchstart', (): void => this.#popupService.addMarkerPopup(feature), { passive: true })
-    el.addEventListener('mouseleave', (): void => this.#popupService.removePopup(), { passive: true })
-    el.addEventListener('touchend', (): void => this.#popupService.removePopup(), { passive: true })
+    el.addEventListener('mouseenter', (): void => popupService.addMarkerPopup(feature), { passive: true })
+    el.addEventListener('touchstart', (): void => popupService.addMarkerPopup(feature), { passive: true })
+    el.addEventListener('mouseleave', (): void => popupService.removePopup(), { passive: true })
+    el.addEventListener('touchend', (): void => popupService.removePopup(), { passive: true })
     return el
   }
 
@@ -99,50 +83,5 @@ export default class MarkerService {
     const idx = this.#markers.length - 1
     this.#markersHashmap.set(id, idx)
     this.#reverseMarkersHashmap.set(idx, id)
-  }
-
-  #setMarkerVisibilityState(id: string): void {
-    const state = <IMarkerVisibilityState>{ ...this.#markerVisibilityState }
-    state[id as keyof IMarkerVisibilityState].isActive = !state[id as keyof IMarkerVisibilityState].isActive
-    this.#markerVisibilityState = state
-  }
-
-  #setHiddenMarkers(id: string, markers: Marker[]): void {
-    this.#setHiddenMarkerVisibilityState(id)
-    for (const marker of markers) {
-      this.#addRemoveHiddenMarkers(id, marker)
-    }
-  }
-
-  #setHiddenMarkerVisibilityState(id: string): void {
-    const state = <IMarkerVisibilityState>{ ...this.#markerVisibilityState }
-    state[id as keyof IMarkerVisibilityState].isHidden = !state[id as keyof IMarkerVisibilityState].isHidden
-    this.#markerVisibilityState = state
-  }
-
-  #addRemoveMarkers(id: string, marker: Marker): void {
-    this.#markerVisibilityState[id as keyof IMarkerVisibilityState].isActive
-      ? this.#addMarker(marker)
-      : this.#removeMarker(marker)
-  }
-
-  #addRemoveHiddenMarkers(id: string, marker: Marker): void {
-    this.#markerVisibilityState[id as keyof IMarkerVisibilityState].isHidden
-      ? this.#removeMarker(marker)
-      : this.#addMarker(marker)
-  }
-
-  #addMarker(marker: Marker): void {
-    const mapboxService = Container.get(MapboxService),
-      { map } = mapboxService
-    marker.addTo(map)
-  }
-
-  #removeMarker(marker: Marker): void {
-    marker && marker.remove()
-  }
-
-  #logConsoleErrorMessage(msg: string): void {
-    console.error(msg)
   }
 }

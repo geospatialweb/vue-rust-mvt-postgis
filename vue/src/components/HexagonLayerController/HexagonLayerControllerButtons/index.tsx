@@ -15,20 +15,18 @@ export default defineComponent({
     }
   },
   setup({ id }, { slots }) {
-    const buttons: IHexagonLayerControllerButton[] = hexagonLayerControllerButtons,
-      resetHexagonLayerState = (): void => {
+    const onClickHandler = (evt: MouseEvent): void => {
+      evt.stopPropagation()
+      const { id } = evt.target as HTMLButtonElement,
+        buttons: IHexagonLayerControllerButton[] = hexagonLayerControllerButtons
+      if (id === buttons[0].id) {
         const hexagonLayerService = Container.get(HexagonLayerService)
         hexagonLayerService.resetHexagonLayerState()
-      },
-      setRoute = (route: string): void => {
+      } else {
         const routerService = Container.get(RouterService)
-        void routerService.setRoute(route)
-      },
-      onClickHandler = (evt: MouseEvent): void => {
-        evt.stopPropagation()
-        const { id } = evt.target as HTMLButtonElement
-        id === buttons[0].id ? resetHexagonLayerState() : setRoute(id)
+        void routerService.setRoute(id)
       }
+    }
     return (): JSX.Element => (
       <button id={id} onClick={(evt): void => onClickHandler(evt)}>
         {slots.text && slots.text()}

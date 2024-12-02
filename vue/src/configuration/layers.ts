@@ -1,18 +1,14 @@
-import { Layer } from '@/enums'
-
-const mvtBaseURL = `${import.meta.env.VITE_MVT_BASE_URL}`,
-  biosphereLayer = `${Layer.BIOSPHERE}`,
-  trailsLayer = `${Layer.TRAILS}`
+import { Layer, URL } from '@/enums'
 
 export default [
   {
-    id: 'biosphere',
+    id: Layer.Biosphere,
     type: 'fill',
     source: {
       type: 'vector',
-      url: `${mvtBaseURL}/${biosphereLayer}`
+      url: `${URL.MvtBaseUrl}/${Layer.Biosphere}`
     },
-    'source-layer': 'biosphere',
+    'source-layer': Layer.Biosphere,
     layout: {
       visibility: 'none'
     },
@@ -23,13 +19,13 @@ export default [
     }
   },
   {
-    id: 'biosphere-border',
+    id: Layer.BiosphereBorder,
     type: 'line',
     source: {
       type: 'vector',
-      url: `${mvtBaseURL}/${biosphereLayer}`
+      url: `${URL.MvtBaseUrl}/${Layer.Biosphere}`
     },
-    'source-layer': 'biosphere',
+    'source-layer': Layer.Biosphere,
     layout: {
       visibility: 'none'
     },
@@ -39,13 +35,13 @@ export default [
     }
   },
   {
-    id: 'trails',
+    id: Layer.Trails,
     type: 'line',
     source: {
       type: 'vector',
-      url: `${mvtBaseURL}/${trailsLayer}`
+      url: `${URL.MvtBaseUrl}/${Layer.Trails}`
     },
-    'source-layer': 'trails',
+    'source-layer': Layer.Trails,
     layout: {
       visibility: 'none'
     },

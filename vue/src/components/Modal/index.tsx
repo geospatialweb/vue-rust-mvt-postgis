@@ -11,8 +11,8 @@ export default defineComponent({
   setup() {
     const { active, inactive } = styles,
       getModalState = (): IModalState => {
-        const { modalState } = Container.get(ModalService)
-        return modalState
+        const modalService = Container.get(ModalService)
+        return modalService.modalState
       },
       jsx = ({ isActive }: IModalState): JSX.Element => (
         <div class={isActive ? active : inactive} role="presentation"></div>

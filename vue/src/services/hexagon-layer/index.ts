@@ -14,19 +14,19 @@ import { HexagonLayerData } from '@/types'
 
 @Service()
 export default class HexagonLayerService {
-  #hexagonLayerDataService = Container.get(HexagonLayerDataService)
-  #storeService = Container.get(StoreService)
-
   #hexagonLayerData: HexagonLayerData = []
+  #hexagonLayerDataService = Container.get(HexagonLayerDataService)
   #hexagonLayerInitialState: IHexagonLayerState = hexagonLayer.state
   #hexagonLayerProps: IHexagonLayerProp = hexagonLayer.props
 
-  get hexagonLayerState() {
-    return <IHexagonLayerState>this.#storeService.getState(State.HEXAGON_LAYER)
+  get hexagonLayerState(): IHexagonLayerState {
+    const storeService = Container.get(StoreService)
+    return <IHexagonLayerState>storeService.getState(State.HexagonLayer)
   }
 
   set #hexagonLayerState(state: IHexagonLayerState) {
-    this.#storeService.setState(State.HEXAGON_LAYER, state)
+    const storeService = Container.get(StoreService)
+    storeService.setState(State.HexagonLayer, state)
   }
 
   /* eslint-disable */

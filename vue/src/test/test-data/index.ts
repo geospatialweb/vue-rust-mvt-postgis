@@ -5,8 +5,8 @@ const baseURL = import.meta.env.BASE_URL
 
 export default {
   credentials: {
-    password: 'Click_Login',
-    username: 'johncampbell@geospatialweb.ca'
+    password: 'secretPassword',
+    username: 'foo@bar.com'
   },
   hexagonLayerControllerSliderLabelsState: {
     coverage: false,
@@ -161,43 +161,43 @@ export default {
     id: 'biosphere'
   },
   requestBody: {
-    password: 'foobar',
+    password: 'secretPassword',
     username: 'foo@bar.com'
   },
   routes: [
     {
       path: baseURL,
-      redirect: Route.LOGIN
+      redirect: Route.Login
     },
     {
-      path: `${baseURL}${Route.LOGIN}`,
-      name: Route.LOGIN,
+      path: `${baseURL}${Route.Login}`,
+      name: Route.Login,
       component: Authentication
     },
     {
-      path: `${baseURL}${Route.REGISTER}`,
-      name: Route.REGISTER,
+      path: `${baseURL}${Route.Register}`,
+      name: Route.Register,
       component: Registration
     },
     {
-      path: `${baseURL}${Route.DECKGL}`,
-      name: Route.DECKGL,
+      path: `${baseURL}${Route.Deckgl}`,
+      name: Route.Deckgl,
       component: Deckgl
     },
     {
-      path: `${baseURL}${Route.MAPBOX}`,
-      name: Route.MAPBOX,
+      path: `${baseURL}${Route.Mapbox}`,
+      name: Route.Mapbox,
       component: Mapbox
     },
     {
       path: `${baseURL}:pathMatch(.*)*`,
-      name: Route.PAGE_NOT_FOUND,
+      name: Route.PageNotFound,
       component: PageNotFound
     }
   ],
   sliderValues: ['0.5', '0', '5000', '80'],
   store: {
-    id: 'MODAL',
+    id: 'modal',
     state: {
       isActive: false
     }

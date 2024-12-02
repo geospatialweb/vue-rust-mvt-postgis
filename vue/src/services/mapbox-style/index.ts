@@ -6,24 +6,24 @@ import { StoreService } from '@/services'
 
 @Service()
 export default class MapboxStyleService {
-  #storeService = Container.get(StoreService)
-
   #activeMapboxStyle = ''
 
   constructor() {
     this.setActiveMapboxStyle()
   }
 
-  get activeMapboxStyle() {
+  get activeMapboxStyle(): string {
     return this.#activeMapboxStyle
   }
 
-  get mapboxStylesState() {
-    return <IMapboxStylesState>this.#storeService.getState(State.MAPBOX_STYLES)
+  get mapboxStylesState(): IMapboxStylesState {
+    const storeService = Container.get(StoreService)
+    return <IMapboxStylesState>storeService.getState(State.MapboxStyles)
   }
 
   set #mapboxStylesState(state: IMapboxStylesState) {
-    this.#storeService.setState(State.MAPBOX_STYLES, state)
+    const storeService = Container.get(StoreService)
+    storeService.setState(State.MapboxStyles, state)
   }
 
   setActiveMapboxStyle(): void {

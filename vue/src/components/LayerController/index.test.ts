@@ -66,9 +66,7 @@ describe('LayerController component click event test suite', (): void => {
   test("Remaining layers class changes to 'active' on click and 'inactive' on click again", async (): Promise<void> => {
     setup()
     for (const { id, name } of layers) {
-      const biosphereLayer = `${Layer.BIOSPHERE}`,
-        deckglLayer = `${Layer.DECKGL}`
-      if (id !== biosphereLayer && id !== deckglLayer) {
+      if (id !== `${Layer.Biosphere}` && id !== `${Layer.Deckgl}`) {
         const layer = screen.getByText(name)
         await view.click(layer)
         expect(layer.className).toMatch(/active/)

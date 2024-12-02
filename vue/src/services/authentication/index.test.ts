@@ -6,12 +6,12 @@ import { testData } from '@/test'
 
 describe('AuthenticationService test suite', (): void => {
   test('login method should be called', async (): Promise<void> => {
-    const { credentials } = testData,
+    const { credentials } = testData as { credentials: ICredentialsState },
       authenticationService = Container.get(AuthenticationService),
       spy = vi.spyOn(authenticationService, 'login')
-    await authenticationService.login(<ICredentialsState>credentials)
+    await authenticationService.login(credentials)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(<ICredentialsState>credentials)
+    expect(spy).toHaveBeenCalledWith(credentials)
     expect(spy).toHaveReturnedTimes(1)
   })
 })

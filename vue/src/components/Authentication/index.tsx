@@ -11,20 +11,22 @@ export default defineComponent({
   name: 'Authentication Component',
   setup() {
     const { active, credentials, doublespacer, inactive, spacer } = styles,
-      credentialsService = Container.get(CredentialsService),
       getCredentialsState = (): ICredentialsState => {
-        const { credentialsState } = credentialsService
-        return credentialsState
+        const credentialsService = Container.get(CredentialsService)
+        return credentialsService.credentialsState
       },
-      setCredentialsState = (state: ICredentialsState): void => credentialsService.setCredentialsState({ ...state }),
+      setCredentialsState = (state: ICredentialsState): void => {
+        const credentialsService = Container.get(CredentialsService)
+        credentialsService.setCredentialsState({ ...state })
+      },
       onSubmitHandler = (evt: Event): void => {
+        /* eslint-disable */
         evt.preventDefault()
-        const authenticationService = Container.get(AuthenticationService),
-          /* eslint-disable */
-          username = (evt as any).target[1].value as string,
-          password = (evt as any).target[2].value as string
-        /* eslint-enable */
+        const username = (evt as any).target[1].value as string,
+          password = (evt as any).target[2].value as string,
+          authenticationService = Container.get(AuthenticationService)
         void authenticationService.login({ username, password })
+        /* eslint-enable */
       },
       jsx = ({ isAdmin, isCorrect, isValid, password, username }: ICredentialsState): JSX.Element => (
         <div class={credentials} role="presentation">
@@ -84,7 +86,7 @@ export default defineComponent({
           </form>
           <div class={doublespacer}></div>
           <router-link
-            to={{ name: Route.REGISTER }}
+            to={{ name: Route.Register }}
             onClick={(): void => setCredentialsState({ isCorrect: true, isValid: true })}
           >
             Optional Registration

@@ -2,7 +2,7 @@ import 'vue/jsx'
 import { Container } from 'typedi'
 import { defineComponent, onMounted, onUnmounted } from 'vue'
 
-import { MapboxService, MarkerService } from '@/services'
+import { MapboxService, MarkerVisibilityService } from '@/services'
 import styles from './index.module.css'
 
 export default defineComponent({
@@ -15,11 +15,11 @@ export default defineComponent({
   },
   setup({ container }) {
     const { mapbox } = styles,
-      mapboxService = Container.get(MapboxService),
-      markerService = Container.get(MarkerService)
+      mapboxService = Container.get(MapboxService)
     onMounted((): void => mapboxService.loadMap())
     onUnmounted((): void => {
-      markerService.setHiddenMarkersVisibility()
+      const markerVisibilityService = Container.get(MarkerVisibilityService)
+      markerVisibilityService.setHiddenMarkersVisibility()
       mapboxService.removeMapResources()
     })
     return (): JSX.Element => <div id={container} class={mapbox} role="presentation"></div>

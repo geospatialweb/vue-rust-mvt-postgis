@@ -6,8 +6,6 @@ import { MapboxService } from '@/services'
 
 @Service()
 export default class TrailService {
-  #mapboxService = Container.get(MapboxService)
-
   #trails = <ITrail[]>[...trails]
 
   selectTrail(name: string): void {
@@ -27,6 +25,7 @@ export default class TrailService {
   }
 
   #mapFlyTo(trail: ITrail): void {
-    this.#mapboxService.mapFlyTo(trail)
+    const mapboxService = Container.get(MapboxService)
+    mapboxService.mapFlyTo(trail)
   }
 }

@@ -1,25 +1,38 @@
 import { Container } from 'typedi'
 
-import { Layer } from '@/enums'
 import { MarkerService } from '@/services'
-import { mockMapImplementation } from '@/test'
+import { testData } from '@/test'
 
 describe('MarkerService test suite', (): void => {
   const markerService = Container.get(MarkerService)
 
-  test('setHiddenMarkersVisibility method should be called', (): void => {
-    const spy = vi.spyOn(markerService, 'setHiddenMarkersVisibility')
-    markerService.setHiddenMarkersVisibility()
+  test('markers getter should be called', (): void => {
+    const spy = vi.spyOn(markerService, 'markers', 'get')
+    markerService.markers
     expect(spy).toHaveBeenCalledTimes(1)
     expect(spy).toHaveReturnedTimes(1)
   })
 
-  test('toggleMarkerVisibility method should be called', (): void => {
-    const officeLayer = `${Layer.OFFICE}`,
-      spy = vi.spyOn(markerService, 'toggleMarkerVisibility').mockImplementation(mockMapImplementation)
-    markerService.toggleMarkerVisibility(officeLayer)
+  test('markersHashmap getter should be called', (): void => {
+    const spy = vi.spyOn(markerService, 'markersHashmap', 'get')
+    markerService.markersHashmap
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(officeLayer)
+    expect(spy).toHaveReturnedTimes(1)
+  })
+
+  test('reverseMarkersHashmap getter should be called', (): void => {
+    const spy = vi.spyOn(markerService, 'reverseMarkersHashmap', 'get')
+    markerService.reverseMarkersHashmap
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveReturnedTimes(1)
+  })
+
+  test('setMarkerFeatures method should be called', async (): Promise<void> => {
+    const { jwtToken } = testData,
+      spy = vi.spyOn(markerService, 'setMarkerFeatures')
+    await markerService.setMarkerFeatures(jwtToken)
+    expect(spy).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledWith(jwtToken)
     expect(spy).toHaveReturnedTimes(1)
   })
 })

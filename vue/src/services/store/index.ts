@@ -14,13 +14,14 @@ import {
   markerVisibility,
   modal
 } from '@/configuration'
+import { State, Store } from '@/enums'
 import {
   IAppState,
   ICredentialsState,
   IDeckglSettingsState,
   IHexagonLayerState,
   IHexagonLayerControllerSliderLabelsState,
-  IJWTState,
+  IJwtState,
   ILayerControllerState,
   ILayerVisibilityState,
   IMapboxSettingsState,
@@ -29,7 +30,7 @@ import {
   IModalState,
   IState
 } from '@/interfaces'
-import { State, UseStoreDefinition } from '@/types'
+import { StoreState, UseStoreDefinition } from '@/types'
 
 @Service()
 export default class StoreService {
@@ -40,51 +41,51 @@ export default class StoreService {
   #hexagonLayerControllerSliderLabels: IHexagonLayerControllerSliderLabelsState = {
     ...hexagonLayerControllerSliderLabels
   }
-  #jwt: IJWTState = { ...jwt }
+  #jwt: IJwtState = { ...jwt }
   #layerController: ILayerControllerState[] = [...layerControllerLayers]
   #layerVisibility: ILayerVisibilityState = { ...layerVisibility }
   #mapboxSettings: IMapboxSettingsState = { ...mapbox.settings }
   #mapboxStyles: IMapboxStylesState = { ...mapbox.styles }
   #markerVisibility: IMarkerVisibilityState = { ...markerVisibility }
   #modal: IModalState = { ...modal }
-  #useStore: UseStoreDefinition = defineStore('store', {})
+  #useStore: UseStoreDefinition = defineStore(Store.State, {})
 
   constructor() {
     this.#defineUseStore()
   }
 
-  getState(id: string): State {
+  getState(id: string): StoreState {
     return this.#useStore().getState(id)
   }
 
-  setState(id: string, state: State): void {
+  setState(id: string, state: StoreState): void {
     this.#useStore().setState(id, state)
   }
 
   #defineUseStore(): void {
-    this.#useStore = defineStore('store', {
+    this.#useStore = defineStore(Store.State, {
       state: (): IState => ({
-        app: this.#app,
-        credentials: this.#credentials,
-        deckglSettings: this.#deckglSettings,
-        hexagonLayer: this.#hexagonLayer,
-        hexagonLayerControllerSliderLabels: this.#hexagonLayerControllerSliderLabels,
-        jwt: this.#jwt,
-        layerController: this.#layerController,
-        layerVisibility: this.#layerVisibility,
-        mapboxSettings: this.#mapboxSettings,
-        mapboxStyles: this.#mapboxStyles,
-        markerVisibility: this.#markerVisibility,
-        modal: this.#modal
+        [State.App]: this.#app,
+        [State.Credentials]: this.#credentials,
+        [State.DeckglSettings]: this.#deckglSettings,
+        [State.HexagonLayer]: this.#hexagonLayer,
+        [State.HexagonLayerControllerSliderLabels]: this.#hexagonLayerControllerSliderLabels,
+        [State.Jwt]: this.#jwt,
+        [State.LayerController]: this.#layerController,
+        [State.LayerVisibility]: this.#layerVisibility,
+        [State.MapboxSettings]: this.#mapboxSettings,
+        [State.MapboxStyles]: this.#mapboxStyles,
+        [State.MarkerVisibility]: this.#markerVisibility,
+        [State.Modal]: this.#modal
       }),
       actions: {
-        setState(id: string, state: State): void {
+        setState(id: string, state: StoreState): void {
           this.$patch({ [id]: state })
         }
       },
       getters: {
-        getState: (state: IState) => {
-          return (id: string): State => state[id as keyof IState]
+        getState: (state: IState): ((id: string) => StoreState) => {
+          return (id: string): StoreState => state[id as keyof IState]
         }
       }
     })

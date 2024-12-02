@@ -4,7 +4,7 @@ import { ICredentialsState } from '@/interfaces'
 import { CredentialsService } from '@/services'
 import { testData } from '@/test'
 
-describe('CredentialService test suite', (): void => {
+describe('CredentialsService test suite', (): void => {
   const credentialsService = Container.get(CredentialsService)
 
   test('credentialsState getter should be called', (): void => {
@@ -15,11 +15,11 @@ describe('CredentialService test suite', (): void => {
   })
 
   test('login method should be called', async (): Promise<void> => {
-    const { credentials } = testData,
+    const { credentials } = testData as { credentials: ICredentialsState },
       spy = vi.spyOn(credentialsService, 'login')
-    await credentialsService.login(<ICredentialsState>credentials)
+    await credentialsService.login(credentials)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(<ICredentialsState>credentials)
+    expect(spy).toHaveBeenCalledWith(credentials)
     expect(spy).toHaveReturnedTimes(1)
   })
 
@@ -33,11 +33,11 @@ describe('CredentialService test suite', (): void => {
   })
 
   test('setCredentialsState method should be called', (): void => {
-    const { credentials } = testData,
+    const { credentials } = testData as { credentials: ICredentialsState },
       spy = vi.spyOn(credentialsService, 'setCredentialsState')
-    credentialsService.setCredentialsState(<ICredentialsState>credentials)
+    credentialsService.setCredentialsState(credentials)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(<ICredentialsState>credentials)
+    expect(spy).toHaveBeenCalledWith(credentials)
     expect(spy).toHaveReturnedTimes(1)
   })
 

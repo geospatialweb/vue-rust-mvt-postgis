@@ -1,14 +1,11 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/vue'
-import { createPinia, setActivePinia } from 'pinia'
 
 import { Deckgl, Footer, HexagonLayerController, Modal } from '@/components'
 import { deckgl } from '@/configuration'
 import { Deckgl as DeckglView } from '@/views'
 
 describe('Deck view test suite', (): void => {
-  setActivePinia(createPinia())
-
   it('should render successfully', (): void => {
     render(DeckglView)
     const deckView = screen.getAllByRole('presentation')[0]

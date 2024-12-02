@@ -14,11 +14,10 @@ describe('LayerVisibilityService test suite', (): void => {
   })
 
   test('setLayerVisibilityState method should be called', (): void => {
-    const bioshpereLayer = `${Layer.BIOSPHERE}`,
-      spy = vi.spyOn(layerVisibilityService, 'setLayerVisibilityState')
-    layerVisibilityService.setLayerVisibilityState(bioshpereLayer)
+    const spy = vi.spyOn(layerVisibilityService, 'setLayerVisibilityState')
+    layerVisibilityService.setLayerVisibilityState(Layer.Biosphere)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(bioshpereLayer)
+    expect(spy).toHaveBeenCalledWith(Layer.Biosphere)
     expect(spy).toHaveReturnedTimes(1)
   })
 })

@@ -23,14 +23,12 @@ export default defineComponent({
       { heading } = hexagonLayerControllerHeading,
       buttons: IHexagonLayerControllerButton[] = hexagonLayerControllerButtons,
       getHexagonLayerState = (): IHexagonLayerState => {
-        const hexagonLayerService = Container.get(HexagonLayerService),
-          { hexagonLayerState } = hexagonLayerService
-        return hexagonLayerState
+        const hexagonLayerService = Container.get(HexagonLayerService)
+        return hexagonLayerService.hexagonLayerState
       },
       getHexagonLayerControllerSliderLabelsState = (): IHexagonLayerControllerSliderLabelsState => {
-        const hexagonLayerControllerService = Container.get(HexagonLayerControllerService),
-          { hexagonLayerControllerSliderLabelsState } = hexagonLayerControllerService
-        return hexagonLayerControllerSliderLabelsState
+        const hexagonLayerControllerService = Container.get(HexagonLayerControllerService)
+        return hexagonLayerControllerService.sliderLabelsState
       },
       setButtonSlots = ({ id, text }: IHexagonLayerControllerButton): JSX.Element => (
         <HexagonLayerControllerButtons id={id}>{{ text: (): string => text }}</HexagonLayerControllerButtons>

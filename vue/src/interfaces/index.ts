@@ -101,7 +101,7 @@ export interface IHttpResponseError {
   response: Record<string, string | number>
 }
 
-export interface IJWTState {
+export interface IJwtState {
   jwtExpiry: number
   jwtToken: string
 }
@@ -194,7 +194,7 @@ export interface IState {
   deckglSettings: IDeckglSettingsState
   hexagonLayer: IHexagonLayerState
   hexagonLayerControllerSliderLabels: IHexagonLayerControllerSliderLabelsState
-  jwt: IJWTState
+  jwt: IJwtState
   layerController: ILayerControllerState[]
   layerVisibility: ILayerVisibilityState
   mapboxSettings: IMapboxSettingsState
@@ -207,24 +207,4 @@ export interface ITrail {
   center: LngLatLike
   name: string
   zoom: number
-}
-
-export interface IVectorLayer {
-  id: string
-  type: string
-  source: {
-    type: string
-    url: string
-  }
-  'source-layer': string
-  layout: {
-    visibility: string
-  }
-  paint: {
-    'fill-color'?: string | undefined
-    'fill-opacity'?: number | undefined
-    'fill-outline-color'?: string | undefined
-    'line-color'?: string | undefined
-    'line-width'?: number | undefined
-  }
 }

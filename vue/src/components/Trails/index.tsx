@@ -12,8 +12,8 @@ export default defineComponent({
     const { trail } = styles,
       onChangeHandler = (evt: Event): void => {
         evt.stopPropagation()
-        const trailService = Container.get(TrailService),
-          { value: name } = evt.target as HTMLSelectElement
+        const { value: name } = evt.target as HTMLSelectElement,
+          trailService = Container.get(TrailService)
         trailService.selectTrail(name)
       }
     return (): JSX.Element => (

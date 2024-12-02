@@ -12,11 +12,7 @@ describe('HexagonLayerControllerButtons component test suite', (): void => {
   it('should receive correct `id` for each HexagonLayerController button', (): void => {
     const buttons: IHexagonLayerControllerButton[] = hexagonLayerControllerButtons
     for (const { id } of buttons) {
-      const wrapper = mount(HexagonLayerControllerButtons, {
-        props: {
-          id
-        }
-      })
+      const wrapper = mount(HexagonLayerControllerButtons, { props: { id } })
       expect(wrapper.props().id).toEqual(id)
     }
   })

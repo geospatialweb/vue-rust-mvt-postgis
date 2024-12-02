@@ -6,12 +6,12 @@ import { testData } from '@/test'
 
 describe('RegistrationService test suite', (): void => {
   test('register method should be called', async (): Promise<void> => {
-    const { credentials } = testData,
+    const { credentials } = testData as { credentials: ICredentialsState },
       registrationService = Container.get(RegistrationService),
       spy = vi.spyOn(registrationService, 'register')
-    await registrationService.register(<ICredentialsState>credentials)
+    await registrationService.register(credentials)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(<ICredentialsState>credentials)
+    expect(spy).toHaveBeenCalledWith(credentials)
     expect(spy).toHaveReturnedTimes(1)
   })
 })

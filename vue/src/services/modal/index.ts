@@ -6,14 +6,14 @@ import { StoreService } from '@/services'
 
 @Service()
 export default class ModalService {
-  #storeService = Container.get(StoreService)
-
-  get modalState() {
-    return <IModalState>this.#storeService.getState(State.MODAL)
+  get modalState(): IModalState {
+    const storeService = Container.get(StoreService)
+    return <IModalState>storeService.getState(State.Modal)
   }
 
   set #modalState(state: IModalState) {
-    this.#storeService.setState(State.MODAL, state)
+    const storeService = Container.get(StoreService)
+    storeService.setState(State.Modal, state)
   }
 
   hideModal(): void {

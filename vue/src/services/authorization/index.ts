@@ -2,47 +2,46 @@ import mapboxgl from 'mapbox-gl'
 import { Container, Service } from 'typedi'
 
 import { State } from '@/enums'
-import { IJWTState } from '@/interfaces'
-import { ApiService, StoreService } from '@/services'
+import { IJwtState } from '@/interfaces'
+import { ApiService, LogService, StoreService } from '@/services'
 
 @Service()
 export default class AuthorizationService {
-  #apiService = Container.get(ApiService)
-  #storeService = Container.get(StoreService)
-
-  get jwtState() {
-    return <IJWTState>this.#storeService.getState(State.JWT)
+  get jwtState(): IJwtState {
+    const storeService = Container.get(StoreService)
+    return <IJwtState>storeService.getState(State.Jwt)
   }
 
-  get mapboxAccessToken() {
+  get mapboxAccessToken(): string {
     const { accessToken } = mapboxgl
     return accessToken
   }
 
-  set #jwtState(state: IJWTState) {
-    this.#storeService.setState(State.JWT, state)
+  set #jwtState(state: IJwtState) {
+    const storeService = Container.get(StoreService)
+    storeService.setState(State.Jwt, state)
   }
 
   set #mapboxAccessToken(mapboxAccessToken: string) {
     mapboxgl.accessToken = mapboxAccessToken
   }
 
-  setJWTState(jwtState: IJWTState): void {
+  setJWTState(jwtState: IJwtState): void {
     this.#jwtState = jwtState
   }
 
   async getMapboxAccessToken(jwtToken: string): Promise<void> {
-    const mapboxAccessToken = await this.#apiService.getMapboxAccessToken(jwtToken)
-    mapboxAccessToken
-      ? this.#setMapboxAccessToken(mapboxAccessToken)
-      : this.#logConsoleErrorMessage(`no ${this.getMapboxAccessToken.name.slice(3)} found`)
+    const apiService = Container.get(ApiService),
+      mapboxAccessToken = await apiService.getMapboxAccessToken(jwtToken)
+    if (mapboxAccessToken) {
+      this.#setMapboxAccessToken(mapboxAccessToken)
+    } else {
+      const logService = Container.get(LogService)
+      logService.logMapboxAccessTokenError(`no ${this.getMapboxAccessToken.name.slice(3)} found`)
+    }
   }
 
   #setMapboxAccessToken(mapboxAccessToken: string): void {
     this.#mapboxAccessToken = mapboxAccessToken
-  }
-
-  #logConsoleErrorMessage(msg: string): void {
-    console.error(msg)
   }
 }

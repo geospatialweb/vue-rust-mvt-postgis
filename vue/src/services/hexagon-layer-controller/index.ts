@@ -6,22 +6,20 @@ import { StoreService } from '@/services'
 
 @Service()
 export default class HexagonLayerControllerService {
-  #storeService = Container.get(StoreService)
-
-  get hexagonLayerControllerSliderLabelsState() {
-    return <IHexagonLayerControllerSliderLabelsState>(
-      this.#storeService.getState(State.HEXAGON_LAYER_CONTROLLER_SLIDER_LABELS)
-    )
+  get sliderLabelsState(): IHexagonLayerControllerSliderLabelsState {
+    const storeService = Container.get(StoreService)
+    return <IHexagonLayerControllerSliderLabelsState>storeService.getState(State.HexagonLayerControllerSliderLabels)
   }
 
-  set #hexagonLayerControllerSliderLabelsState(state: IHexagonLayerControllerSliderLabelsState) {
-    this.#storeService.setState(State.HEXAGON_LAYER_CONTROLLER_SLIDER_LABELS, state)
+  set #sliderLabelsState(state: IHexagonLayerControllerSliderLabelsState) {
+    const storeService = Container.get(StoreService)
+    storeService.setState(State.HexagonLayerControllerSliderLabels, state)
   }
 
   setHexagonLayerControllerSliderLabel(id: string): void {
-    const state = <IHexagonLayerControllerSliderLabelsState>{ ...this.hexagonLayerControllerSliderLabelsState }
+    const state = <IHexagonLayerControllerSliderLabelsState>{ ...this.sliderLabelsState }
     state[id as keyof IHexagonLayerControllerSliderLabelsState] =
       !state[id as keyof IHexagonLayerControllerSliderLabelsState]
-    this.#hexagonLayerControllerSliderLabelsState = state
+    this.#sliderLabelsState = state
   }
 }

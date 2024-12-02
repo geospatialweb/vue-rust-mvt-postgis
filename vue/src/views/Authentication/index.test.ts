@@ -1,13 +1,10 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/vue'
-import { createPinia, setActivePinia } from 'pinia'
 
 import { Authentication } from '@/components'
 import { Authentication as AuthenticationView } from '@/views'
 
 describe('Authentication view test suite', (): void => {
-  setActivePinia(createPinia())
-
   it('should render successfully', (): void => {
     render(AuthenticationView)
     const authenticationView = screen.getAllByRole('presentation')[0]

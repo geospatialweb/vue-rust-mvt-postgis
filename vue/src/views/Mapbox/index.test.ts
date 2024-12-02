@@ -1,14 +1,11 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/vue'
-import { createPinia, setActivePinia } from 'pinia'
 
 import { LayerController, Mapbox, Modal, Trails } from '@/components'
 import { mapbox } from '@/configuration'
 import { Mapbox as MapboxView } from '@/views'
 
 describe('Mapbox view test suite', (): void => {
-  setActivePinia(createPinia())
-
   it('should render successfully', (): void => {
     render(MapboxView)
     const mapboxView = screen.getAllByRole('presentation')[0]

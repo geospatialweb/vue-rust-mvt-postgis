@@ -8,32 +8,32 @@ import { MediaQuery, MediaQueryCollection } from '@/types'
 
 @Service()
 export default class AppService {
-  #deckglService = Container.get(DeckglService)
-  #mapboxService = Container.get(MapboxService)
-  #storeService = Container.get(StoreService)
-  #trailService = Container.get(TrailService)
-
   #mediaQueryCollection: MediaQueryCollection = mediaQueryCollection
 
   constructor() {
     this.#setAppState()
   }
 
-  get appState() {
-    return <IAppState>this.#storeService.getState(State.APP)
+  get appState(): IAppState {
+    const storeService = Container.get(StoreService)
+    return <IAppState>storeService.getState(State.App)
   }
 
   set #appState(state: IAppState) {
-    this.#storeService.setState(State.APP, state)
+    const storeService = Container.get(StoreService)
+    storeService.setState(State.App, state)
   }
 
   setInitialZoom(): void {
     const { initialZoom } = this.appState
     if (initialZoom && Reflect.ownKeys(initialZoom)?.length === 3) {
-      const { deckgl, mapbox, trail } = initialZoom
-      this.#deckglService.setInitialZoomState(deckgl)
-      this.#mapboxService.setInitialZoomState(mapbox)
-      this.#trailService.setInitialZoom(trail)
+      const { deckgl, mapbox, trail } = initialZoom,
+        deckglService = Container.get(DeckglService),
+        mapboxService = Container.get(MapboxService),
+        trailService = Container.get(TrailService)
+      deckglService.setInitialZoomState(deckgl)
+      mapboxService.setInitialZoomState(mapbox)
+      trailService.setInitialZoom(trail)
     }
   }
 

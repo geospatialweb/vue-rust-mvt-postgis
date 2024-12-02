@@ -6,25 +6,22 @@ import { StoreService } from '@/services'
 
 @Service()
 export default class LayerVisibilityService {
-  #storeService = Container.get(StoreService)
-
-  #biosphereLayer = `${Layer.BIOSPHERE}`
-  #biosphereBorderLayer = `${Layer.BIOSPHERE_BORDER}`
-
-  get layerVisibilityState() {
-    return <ILayerVisibilityState>this.#storeService.getState(State.LAYER_VISIBILITY)
+  get layerVisibilityState(): ILayerVisibilityState {
+    const storeService = Container.get(StoreService)
+    return <ILayerVisibilityState>storeService.getState(State.LayerVisibility)
   }
 
   set #layerVisibilityState(state: ILayerVisibilityState) {
-    this.#storeService.setState(State.LAYER_VISIBILITY, state)
+    const storeService = Container.get(StoreService)
+    storeService.setState(State.LayerVisibility, state)
   }
 
   setLayerVisibilityState(id: string): void {
     const state = <ILayerVisibilityState>{ ...this.layerVisibilityState }
     state[id as keyof ILayerVisibilityState].isActive = !state[id as keyof ILayerVisibilityState].isActive
-    if (id === this.#biosphereLayer) {
-      state[this.#biosphereBorderLayer as keyof ILayerVisibilityState].isActive =
-        !state[this.#biosphereBorderLayer as keyof ILayerVisibilityState].isActive
+    if (id === `${Layer.Biosphere}`) {
+      state[Layer.BiosphereBorder as keyof ILayerVisibilityState].isActive =
+        !state[Layer.BiosphereBorder as keyof ILayerVisibilityState].isActive
     }
     this.#layerVisibilityState = state
   }

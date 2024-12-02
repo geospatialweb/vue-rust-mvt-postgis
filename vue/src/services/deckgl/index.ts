@@ -10,30 +10,27 @@ import { AuthorizationService, HexagonLayerService, ModalService, StoreService }
 
 @Service()
 export default class DeckglService {
-  #authorizationService = Container.get(AuthorizationService)
-  #hexagonLayerService = Container.get(HexagonLayerService)
-  #modalService = Container.get(ModalService)
-  #storeService = Container.get(StoreService)
-
   #deckglOptions: IDeckglOption = deckgl.options
 
   /* prettier-ignore */
   constructor(private _deck: any, private _map: Map) {}
 
-  get deck() {
+  get deck(): any {
     return this._deck
   }
 
-  get map() {
+  get map(): Map {
     return this._map
   }
 
-  get #deckglSettingsState() {
-    return <IDeckglSettingsState>this.#storeService.getState(State.DECKGL_SETTINGS)
+  get #deckglSettingsState(): IDeckglSettingsState {
+    const storeService = Container.get(StoreService)
+    return <IDeckglSettingsState>storeService.getState(State.DeckglSettings)
   }
 
   set #deckglSettingsState(state: IDeckglSettingsState) {
-    this.#storeService.setState(State.DECKGL_SETTINGS, state)
+    const storeService = Container.get(StoreService)
+    storeService.setState(State.DeckglSettings, state)
   }
 
   loadHexagonLayer(): void {
@@ -84,8 +81,8 @@ export default class DeckglService {
     })
   }
 
-  #getMapboxAccessToken = async (): Promise<void> => {
-    const authorizationService = this.#authorizationService,
+  async #getMapboxAccessToken(): Promise<void> {
+    const authorizationService = Container.get(AuthorizationService),
       { mapboxAccessToken } = authorizationService
     if (!mapboxAccessToken) {
       /* prettier-ignore */
@@ -103,14 +100,17 @@ export default class DeckglService {
   }
 
   #renderHexagonLayer(): void {
-    this.#hexagonLayerService.renderHexagonLayer()
+    const hexagonLayerService = Container.get(HexagonLayerService)
+    hexagonLayerService.renderHexagonLayer()
   }
 
   #hideModal(): void {
-    window.setTimeout((): void => this.#modalService.hideModal(), 200)
+    const modalService = Container.get(ModalService)
+    window.setTimeout((): void => modalService.hideModal(), 200)
   }
 
-  #showModal = (): void => {
-    this.#modalService.showModal()
+  #showModal(): void {
+    const modalService = Container.get(ModalService)
+    modalService.showModal()
   }
 }

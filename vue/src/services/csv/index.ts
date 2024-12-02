@@ -1,7 +1,8 @@
 import { csv } from 'd3-fetch'
-import { Service } from 'typedi'
+import { Container, Service } from 'typedi'
 
 import { ICsvResponseError } from '@/interfaces'
+import { LogService } from '@/services'
 import { CsvResponse } from '@/types'
 
 @Service()
@@ -12,11 +13,8 @@ export default class CsvService {
     return this.#csv(url)
       .then((data) => data)
       .catch(({ message, response: { data } }: ICsvResponseError) => {
-        data ? this.#logConsoleErrorMessage(data) : this.#logConsoleErrorMessage(message)
+        const logService = Container.get(LogService)
+        data ? logService.logCsvError(data) : logService.logCsvError(message)
       })
-  }
-
-  #logConsoleErrorMessage(msg: string): void {
-    console.error(msg)
   }
 }

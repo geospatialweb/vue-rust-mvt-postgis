@@ -54,11 +54,10 @@ describe('MapboxService test suite', (): void => {
   })
 
   test('setLayerVisibility method should be called', (): void => {
-    const biosphereLayer = `${Layer.BIOSPHERE}`,
-      spy = vi.spyOn(mapboxService, 'setLayerVisibility').mockImplementation(mockMapImplementation)
-    mapboxService.setLayerVisibility(biosphereLayer)
+    const spy = vi.spyOn(mapboxService, 'setLayerVisibility').mockImplementation(mockMapImplementation)
+    mapboxService.setLayerVisibility(Layer.Biosphere)
     expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(biosphereLayer)
+    expect(spy).toHaveBeenCalledWith(Layer.Biosphere)
     expect(spy).toHaveReturnedTimes(1)
   })
 })

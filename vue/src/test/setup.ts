@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import { createPinia, setActivePinia } from 'pinia'
 
-window.matchMedia = (query) => ({
+window.matchMedia = (query): MediaQueryList => ({
   matches: false,
   media: query,
   onchange: null,
