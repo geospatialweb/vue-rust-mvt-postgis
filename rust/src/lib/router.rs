@@ -1,7 +1,7 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
 use salvo::{
-    affix,
+    affix_state,
     cache::{Cache, MokaStore, RequestIssuer},
     compression::{Compression, CompressionLevel},
     cors::{Cors, CorsHandler},
@@ -16,12 +16,6 @@ use super::env::Env;
 use super::handler;
 use super::mapbox::MapboxAccessToken;
 
-/// Create new compression handler.
-fn handle_compression() -> Compression {
-    Compression::new()
-        .enable_gzip(CompressionLevel::Minsize)
-}
-
 /// Create new cache handler.
 fn handle_cache(cache_ttl: &str) -> Cache<MokaStore<String>, RequestIssuer> {
     let secs = cache_ttl.parse::<u64>().unwrap();
@@ -31,6 +25,12 @@ fn handle_cache(cache_ttl: &str) -> Cache<MokaStore<String>, RequestIssuer> {
             .build(),
         RequestIssuer::default(),
     )
+}
+
+/// Create new compression handler.
+fn handle_compression() -> Compression {
+    Compression::new()
+        .enable_gzip(CompressionLevel::Minsize)
 }
 
 /// Create new CORS handler.
@@ -77,7 +77,7 @@ pub fn new() -> Router {
                         .get(handler::handle_get_geojson_feature_collection))
                 .push(
                     Router::with_path(&env.mapbox_access_token_endpoint)
-                        .hoop(affix::inject(MapboxAccessToken::new(&env.mapbox_access_token)))
+                        .hoop(affix_state::inject(MapboxAccessToken::new(&env.mapbox_access_token)))
                         .get(handler::handle_get_mapbox_access_token))
                 .push(
                     Router::with_path(&env.get_user_endpoint)
@@ -92,14 +92,14 @@ pub fn new() -> Router {
         .push(
             Router::with_path(&env.credentials_path_prefix)
                 .push(
-                    Router::with_path(&env.validate_user_endpoint)
-                        .get(handler::handle_validate_user))
-                .push(
                     Router::with_path(&env.login_endpoint)
                         .get(handler::handle_login))
                 .push(
                     Router::with_path(&env.register_endpoint)
-                        .post(handler::handle_register)),
+                        .post(handler::handle_register))
+                .push(
+                    Router::with_path(&env.validate_user_endpoint)
+                        .get(handler::handle_validate_user)),
         )
 }
 
