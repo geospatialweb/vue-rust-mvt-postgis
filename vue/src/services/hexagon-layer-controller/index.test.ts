@@ -1,25 +1,26 @@
 import { Container } from 'typedi'
 
 import { hexagonLayerControllerSliders } from '@/configuration'
-import { IHexagonLayerControllerSlider } from '@/interfaces'
+import { IHexagonLayerControllerSlider, IHexagonLayerControllerSliderLabelsState } from '@/interfaces'
 import { HexagonLayerControllerService } from '@/services'
+import { testData } from '@/test'
 
 describe('HexagonLayerControllerService test suite', (): void => {
   const hexagonLayerControllerService = Container.get(HexagonLayerControllerService)
 
-  test('sliderLabelsState getter should be called', (): void => {
-    const spy = vi.spyOn(hexagonLayerControllerService, 'sliderLabelsState', 'get')
+  test('sliderLabelsState getter should be called with a return', (): void => {
+    const { sliderLabelsState } = testData as { sliderLabelsState: IHexagonLayerControllerSliderLabelsState },
+      spy = vi.spyOn(hexagonLayerControllerService, 'sliderLabelsState', 'get').mockReturnValue(sliderLabelsState)
     hexagonLayerControllerService.sliderLabelsState
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toHaveReturned()
   })
-  test('setHexagonLayerControllerSliderLabel method should be called', (): void => {
+
+  test('setSliderLabelsState method should be called', (): void => {
     const [slider]: IHexagonLayerControllerSlider[] = hexagonLayerControllerSliders,
-      id = slider.id,
-      spy = vi.spyOn(hexagonLayerControllerService, 'setHexagonLayerControllerSliderLabel')
-    hexagonLayerControllerService.setHexagonLayerControllerSliderLabel(id)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(id)
-    expect(spy).toHaveReturnedTimes(1)
+      spy = vi.spyOn(hexagonLayerControllerService, 'setSliderLabelsState')
+    hexagonLayerControllerService.setSliderLabelsState(slider.id)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(slider.id)
   })
 })

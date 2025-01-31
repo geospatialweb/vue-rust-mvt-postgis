@@ -11,8 +11,8 @@ export default defineComponent({
   setup() {
     const { footer, active, inactive } = styles,
       getAppState = (): IAppState => {
-        const appService = Container.get(AppService)
-        return appService.appState
+        const { appState } = Container.get(AppService)
+        return appState
       },
       jsx = ({ isMobile }: IAppState): JSX.Element => (
         <footer class={`${footer} ${isMobile ? inactive : active}`} aria-label="footer">

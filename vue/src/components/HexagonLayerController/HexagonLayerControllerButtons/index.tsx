@@ -20,11 +20,11 @@ export default defineComponent({
       const { id } = evt.target as HTMLButtonElement,
         buttons: IHexagonLayerControllerButton[] = hexagonLayerControllerButtons
       if (id === buttons[0].id) {
-        const hexagonLayerService = Container.get(HexagonLayerService)
-        hexagonLayerService.resetHexagonLayerState()
+        const { resetHexagonLayerState } = Container.get(HexagonLayerService)
+        void resetHexagonLayerState()
       } else {
-        const routerService = Container.get(RouterService)
-        void routerService.setRoute(id)
+        const { setRoute } = Container.get(RouterService)
+        void setRoute(id)
       }
     }
     return (): JSX.Element => (

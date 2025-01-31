@@ -1,0 +1,27 @@
+{
+  "root": true,
+  "env": {
+    "browser": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/strict",
+    "plugin:jest-dom/recommended",
+    "plugin:testing-library/dom",
+    "plugin:prettier/recommended"
+  ],
+  "ignorePatterns": [".*", "*.config.*", "node_modules", "static"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2022,
+    "project": true,
+    "tsconfigRootDir": "__dirname"
+  },
+  "plugins": ["@typescript-eslint", "jest-dom", "prettier", "testing-library"],
+  "rules": {
+    "@typescript-eslint/no-unused-expressions": "off"
+  }
+}

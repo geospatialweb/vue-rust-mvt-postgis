@@ -12,7 +12,7 @@ export default [
   {
     name: 'Lemoine Point',
     center: [-76.61, 44.223],
-    zoom: 14
+    zoom: 13
   },
   {
     name: 'Lyn Valley',
@@ -27,6 +27,6 @@ export default [
   {
     name: "Seeley's Bay",
     center: [-76.22, 44.485],
-    zoom: 14
+    zoom: 13
   }
 ]

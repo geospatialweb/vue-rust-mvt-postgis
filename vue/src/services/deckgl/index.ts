@@ -1,16 +1,18 @@
 /* eslint-disable */
 import { Deck } from '@deck.gl/core'
-import { LngLatLike, Map } from 'mapbox-gl'
+import { Map } from 'mapbox-gl'
 import { Container, Service } from 'typedi'
 
 import { deckgl } from '@/configuration'
-import { State } from '@/enums'
-import { IDeckglOption, IDeckglSettingsState } from '@/interfaces'
+import { Event, State } from '@/enums'
 import { AuthorizationService, HexagonLayerService, ModalService, StoreService } from '@/services'
+
+import type { LngLatLike } from 'mapbox-gl'
+import type { IDeckglOption, IDeckglSettingsState } from '@/interfaces'
 
 @Service()
 export default class DeckglService {
-  #deckglOptions: IDeckglOption = deckgl.options
+  #deckglOptions = <IDeckglOption>deckgl.options
 
   /* prettier-ignore */
   constructor(private _deck: any, private _map: Map) {}
@@ -24,28 +26,32 @@ export default class DeckglService {
   }
 
   get #deckglSettingsState(): IDeckglSettingsState {
-    const storeService = Container.get(StoreService)
-    return <IDeckglSettingsState>storeService.getState(State.DeckglSettings)
+    const { getState } = Container.get(StoreService)
+    return <IDeckglSettingsState>getState(State.DeckglSettings)
   }
 
   set #deckglSettingsState(state: IDeckglSettingsState) {
-    const storeService = Container.get(StoreService)
-    storeService.setState(State.DeckglSettings, state)
+    const { setState } = Container.get(StoreService)
+    setState(State.DeckglSettings, state)
   }
 
-  loadHexagonLayer(): void {
+  loadHexagonLayer = async (): Promise<void> => {
     this.#showModal()
     this.#loadDeck()
-    void this.#loadMap()
+    await this.#loadMap()
   }
 
-  removeMapResources(): void {
+  removeMapResources = (): void => {
     this._map && this._map.remove()
   }
 
-  setInitialZoomState(zoom: number): void {
+  setInitialDeckZoomState = (zoom: number): void => {
     const state = <IDeckglSettingsState>{ ...this.#deckglSettingsState, zoom }
     this.#setDeckglSettingsState(state)
+  }
+
+  #mapJumpTo(): void {
+    this._map.jumpTo(this.#deckglSettingsState)
   }
 
   #loadDeck(): void {
@@ -56,12 +62,23 @@ export default class DeckglService {
       canvas,
       controller,
       initialViewState,
-      onViewStateChange: (viewState: any): void => {
-        /* prettier-ignore */
-        const { viewState: { bearing, latitude, longitude, maxPitch, maxZoom, minZoom, pitch, zoom } } = viewState,
-          center: LngLatLike = [longitude, latitude],
-          state: IDeckglSettingsState = { bearing, center, latitude, longitude, maxPitch, maxZoom, minZoom, pitch, zoom }
-        this.#setDeckglSettingsState(state)
+      // @ts-ignore
+      onViewStateChange: ({ viewState }): void => {
+        const { bearing, latitude, longitude, maxPitch, maxZoom, minZoom, pitch, zoom }: IDeckglSettingsState =
+            viewState,
+          center = <LngLatLike>[longitude, latitude],
+          settings = <IDeckglSettingsState>{
+            bearing,
+            center,
+            latitude,
+            longitude,
+            maxPitch,
+            maxZoom,
+            minZoom,
+            pitch,
+            zoom
+          }
+        this.#setDeckglSettingsState(settings)
         this.#mapJumpTo()
       },
       getTooltip: ({ object }: Record<string, Record<string, number[]>>): string | null => {
@@ -72,45 +89,34 @@ export default class DeckglService {
     })
   }
 
-  async #loadMap(): Promise<void> {
-    const { container, interactive, style } = this.#deckglOptions
-    await this.#getMapboxAccessToken()
-    this._map = new Map({ container, interactive, style, ...this.#deckglSettingsState }).on('load', (): void => {
-      this.#renderHexagonLayer()
-      this.#hideModal()
-    })
-  }
-
-  async #getMapboxAccessToken(): Promise<void> {
-    const authorizationService = Container.get(AuthorizationService),
-      { mapboxAccessToken } = authorizationService
-    if (!mapboxAccessToken) {
-      /* prettier-ignore */
-      const { jwtState: { jwtToken } } = authorizationService
-      await authorizationService.getMapboxAccessToken(jwtToken)
-    }
-  }
-
   #setDeckglSettingsState(state: IDeckglSettingsState): void {
     this.#deckglSettingsState = state
   }
 
-  #mapJumpTo(): void {
-    this._map.jumpTo(this.#deckglSettingsState)
+  async #loadMap(): Promise<void> {
+    const { container, interactive, style } = this.#deckglOptions,
+      { setMapboxAccessToken } = Container.get(AuthorizationService)
+    await setMapboxAccessToken()
+    this._map = new Map({ container, interactive, style, ...this.#deckglSettingsState })
+      /* prettier-ignore */
+      .on(Event.Load, async (): Promise<void> => {
+        await this.#renderHexagonLayer()
+        this.#hideModal()
+      })
   }
 
-  #renderHexagonLayer(): void {
-    const hexagonLayerService = Container.get(HexagonLayerService)
-    hexagonLayerService.renderHexagonLayer()
+  async #renderHexagonLayer(): Promise<void> {
+    const { renderHexagonLayer } = Container.get(HexagonLayerService)
+    await renderHexagonLayer()
   }
 
   #hideModal(): void {
-    const modalService = Container.get(ModalService)
-    window.setTimeout((): void => modalService.hideModal(), 200)
+    const { hideModal } = Container.get(ModalService)
+    hideModal()
   }
 
   #showModal(): void {
-    const modalService = Container.get(ModalService)
-    modalService.showModal()
+    const { showModal } = Container.get(ModalService)
+    showModal()
   }
 }

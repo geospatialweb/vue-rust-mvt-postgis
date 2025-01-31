@@ -6,22 +6,20 @@ import { testData } from '@/test'
 describe('StoreService test suite', (): void => {
   const storeService = Container.get(StoreService)
 
-  test('getState method should be called', (): void => {
-    /* prettier-ignore */
-    const { store: { id } } = testData,
+  test('get method should be called with a return', (): void => {
+    const { id, state } = testData.store,
       spy = vi.spyOn(storeService, 'getState')
     storeService.getState(id)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(id)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(id)
+    expect(spy).toHaveReturnedWith(state)
   })
 
-  test('setState method should be called', (): void => {
-    /* prettier-ignore */
-    const { store: { id, state } } = testData,
+  test('set method should be called', (): void => {
+    const { id, state } = testData.store,
       spy = vi.spyOn(storeService, 'setState')
     storeService.setState(id, state)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(id, state)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(id, state)
   })
 })

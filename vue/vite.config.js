@@ -4,14 +4,14 @@ import { resolve } from 'path'
 
 export default defineConfig({
   build: {
-    chunkSizeWarningLimit: 1500,
+    chunkSizeWarningLimit: 2000,
     emptyOutDir: true,
     outDir: 'static',
     rollupOptions: {
       output: {
         manualChunks: {
-          deckgl: ['@deck.gl/aggregation-layers', '@deck.gl/core', '@deck.gl/layers'],
-          mapboxgl: ['mapbox-gl'],
+          deckgl: ['@deck.gl/aggregation-layers', '@deck.gl/core'],
+          mapboxgl: ['mapbox-gl', '@mapbox/mapbox-gl-draw'],
           vue: ['vue', 'vue-router', 'pinia']
         }
       }
@@ -30,6 +30,7 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    fileParallelism: false,
     globals: true,
     include: ['src/**/index.test.ts'],
     outputFile: 'src/test/vitest.json',

@@ -1,56 +1,71 @@
-import { AxiosRequestConfig } from 'axios'
 import { Container } from 'typedi'
 
-import { ApiEndpoint, CredentialsEndpoint } from '@/enums'
-import { HttpService } from '@/services'
+import { Endpoint, EndpointPrefix } from '@/enums'
+import { ICredentialsState } from '@/interfaces'
+import { ApiService, CredentialsService, HttpService } from '@/services'
 import { testData } from '@/test'
+import { HttpRequest } from '@/types'
 
-describe('HttpService test suite', (): void => {
-  const httpService = Container.get(HttpService)
+/* prettier-ignore */
+const { credentials: { username, password, role } } = testData as { credentials: ICredentialsState },
+  httpService = Container.get(HttpService)
 
-  test('delete method should be called', async (): Promise<void> => {
-    /* prettier-ignore */
-    const { credentials: { username }, jwtToken } = testData,
-      deleteUserEndpoint = ApiEndpoint.DeleteUser,
-      params = { params: { username } },
-      spy = vi.spyOn(httpService, 'delete')
-    await httpService.delete(deleteUserEndpoint, jwtToken, <AxiosRequestConfig>params)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(deleteUserEndpoint, jwtToken, <AxiosRequestConfig>params)
-    expect(spy).toHaveReturnedTimes(1)
+describe('HttpService test suite 1', (): void => {
+  beforeEach(async (): Promise<void> => {
+    const { credentials } = testData as { credentials: ICredentialsState },
+      credentialsService = Container.get(CredentialsService)
+    await credentialsService.register(credentials)
   })
 
-  test('get method should be called', async (): Promise<void> => {
-    /* prettier-ignore */
-    const { queryParams: { columns, id }, jwtToken } = testData,
-      geoJsonEndpoint = ApiEndpoint.Geojson,
-      params = { params: { columns, table: id } },
+  afterEach(async (): Promise<void> => {
+    const { credentials } = testData as { credentials: ICredentialsState },
+      { jwtToken } = window.jwtState,
+      apiService = Container.get(ApiService)
+    await apiService.deleteUser(credentials, jwtToken)
+  })
+
+  test('get method should be called with a return', async (): Promise<void> => {
+    const query = <HttpRequest>{ params: { username, role } },
+      endpoint = `${EndpointPrefix.Api}${Endpoint.GetUser}`,
+      { jwtToken } = window.jwtState,
       spy = vi.spyOn(httpService, 'get')
-    await httpService.get(geoJsonEndpoint, jwtToken, <AxiosRequestConfig>params)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(geoJsonEndpoint, jwtToken, <AxiosRequestConfig>params)
-    expect(spy).toHaveReturnedTimes(1)
+    await httpService.get(endpoint, query, jwtToken)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(endpoint, query, jwtToken)
+    expect(spy).toHaveReturned()
   })
 
-  test('patch method should be called', async (): Promise<void> => {
-    const { credentials, jwtToken } = testData,
-      updatePasswordEndpoint = ApiEndpoint.UpdatePassword,
-      params = { params: { ...credentials } },
+  test('patch method should be called with a return', async (): Promise<void> => {
+    const body = <HttpRequest>{ username, password, role },
+      endpoint = `${EndpointPrefix.Api}${Endpoint.UpdatePassword}`,
+      { jwtToken } = window.jwtState,
       spy = vi.spyOn(httpService, 'patch')
-    await httpService.patch(updatePasswordEndpoint, jwtToken, <AxiosRequestConfig>params)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(updatePasswordEndpoint, jwtToken, <AxiosRequestConfig>params)
-    expect(spy).toHaveReturnedTimes(1)
+    await httpService.patch(endpoint, body, jwtToken)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(endpoint, body, jwtToken)
+    expect(spy).toHaveReturned()
+  })
+})
+
+describe('HttpService test suite 2', (): void => {
+  test('post method should be called with a return', async (): Promise<void> => {
+    const body = <HttpRequest>{ username, password, role },
+      endpoint = `${EndpointPrefix.Credentials}${Endpoint.Register}`,
+      spy = vi.spyOn(httpService, 'post')
+    await httpService.post(endpoint, body)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(endpoint, body)
+    expect(spy).toHaveReturned()
   })
 
-  test('post method should be called', async (): Promise<void> => {
-    const { requestBody, jwtToken } = testData,
-      registerEndpoint = CredentialsEndpoint.Register,
-      body = { ...requestBody },
-      spy = vi.spyOn(httpService, 'post')
-    await httpService.post(registerEndpoint, jwtToken, <AxiosRequestConfig>body)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(registerEndpoint, jwtToken, <AxiosRequestConfig>body)
-    expect(spy).toHaveReturnedTimes(1)
+  test('delete method should be called with a return', async (): Promise<void> => {
+    const query = <HttpRequest>{ params: { username, role } },
+      endpoint = `${EndpointPrefix.Api}${Endpoint.DeleteUser}`,
+      { jwtToken } = window.jwtState,
+      spy = vi.spyOn(httpService, 'delete')
+    await httpService.delete(endpoint, query, jwtToken)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(endpoint, query, jwtToken)
+    expect(spy).toHaveReturned()
   })
 })

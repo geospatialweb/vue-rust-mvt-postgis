@@ -15,7 +15,8 @@ import {
   modal
 } from '@/configuration'
 import { State, Store } from '@/enums'
-import {
+
+import type {
   IAppState,
   ICredentialsState,
   IDeckglSettingsState,
@@ -28,43 +29,43 @@ import {
   IMapboxStylesState,
   IMarkerVisibilityState,
   IModalState,
-  IState
+  IStoreState
 } from '@/interfaces'
-import { StoreState, UseStoreDefinition } from '@/types'
+import type { StoreState, UseStoreDefinition } from '@/types'
 
 @Service()
 export default class StoreService {
-  #app: IAppState = { ...app }
-  #credentials: ICredentialsState = { ...credentials }
-  #deckglSettings: IDeckglSettingsState = { ...deckgl.settings }
-  #hexagonLayer: IHexagonLayerState = { ...hexagonLayer.state }
-  #hexagonLayerControllerSliderLabels: IHexagonLayerControllerSliderLabelsState = {
+  #app = <IAppState>{ ...app }
+  #credentials = <ICredentialsState>{ ...credentials }
+  #deckglSettings = <IDeckglSettingsState>{ ...deckgl.settings }
+  #hexagonLayer = <IHexagonLayerState>{ ...hexagonLayer.state }
+  #hexagonLayerControllerSliderLabels = <IHexagonLayerControllerSliderLabelsState>{
     ...hexagonLayerControllerSliderLabels
   }
-  #jwt: IJwtState = { ...jwt }
-  #layerController: ILayerControllerState[] = [...layerControllerLayers]
-  #layerVisibility: ILayerVisibilityState = { ...layerVisibility }
-  #mapboxSettings: IMapboxSettingsState = { ...mapbox.settings }
-  #mapboxStyles: IMapboxStylesState = { ...mapbox.styles }
-  #markerVisibility: IMarkerVisibilityState = { ...markerVisibility }
-  #modal: IModalState = { ...modal }
+  #jwt = <IJwtState>{ ...jwt }
+  #layerController = <ILayerControllerState[]>[...layerControllerLayers]
+  #layerVisibility = <ILayerVisibilityState>{ ...layerVisibility }
+  #mapboxSettings = <IMapboxSettingsState>{ ...mapbox.settings }
+  #mapboxStyles = <IMapboxStylesState>{ ...mapbox.styles }
+  #markerVisibility = <IMarkerVisibilityState>{ ...markerVisibility }
+  #modal = <IModalState>{ ...modal }
   #useStore: UseStoreDefinition = defineStore(Store.State, {})
 
   constructor() {
     this.#defineUseStore()
   }
 
-  getState(id: string): StoreState {
+  getState = (id: string): StoreState => {
     return this.#useStore().getState(id)
   }
 
-  setState(id: string, state: StoreState): void {
+  setState = (id: string, state: StoreState): void => {
     this.#useStore().setState(id, state)
   }
 
   #defineUseStore(): void {
     this.#useStore = defineStore(Store.State, {
-      state: (): IState => ({
+      state: (): IStoreState => ({
         [State.App]: this.#app,
         [State.Credentials]: this.#credentials,
         [State.DeckglSettings]: this.#deckglSettings,
@@ -84,8 +85,8 @@ export default class StoreService {
         }
       },
       getters: {
-        getState: (state: IState): ((id: string) => StoreState) => {
-          return (id: string): StoreState => state[id as keyof IState]
+        getState: (state: IStoreState): ((id: string) => StoreState) => {
+          return (id: string): StoreState => state[id as keyof IStoreState]
         }
       }
     })

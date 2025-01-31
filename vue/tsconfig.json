@@ -6,13 +6,14 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "lib": ["es2022", "dom", "dom.iterable"],
-    "module": "es2022",
+    "module": "esnext",
     "moduleResolution": "bundler",
+    "noEmit": true,
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
-    "removeComments": true,
+    "skipLibCheck": true,
     "strict": true,
     "target": "es2022",
-    "types": ["vite/client", "vitest", "vitest/globals"],
+    "types": ["@testing-library/jest-dom", "vite/client", "vitest", "vitest/globals"],
     "paths": {
       "@/*": ["src/*"]
     }

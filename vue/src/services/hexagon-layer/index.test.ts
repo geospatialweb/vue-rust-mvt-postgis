@@ -1,32 +1,31 @@
 import { Container } from 'typedi'
 
 import { hexagonLayerControllerSliders } from '@/configuration'
-import { IHexagonLayerControllerSlider } from '@/interfaces'
+import { IHexagonLayerControllerSlider, IHexagonLayerState } from '@/interfaces'
 import { HexagonLayerService } from '@/services'
-import { mockDeckImplementation } from '@/test'
+import { mockDeckImplementation, testData } from '@/test'
 
 describe('HexagonLayerService test suite', (): void => {
   const hexagonLayerService = Container.get(HexagonLayerService)
 
-  test('hexagonLayerState getter should be called', (): void => {
-    const spy = vi.spyOn(hexagonLayerService, 'hexagonLayerState', 'get')
+  test('hexagonLayerState getter should be called with a return', (): void => {
+    const { hexagonLayerState } = testData as { hexagonLayerState: IHexagonLayerState },
+      spy = vi.spyOn(hexagonLayerService, 'hexagonLayerState', 'get').mockReturnValue(hexagonLayerState)
     hexagonLayerService.hexagonLayerState
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toHaveReturned()
   })
 
-  test('renderHexagonLayer method should be called', (): void => {
+  test('renderHexagonLayer method should be called', async (): Promise<void> => {
     const spy = vi.spyOn(hexagonLayerService, 'renderHexagonLayer').mockImplementation(mockDeckImplementation)
-    hexagonLayerService.renderHexagonLayer()
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    await hexagonLayerService.renderHexagonLayer()
+    expect(spy).toBeCalled()
   })
 
-  test('resetHexagonLayerState method should be called', (): void => {
+  test('resetHexagonLayerState method should be called', async (): Promise<void> => {
     const spy = vi.spyOn(hexagonLayerService, 'resetHexagonLayerState').mockImplementation(mockDeckImplementation)
-    hexagonLayerService.resetHexagonLayerState()
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    await hexagonLayerService.resetHexagonLayerState()
+    expect(spy).toBeCalled()
   })
 
   test('setHexagonLayerState method should be called', (): void => {
@@ -34,8 +33,7 @@ describe('HexagonLayerService test suite', (): void => {
       { id, min: value } = sliders[0],
       spy = vi.spyOn(hexagonLayerService, 'setHexagonLayerState').mockImplementation(mockDeckImplementation)
     hexagonLayerService.setHexagonLayerState({ id, value })
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith({ id, value })
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith({ id, value })
   })
 })

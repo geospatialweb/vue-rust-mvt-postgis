@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/vue'
 
 import { Deckgl, Footer, HexagonLayerController, Modal } from '@/components'
@@ -13,8 +12,7 @@ describe('Deck view test suite', (): void => {
   })
 
   test('Deckgl component renders successfully', (): void => {
-    /* prettier-ignore */
-    const { options: { canvas, container } } = deckgl
+    const { canvas, container } = deckgl.options
     render(Deckgl, { props: { canvas, container } })
     const deckglComponent = screen.getAllByRole('presentation')[0]
     expect(deckglComponent).toBeInTheDocument()

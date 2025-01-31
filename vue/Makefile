@@ -1,26 +1,23 @@
 build:
-	@npm run build
-
-deploy:
-	@npm run deploy
+	@bun run build
 
 dev:
-	@npm run dev
+	@bun run dev
 
-lint:
-	@npm run lint
-
-preview:
-	@npm run preview
+prod:
+	@bun run prod
 
 start:
-	@npm start
+	@bun run start
+
+lint:
+	@bun run lint
 
 stylelint:
-	@npm run stylelint
+	@bun run stylelint
 
 test:
-	@npm test
+	@bun run test
 
-test_watch:
-	@npm run test:watch
+test-watch:
+	@bun run test:watch

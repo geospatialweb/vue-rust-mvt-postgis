@@ -10,10 +10,11 @@ export default defineComponent({
   name: 'PageNotFound Component',
   setup() {
     const { page_not_found } = styles,
-      routeTimeout = window.setTimeout((): void => setRoute(Route.Login), 2000),
-      setRoute = (route: string): void => {
-        const routerService = Container.get(RouterService)
-        void routerService.setRoute(route)
+      route = Route.Login,
+      routeTimeout = window.setTimeout(async (): Promise<void> => await setRoute(route), 2000),
+      setRoute = async (route: string): Promise<void> => {
+        const { setRoute } = Container.get(RouterService)
+        await setRoute(route)
       }
     onMounted((): number => routeTimeout)
     onUnmounted((): void => window.clearTimeout(routeTimeout))

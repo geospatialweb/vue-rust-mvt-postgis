@@ -1,22 +1,23 @@
 import { Container, Service } from 'typedi'
 
 import { State } from '@/enums'
-import { IModalState } from '@/interfaces'
 import { StoreService } from '@/services'
+
+import type { IModalState } from '@/interfaces'
 
 @Service()
 export default class ModalService {
   get modalState(): IModalState {
-    const storeService = Container.get(StoreService)
-    return <IModalState>storeService.getState(State.Modal)
+    const { getState } = Container.get(StoreService)
+    return <IModalState>getState(State.Modal)
   }
 
   set #modalState(state: IModalState) {
-    const storeService = Container.get(StoreService)
-    storeService.setState(State.Modal, state)
+    const { setState } = Container.get(StoreService)
+    setState(State.Modal, state)
   }
 
-  hideModal(): void {
+  hideModal = (): void => {
     const state = <IModalState>{ ...this.modalState }
     if (state.isActive) {
       state.isActive = !state.isActive
@@ -24,7 +25,7 @@ export default class ModalService {
     }
   }
 
-  showModal(): void {
+  showModal = (): void => {
     const state = <IModalState>{ ...this.modalState }
     if (!state.isActive) {
       state.isActive = !state.isActive

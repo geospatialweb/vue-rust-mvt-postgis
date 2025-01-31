@@ -1,37 +1,31 @@
-import { DSVRowArray } from 'd3-dsv'
 import { Container, Service } from 'typedi'
 
 import { URL } from '@/enums'
 import { CsvService, LogService } from '@/services'
-import { CsvResponse, HexagonLayerData } from '@/types'
+
+import type { CsvData, HexagonLayerData } from '@/types'
 
 @Service()
 export default class HexagonLayerDataService {
-  #hexagonLayerData: HexagonLayerData = []
-
-  constructor() {
-    void this.#loadHexagonLayerData()
+  getHexagonLayerData = async (): Promise<HexagonLayerData> => {
+    const url = URL.HexagonLayerData,
+      data = await this.#getCsvData(url)
+    return this.#setHexagonLayerData(data)
   }
 
-  get hexagonLayerData(): HexagonLayerData {
-    return this.#hexagonLayerData
+  async #getCsvData(url: string): Promise<CsvData> {
+    const { getCsvData } = Container.get(CsvService)
+    return getCsvData(url)
   }
 
-  async #loadHexagonLayerData(): Promise<void> {
-    const data = <DSVRowArray<string>>await this.#getHexagonLayerData(URL.HexagonLayerData)
-    this.#setHexagonLayerData(data)
-  }
-
-  async #getHexagonLayerData(url: string): Promise<CsvResponse> {
-    const csvService = Container.get(CsvService)
-    return csvService.fetchCsv(url)
-  }
-
-  #setHexagonLayerData(data: DSVRowArray<string>): void {
+  async #setHexagonLayerData(data: CsvData): Promise<HexagonLayerData> {
     if (!data?.length) {
-      const logService = Container.get(LogService)
-      return logService.logHexagonLayerDataError(`no ${this.#setHexagonLayerData.name.slice(4)} found`)
+      const { logErrorMessage } = Container.get(LogService)
+      return <undefined>logErrorMessage(`no ${this.#setHexagonLayerData.name.slice(4)} found`)
     }
-    this.#hexagonLayerData = data.map((d): number[] => [Number(d.lng), Number(d.lat)])
+    return new Promise((resolve): void => {
+      const hexagonLayerData = data.map((coord): number[] => [Number(coord.lng), Number(coord.lat)])
+      resolve(hexagonLayerData)
+    })
   }
 }

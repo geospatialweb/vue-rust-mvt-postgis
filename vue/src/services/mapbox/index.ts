@@ -1,37 +1,38 @@
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
-import { LayerSpecification, Map, MapMouseEvent, NavigationControl, SkyLayerSpecification } from 'mapbox-gl'
+import { Map, NavigationControl } from 'mapbox-gl'
 import { Container, Service } from 'typedi'
 
 import { mapbox, mapboxDraw } from '@/configuration'
-import { Layer, State } from '@/enums'
-import {
-  ILayerControllerState,
-  ILayerVisibilityState,
-  IMapboxOption,
-  IMapboxSettingsState,
-  IMapboxStylesState,
-  INavigationControl,
-  ITrail
-} from '@/interfaces'
+import { Event, Layer, State, Visibility } from '@/enums'
 import {
   AppService,
   AuthorizationService,
-  LayerService,
   LayerControllerService,
   LayerVisibilityService,
   MapboxStyleService,
   MarkerVisibilityService,
   ModalService,
   PopupService,
-  StoreService
+  StoreService,
+  VectorLayerService
 } from '@/services'
-import { NavigationControlPosition } from '@/types'
+
+import type { LayerSpecification, MapMouseEvent, SkyLayerSpecification } from 'mapbox-gl'
+import type {
+  ILayerControllerState,
+  ILayerVisibilityState,
+  IMapboxOption,
+  IMapboxSettingsState,
+  INavigationControl,
+  ITrail
+} from '@/interfaces'
+import type { NavigationControlPosition } from '@/types'
 
 @Service()
 export default class MapboxService {
   #mapboxDraw = new MapboxDraw(mapboxDraw.options)
-  #mapboxOptions: IMapboxOption = mapbox.options
-  #navigationControl: INavigationControl = mapbox.navigationControl
+  #mapboxOptions = <IMapboxOption>mapbox.options
+  #navigationControl = <INavigationControl>mapbox.navigationControl
   #skyLayer = <SkyLayerSpecification>mapbox.skyLayer
 
   constructor(private _map: Map) {}
@@ -41,75 +42,65 @@ export default class MapboxService {
   }
 
   get #mapboxSettingsState(): IMapboxSettingsState {
-    const storeService = Container.get(StoreService)
-    return <IMapboxSettingsState>storeService.getState(State.MapboxSettings)
+    const { getState } = Container.get(StoreService)
+    return <IMapboxSettingsState>getState(State.MapboxSettings)
   }
 
   set #mapboxSettingsState(state: IMapboxSettingsState) {
-    const storeService = Container.get(StoreService)
-    storeService.setState(State.MapboxSettings, state)
+    const { setState } = Container.get(StoreService)
+    setState(State.MapboxSettings, state)
   }
 
-  loadMap(): void {
+  loadMap = (): void => {
     this.#showModal()
     void this.#loadMap()
   }
 
-  mapFlyTo({ center, zoom }: ITrail): void {
+  mapFlyTo = ({ center, zoom }: ITrail): void => {
     this._map.flyTo({ center, zoom })
   }
 
-  removeMapResources(): void {
+  removeMapResources = (): void => {
     this._map && this._map.remove()
   }
 
-  resetMap(): void {
+  resetMap = (): void => {
     this.#setMapboxStyle()
     this.#resetMapLayers()
   }
 
-  setInitialZoomState(zoom: number): void {
-    this.#mapboxSettingsState = { ...this.#mapboxSettingsState, zoom }
+  setInitialMapZoomState = (zoom: number): void => {
+    const state = <IMapboxSettingsState>{ ...this.#mapboxSettingsState, zoom }
+    this.#mapboxSettingsState = state
   }
 
-  setLayerVisibility(id: string): void {
+  setLayerVisibility = (id: string): void => {
     /* prettier-ignore */
-    const appService = Container.get(AppService),
-      layerVisibilityService = Container.get(LayerVisibilityService),
-      { appState: { isMobile }} = appService,
-      { layerVisibilityState } = layerVisibilityService
+    const { appState: { isMobile } } = Container.get(AppService),
+      { layerVisibilityState } = Container.get(LayerVisibilityService)
     if (layerVisibilityState[id as keyof ILayerVisibilityState].isActive) {
-      this.#setMapLayoutProperty(id, 'visible')
-      id === `${Layer.Biosphere}` && !isMobile && this.#addLayerVisibilityEventListeners(id)
+      this.#setMapLayoutProperty(id, Visibility.Visible)
+      if (id === `${Layer.Biosphere}` && !isMobile) this.#addLayerVisibilityEventListeners(id)
     }
     if (!layerVisibilityState[id as keyof ILayerVisibilityState].isActive) {
-      this.#setMapLayoutProperty(id, 'none')
-      id === `${Layer.Biosphere}` && !isMobile && this.#removeLayerVisibilityEventListeners(id)
+      this.#setMapLayoutProperty(id, Visibility.None)
+      if (id === `${Layer.Biosphere}` && !isMobile) this.#removeLayerVisibilityEventListeners(id)
     }
   }
 
   async #loadMap(): Promise<void> {
-    const { position, visualizePitch } = this.#navigationControl
-    await this.#getMapboxAccessToken()
+    const { position, visualizePitch } = this.#navigationControl,
+      { setMapboxAccessToken } = Container.get(AuthorizationService)
+    await setMapboxAccessToken()
     this._map = new Map({ ...this.#mapboxOptions, ...this.#mapboxSettingsState })
       .addControl(this.#mapboxDraw)
       .addControl(new NavigationControl({ visualizePitch }), <NavigationControlPosition>position)
-      .on('draw.modechange', (): void => this.#drawModeChange())
-      .on('idle', (): void => this.#setMapboxSettingsState())
-      .on('load', (): void => {
+      .on(Event.DrawModeChange, (): void => this.#drawModeChange())
+      .on(Event.Idle, (): void => this.#setMapboxSettingsState())
+      .on(Event.Load, (): void => {
         this.#setMapLayers()
         this.#hideModal()
       })
-  }
-
-  async #getMapboxAccessToken(): Promise<void> {
-    const authorizationService = Container.get(AuthorizationService),
-      { mapboxAccessToken } = authorizationService
-    if (!mapboxAccessToken) {
-      /* prettier-ignore */
-      const { jwtState: { jwtToken } } = authorizationService
-      await authorizationService.getMapboxAccessToken(jwtToken)
-    }
   }
 
   #drawModeChange(): void {
@@ -119,45 +110,21 @@ export default class MapboxService {
       layer = (layer: ILayerControllerState): boolean => layer.id === id,
       idx = layerControllerState.findIndex(layer)
     if (idx >= 0 && layerControllerState[idx].isActive) {
-      layerControllerService.displayLayer(id)
+      const { displayLayer } = layerControllerService
+      displayLayer(id)
     }
   }
 
-  #hideModal(): void {
-    const modalService = Container.get(ModalService)
-    modalService.hideModal()
-  }
-
-  #showModal(): void {
-    const modalService = Container.get(ModalService)
-    modalService.showModal()
-  }
-
-  #setMapLayoutProperty(id: string, visibility: 'visible' | 'none'): void {
-    this._map.setLayoutProperty(id, 'visibility', visibility)
-  }
-
   #setMapboxSettingsState(): void {
-    const mapboxStyleService = Container.get(MapboxStyleService),
-      { activeMapboxStyle, mapboxStylesState } = mapboxStyleService,
-      style = mapboxStylesState[activeMapboxStyle as keyof IMapboxStylesState].url
+    const { activeMapboxStyle } = Container.get(MapboxStyleService)
     this.#mapboxSettingsState = {
       ...this.#mapboxSettingsState,
       bearing: this._map.getBearing(),
       center: this._map.getCenter(),
       pitch: this._map.getPitch(),
       zoom: this._map.getZoom(),
-      style
+      style: activeMapboxStyle
     }
-  }
-
-  #setMapboxStyle(): void {
-    const mapboxStyleService = Container.get(MapboxStyleService)
-    mapboxStyleService.setMapboxStyleState()
-    mapboxStyleService.setActiveMapboxStyle()
-    const { activeMapboxStyle, mapboxStylesState } = mapboxStyleService,
-      style = mapboxStylesState[activeMapboxStyle as keyof IMapboxStylesState].url
-    this._map.setStyle(style)
   }
 
   #setMapLayers(): void {
@@ -166,24 +133,14 @@ export default class MapboxService {
     this.#setHiddenMarkersVisibility()
   }
 
-  /* Set layers & hidden marker visibility timeouts to allow basemap to finish loading when switching basemaps */
-  #resetMapLayers(): void {
-    window.setTimeout((): void => this.#addSkyLayer(), 100)
-    window.setTimeout((): void => {
-      this.#addLayers()
-      this.#setHiddenMarkersVisibility()
-    }, 1000)
-  }
-
   #addSkyLayer(): void {
     const { id } = this.#skyLayer
     this.#getLayer(id) ?? this.#addLayer(this.#skyLayer)
   }
 
   #addLayers(): void {
-    const layerService = Container.get(LayerService),
-      { layers } = layerService
-    for (const layer of layers) {
+    const { vectorLayers } = Container.get(VectorLayerService)
+    for (const layer of vectorLayers) {
       const { id } = layer
       if (!this.#getLayer(id)) {
         this.#addLayer(layer)
@@ -192,37 +149,59 @@ export default class MapboxService {
     }
   }
 
-  #addLayer(layer: LayerSpecification): void {
-    this._map.addLayer(layer)
-  }
-
   #getLayer(id: string): LayerSpecification | undefined {
     return this._map.getLayer(id)
   }
 
+  #addLayer(layer: LayerSpecification): void {
+    this._map.addLayer(layer)
+  }
+
   #setHiddenMarkersVisibility(): void {
-    const markerVisibilityService = Container.get(MarkerVisibilityService)
-    window.setTimeout((): void => markerVisibilityService.setHiddenMarkersVisibility(), 100)
+    const { setHiddenMarkersVisibility } = Container.get(MarkerVisibilityService)
+    window.setTimeout((): void => setHiddenMarkersVisibility(), 100)
+  }
+
+  #setMapboxStyle(): void {
+    const mapboxStyleService = Container.get(MapboxStyleService),
+      { setMapboxStyleState, setActiveMapboxStyle } = mapboxStyleService
+    setMapboxStyleState()
+    setActiveMapboxStyle()
+    const { activeMapboxStyle } = mapboxStyleService
+    this._map.setStyle(activeMapboxStyle)
+  }
+
+  /* Set layers & hidden markers visibility timeouts to allow basemap to finish rendering when switching basemaps */
+  #resetMapLayers(): void {
+    window.setTimeout((): void => this.#addSkyLayer(), 100)
+    window.setTimeout((): void => {
+      this.#addLayers()
+      this.#setHiddenMarkersVisibility()
+    }, 1000)
+  }
+
+  #setMapLayoutProperty(id: string, visibility: Visibility.Visible | Visibility.None): void {
+    this._map.setLayoutProperty(id, Visibility.Visibility, visibility)
   }
 
   #addLayerVisibilityEventListeners(id: string): void {
     this._map
-      .on('click', id, (evt: MapMouseEvent): void => this.#onMapClickHandler(evt))
-      .on('mouseenter', id, (): void => this.#onMapMouseEnterHandler())
-      .on('mouseleave', id, (): void => this.#onMapMouseLeaveHandler())
+      .on(Event.Click, id, (evt: MapMouseEvent): void => this.#onMapClickHandler(evt))
+      .on(Event.Mouseenter, id, (): void => this.#onMapMouseEnterHandler())
+      .on(Event.Mouseleave, id, (): void => this.#onMapMouseLeaveHandler())
   }
 
   #removeLayerVisibilityEventListeners(id: string): void {
     this._map
-      .off('click', id, (evt: MapMouseEvent): void => this.#onMapClickHandler(evt))
-      .off('mouseenter', id, (): void => this.#onMapMouseEnterHandler())
-      .off('mouseleave', id, (): void => this.#onMapMouseLeaveHandler())
+      .off(Event.Click, id, (evt: MapMouseEvent): void => this.#onMapClickHandler(evt))
+      .off(Event.Mouseenter, id, (): void => this.#onMapMouseEnterHandler())
+      .off(Event.Mouseleave, id, (): void => this.#onMapMouseLeaveHandler())
   }
 
   #onMapClickHandler({ lngLat, point }: MapMouseEvent): void {
     const { properties } = this._map.queryRenderedFeatures(point)[0],
-      popupService = Container.get(PopupService)
-    popupService.addLayerPopup(lngLat, properties)
+      { addLayerPopup } = Container.get(PopupService)
+    addLayerPopup(lngLat, properties)
   }
 
   #onMapMouseEnterHandler(): void {
@@ -230,12 +209,22 @@ export default class MapboxService {
   }
 
   #onMapMouseLeaveHandler(): void {
-    const popupService = Container.get(PopupService)
-    popupService.removePopup()
     this.#setCursorStyle('')
+    const { removePopup } = Container.get(PopupService)
+    removePopup()
   }
 
   #setCursorStyle(cursor: string): void {
     this._map.getCanvas().style.cursor = cursor
+  }
+
+  #hideModal(): void {
+    const { hideModal } = Container.get(ModalService)
+    hideModal()
+  }
+
+  #showModal(): void {
+    const { showModal } = Container.get(ModalService)
+    showModal()
   }
 }

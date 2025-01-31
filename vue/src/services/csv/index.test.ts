@@ -4,12 +4,13 @@ import { URL } from '@/enums'
 import { CsvService } from '@/services'
 
 describe('CsvService test suite', (): void => {
-  test('fetchCsv method should be called', async (): Promise<void> => {
-    const csvService = Container.get(CsvService),
-      spy = vi.spyOn(csvService, 'fetchCsv')
-    await csvService.fetchCsv(URL.HexagonLayerData)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(URL.HexagonLayerData)
-    expect(spy).toHaveReturnedTimes(1)
+  test('getCsvData method should be called with a return', async (): Promise<void> => {
+    const url = URL.HexagonLayerData,
+      csvService = Container.get(CsvService),
+      spy = vi.spyOn(csvService, 'getCsvData')
+    await csvService.getCsvData(url)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(url)
+    expect(spy).toHaveReturned()
   })
 })

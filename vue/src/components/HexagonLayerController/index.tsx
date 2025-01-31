@@ -23,18 +23,20 @@ export default defineComponent({
       { heading } = hexagonLayerControllerHeading,
       buttons: IHexagonLayerControllerButton[] = hexagonLayerControllerButtons,
       getHexagonLayerState = (): IHexagonLayerState => {
-        const hexagonLayerService = Container.get(HexagonLayerService)
-        return hexagonLayerService.hexagonLayerState
+        const { hexagonLayerState } = Container.get(HexagonLayerService)
+        return hexagonLayerState
       },
       getHexagonLayerControllerSliderLabelsState = (): IHexagonLayerControllerSliderLabelsState => {
-        const hexagonLayerControllerService = Container.get(HexagonLayerControllerService)
-        return hexagonLayerControllerService.sliderLabelsState
+        const { sliderLabelsState } = Container.get(HexagonLayerControllerService)
+        return sliderLabelsState
       },
       setButtonSlots = ({ id, text }: IHexagonLayerControllerButton): JSX.Element => (
         <HexagonLayerControllerButtons id={id}>{{ text: (): string => text }}</HexagonLayerControllerButtons>
       ),
-      /* prettier-ignore */
-      jsx = (layerState: IHexagonLayerState, sliderLabelsState: IHexagonLayerControllerSliderLabelsState): JSX.Element => (
+      jsx = (
+        layerState: IHexagonLayerState,
+        sliderLabelsState: IHexagonLayerControllerSliderLabelsState
+      ): JSX.Element => (
         <div class={hexagon_layer_controller} role="presentation">
           <HexagonLayerControllerHeading>{{ heading: (): string => heading }}</HexagonLayerControllerHeading>
           <HexagonLayerControllerSliders layerState={layerState} sliderLabelsState={sliderLabelsState} />

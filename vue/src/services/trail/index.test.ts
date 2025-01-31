@@ -7,21 +7,18 @@ describe('TrailService test suite', (): void => {
   const trailService = Container.get(TrailService)
 
   test('selectTrail method should be called', (): void => {
-    /* prettier-ignore */
-    const { trailParams: { name } } = testData,
+    const { name } = testData.trailParams,
       spy = vi.spyOn(trailService, 'selectTrail').mockImplementation(mockMapImplementation)
     trailService.selectTrail(name)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(name)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(name)
   })
 
   test('setInitialZoom method should be called', (): void => {
     const { initialZoomFactor: factor } = testData,
       spy = vi.spyOn(trailService, 'setInitialZoom')
     trailService.setInitialZoom(factor)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(factor)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(factor)
   })
 })

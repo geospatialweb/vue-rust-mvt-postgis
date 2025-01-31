@@ -4,16 +4,36 @@ import { Authentication, Deckgl, Mapbox, PageNotFound, Registration } from '@/vi
 const baseURL = import.meta.env.BASE_URL
 
 export default {
+  activeMapboxStyle: 'outdoors',
+  appState: {
+    initialZoom: undefined,
+    isMobile: false
+  },
   credentials: {
+    isCorrect: true,
+    isValid: true,
     password: 'secretPassword',
+    role: 'user',
     username: 'foo@bar.com'
   },
-  hexagonLayerControllerSliderLabelsState: {
-    coverage: false,
-    elevationScale: false,
-    radius: false,
-    upperPercentile: false
+  features: [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [[-76.011422, 44.384362]]
+      },
+      properties: {
+        name: 'Frontenac Arch Biosphere Office',
+        description: '19 Reynolds Road, Lansdowne, ON. Open Monday to Friday 8:30am - 4:30pm'
+      }
+    }
+  ],
+  geoJsonParams: {
+    columns: 'name,description,geom',
+    table: 'office'
   },
+  hexagonLayerData: [],
   hexagonLayerState: {
     coverage: 1,
     elevationScale: 100,
@@ -22,87 +42,46 @@ export default {
   },
   initialZoom: 10,
   initialZoomFactor: 0.9,
-  jwtExpiry: 1681334027,
-  jwtToken:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiYXVkIjoiZ2Vvc3BhdGlhbHdlYi5jYSIsImV4cCI6MTY4MDgwNzg3NCwiaXNzIjoiZ2Vvc3BhdGlhbHdlYi5jYSIsIm5hbWUiOiJqb2huY2FtcGJlbGxAZ2Vvc3BhdGlhbHdlYi5jYSIsInN1YiI6IjEifQ.1zNsIABBvgKvm2F4Z_Gf78f-MgoPqJcuFQKU_fhbZz8',
-  layer: {
-    type: 'FeatureCollection',
-    features: [
-      {
-        type: 'Feature',
-        geometry: {
-          type: 'Polygon',
-          coordinates: [
-            [
-              [-76.205278, 44.297778],
-              [-75.903611, 44.380833],
-              [-75.825278, 44.430833],
-              [-75.809444, 44.478611],
-              [-75.653333, 44.599167],
-              [-75.676389, 44.614722],
-              [-75.851389, 44.648056],
-              [-76.086944, 44.633611],
-              [-76.203889, 44.660278],
-              [-76.331667, 44.668611],
-              [-76.545278, 44.773056],
-              [-76.674444, 44.716944],
-              [-76.706389, 44.504444],
-              [-76.880278, 44.492222],
-              [-76.760556, 44.326389],
-              [-76.425556, 44.347778],
-              [-76.213611, 44.483333],
-              [-76.205278, 44.297778]
-            ]
-          ]
-        },
-        properties: {
-          name: 'Frontenac Arch Biosphere',
-          description:
-            'The Frontenac Arch is the ancient granite bridge from the Canadian Shield to the Adirondack Mountains Its incredibly rich natural environment and history was recognized in 2002 when it became a UNESCO World Biosphere Reserve.'
-        }
-      }
-    ]
-  },
   layerControllerIcons: [
     {
       id: 'satellite',
       name: 'Satellite',
-      src: '/assets/icons/satellite.png',
+      src: '/assets/icons/satellite.webp',
       height: '20',
       width: '20'
     },
     {
       id: 'biosphere',
       name: 'Biosphere',
-      src: '/assets/icons/biosphere.png',
+      src: '/assets/icons/biosphere.webp',
       height: '16',
       width: '16'
     },
     {
       id: 'office',
       name: 'Office',
-      src: '/assets/icons/office.png',
+      src: '/assets/icons/office.webp',
       height: '20',
       width: '18'
     },
     {
       id: 'places',
       name: 'Places',
-      src: '/assets/icons/places.png',
+      src: '/assets/icons/places.webp',
       height: '20',
       width: '18'
     },
     {
       id: 'trails',
       name: 'Trails',
-      src: '/assets/icons/trails.png',
+      src: '/assets/icons/trails.webp',
       height: '20',
       width: '18'
     },
     {
       id: 'deckgl',
       name: 'Deck.GL',
-      src: '/assets/icons/deckgl.png',
+      src: '/assets/icons/deckgl.webp',
       height: '18',
       width: '18'
     }
@@ -145,6 +124,39 @@ export default {
       isActive: false
     }
   ],
+  layerVisibility: {
+    biosphere: {
+      isActive: true
+    },
+    'biosphere-border': {
+      isActive: true
+    },
+    trails: {
+      isActive: false
+    }
+  },
+  mapboxSettings: {
+    bearing: 0,
+    center: { lng: -76.25, lat: 44.5 },
+    maxPitch: 75,
+    maxZoom: 18,
+    minZoom: 2,
+    pitch: 0,
+    style: 'mapbox://styles/mapbox/outdoors-v12',
+    zoom: 7
+  },
+  mapboxStyles: {
+    outdoors: {
+      id: 'outdoors',
+      isActive: true,
+      url: 'mapbox://styles/mapbox/outdoors-v12'
+    },
+    satellite: {
+      id: 'satellite',
+      isActive: false,
+      url: 'mapbox://styles/mapbox/satellite-v9'
+    }
+  },
   marker: {
     type: 'Feature',
     geometry: {
@@ -156,13 +168,36 @@ export default {
       description: '19 Reynolds Road, Lansdowne, ON. Open Monday to Friday 8:30am - 4:30pm'
     }
   },
-  queryParams: {
-    columns: 'name,description,geom',
-    id: 'biosphere'
-  },
-  requestBody: {
-    password: 'secretPassword',
-    username: 'foo@bar.com'
+  markersHashmap: [
+    {
+      key: 'office',
+      value: 0
+    },
+    {
+      key: 'places',
+      value: 1
+    },
+    {
+      key: 'trails',
+      value: 2
+    }
+  ],
+  markersReverseHashmap: [
+    {
+      key: 0,
+      value: 'office'
+    },
+    {
+      key: 1,
+      value: 'places'
+    },
+    {
+      key: 2,
+      value: 'trails'
+    }
+  ],
+  modalState: {
+    isActive: false
   },
   routes: [
     {
@@ -195,6 +230,12 @@ export default {
       component: PageNotFound
     }
   ],
+  sliderLabelsState: {
+    coverage: false,
+    elevationScale: false,
+    radius: false,
+    upperPercentile: false
+  },
   sliderValues: ['0.5', '0', '5000', '80'],
   store: {
     id: 'modal',

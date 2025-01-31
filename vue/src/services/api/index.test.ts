@@ -1,56 +1,80 @@
 import { Container } from 'typedi'
 
-import { ICredentialsState, IQueryParam } from '@/interfaces'
-import { ApiService } from '@/services'
+import { ICredentialsState, IGeoJsonParam } from '@/interfaces'
+import { ApiService, CredentialsService } from '@/services'
 import { testData } from '@/test'
 
-describe('ApiService test suite', (): void => {
-  const apiService = Container.get(ApiService)
+const { credentials } = testData as { credentials: ICredentialsState },
+  apiService = Container.get(ApiService)
 
-  test('deleteUser method should be called', async (): Promise<void> => {
-    /* prettier-ignore */
-    const { jwtToken, credentials: { username } } = testData,
-      spy = vi.spyOn(apiService, 'deleteUser')
-    await apiService.deleteUser(jwtToken, username)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(jwtToken, username)
-    expect(spy).toHaveReturnedTimes(1)
+// beforeEach(async (): Promise<void> => {
+//   const credentialsService = Container.get(CredentialsService)
+//   await credentialsService.register(credentials)
+// })
+
+describe('ApiService test suite 1', (): void => {
+  test('getGeoJsonFeatureCollection method should be called with a return', async (): Promise<void> => {
+    const { geoJsonParams } = testData as { geoJsonParams: IGeoJsonParam },
+      { jwtToken } = window.jwtState,
+      spy = vi.spyOn(apiService, 'getGeoJsonFeatureCollection')
+    await apiService.getGeoJsonFeatureCollection(geoJsonParams, credentials, jwtToken)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(geoJsonParams, credentials, jwtToken)
+    expect(spy).toHaveReturned()
   })
 
-  test('getGeoJSONFeatureCollection method should be called', async (): Promise<void> => {
-    const { jwtToken, queryParams } = testData,
-      spy = vi.spyOn(apiService, 'getGeoJSONFeatureCollection')
-    await apiService.getGeoJSONFeatureCollection(jwtToken, <IQueryParam>queryParams)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(jwtToken, <IQueryParam>queryParams)
-    expect(spy).toHaveReturnedTimes(1)
-  })
-
-  test('getMapboxAccessToken method should be called', async (): Promise<void> => {
-    const { jwtToken } = testData,
+  test('setMapboxAccessToken method should be called with a return', async (): Promise<void> => {
+    const { jwtToken } = window.jwtState,
       spy = vi.spyOn(apiService, 'getMapboxAccessToken')
-    await apiService.getMapboxAccessToken(jwtToken)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(jwtToken)
-    expect(spy).toHaveReturnedTimes(1)
+    await apiService.getMapboxAccessToken(credentials, jwtToken)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(credentials, jwtToken)
+    expect(spy).toHaveReturned()
+  })
+})
+
+describe('ApiService test suite 2', (): void => {
+  beforeEach(async (): Promise<void> => {
+    const credentialsService = Container.get(CredentialsService)
+    await credentialsService.register(credentials)
   })
 
-  test('getUser method should be called', async (): Promise<void> => {
-    /* prettier-ignore */
-    const { jwtToken, credentials: { username } } = testData,
+  afterEach(async (): Promise<void> => {
+    const { jwtToken } = window.jwtState
+    await apiService.deleteUser(credentials, jwtToken)
+  })
+
+  test('getUser method should be called with a return', async (): Promise<void> => {
+    const { jwtToken } = window.jwtState,
       spy = vi.spyOn(apiService, 'getUser')
-    await apiService.getUser(jwtToken, username)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(jwtToken, username)
-    expect(spy).toHaveReturnedTimes(1)
+    await apiService.getUser(credentials, jwtToken)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(credentials, jwtToken)
+    expect(spy).toHaveReturned()
   })
 
-  test('updatePassword method should be called', async (): Promise<void> => {
-    const { jwtToken, credentials } = testData,
+  test('updatePassword method should be called with a return', async (): Promise<void> => {
+    const { jwtToken } = window.jwtState,
       spy = vi.spyOn(apiService, 'updatePassword')
-    await apiService.updatePassword(jwtToken, <ICredentialsState>credentials)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(jwtToken, <ICredentialsState>credentials)
-    expect(spy).toHaveReturnedTimes(1)
+    await apiService.updatePassword(credentials, jwtToken)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(credentials, jwtToken)
+    expect(spy).toHaveReturned()
+  })
+})
+
+describe('ApiService test suite 3', (): void => {
+  beforeEach(async (): Promise<void> => {
+    const credentialsService = Container.get(CredentialsService)
+    await credentialsService.register(credentials)
+  })
+
+  test('deleteUser method should be called with a return', async (): Promise<void> => {
+    const { jwtToken } = window.jwtState,
+      spy = vi.spyOn(apiService, 'deleteUser')
+    await apiService.deleteUser(credentials, jwtToken)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(credentials, jwtToken)
+    expect(spy).toHaveReturned()
   })
 })

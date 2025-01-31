@@ -19,9 +19,9 @@ export default defineComponent({
   },
   setup({ canvas, container }) {
     const { deckgl, hexagonlayer } = styles,
-      deckglService = Container.get(DeckglService)
-    onMounted((): void => deckglService.loadHexagonLayer())
-    onUnmounted((): void => deckglService.removeMapResources())
+      { loadHexagonLayer, removeMapResources } = Container.get(DeckglService)
+    onMounted(async (): Promise<void> => await loadHexagonLayer())
+    onUnmounted((): void => removeMapResources())
     return (): JSX.Element => (
       <div role="presentation">
         <div id={container} class={deckgl} role="presentation"></div>

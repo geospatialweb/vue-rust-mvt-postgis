@@ -1,29 +1,30 @@
 import { Container, Service } from 'typedi'
 
 import { Layer, State } from '@/enums'
-import { ILayerControllerState } from '@/interfaces'
 import { LayerVisibilityService, MapboxService, MarkerVisibilityService, RouterService, StoreService } from '@/services'
-import { LayerControllerHashmap } from '@/types'
+
+import type { ILayerControllerState } from '@/interfaces'
+import type { LayerControllerHashmap } from '@/types'
 
 @Service()
 export default class LayerControllerService {
-  #layerControllerHashmap: LayerControllerHashmap = {}
+  #layerControllerHashmap = <LayerControllerHashmap>{}
 
   constructor() {
     this.#createLayerControllerHashmap()
   }
 
   get layerControllerState(): ILayerControllerState[] {
-    const storeService = Container.get(StoreService)
-    return <ILayerControllerState[]>storeService.getState(State.LayerController)
+    const { getState } = Container.get(StoreService)
+    return <ILayerControllerState[]>getState(State.LayerController)
   }
 
   set #layerControllerState(state: ILayerControllerState[]) {
-    const storeService = Container.get(StoreService)
-    storeService.setState(State.LayerController, state)
+    const { setState } = Container.get(StoreService)
+    setState(State.LayerController, state)
   }
 
-  displayLayer(id: string): void {
+  displayLayer = (id: string): void => {
     this.#layerControllerHashmap[id](id)
   }
 
@@ -39,16 +40,16 @@ export default class LayerControllerService {
   }
 
   #deckgl = (id: string): void => {
-    const routerService = Container.get(RouterService)
-    void routerService.setRoute(id)
+    const { setRoute } = Container.get(RouterService)
+    void setRoute(id)
   }
 
   #layer = (id: string): void => {
     this.#setLayerControllerState(id)
     this.#setLayerVisibilityState(id)
     this.#setLayerVisibility(id)
-    id === `${Layer.Biosphere}` && this.#setLayerVisibility(Layer.BiosphereBorder)
-    id === `${Layer.Trails}` && this.#toggleMarkerVisibility(id)
+    if (id === `${Layer.Biosphere}`) this.#setLayerVisibility(Layer.BiosphereBorder)
+    if (id === `${Layer.Trails}`) this.#toggleMarkerVisibility(id)
   }
 
   #marker = (id: string): void => {
@@ -63,13 +64,13 @@ export default class LayerControllerService {
   }
 
   #resetMap(): void {
-    const mapboxService = Container.get(MapboxService)
-    mapboxService.resetMap()
+    const { resetMap } = Container.get(MapboxService)
+    resetMap()
   }
 
   #setHiddenMarkersVisibility(): void {
-    const markerVisibilityService = Container.get(MarkerVisibilityService)
-    markerVisibilityService.setHiddenMarkersVisibility()
+    const { setHiddenMarkersVisibility } = Container.get(MarkerVisibilityService)
+    setHiddenMarkersVisibility()
   }
 
   #setLayerControllerState(id: string): void {
@@ -81,17 +82,17 @@ export default class LayerControllerService {
   }
 
   #setLayerVisibility(id: string): void {
-    const mapboxService = Container.get(MapboxService)
-    mapboxService.setLayerVisibility(id)
+    const { setLayerVisibility } = Container.get(MapboxService)
+    setLayerVisibility(id)
   }
 
   #setLayerVisibilityState(id: string): void {
-    const layerVisibilityService = Container.get(LayerVisibilityService)
-    layerVisibilityService.setLayerVisibilityState(id)
+    const { setLayerVisibilityState } = Container.get(LayerVisibilityService)
+    setLayerVisibilityState(id)
   }
 
   #toggleMarkerVisibility(id: string): void {
-    const markerVisibilityService = Container.get(MarkerVisibilityService)
-    markerVisibilityService.toggleMarkerVisibility(id)
+    const { toggleMarkerVisibility } = Container.get(MarkerVisibilityService)
+    toggleMarkerVisibility(id)
   }
 }

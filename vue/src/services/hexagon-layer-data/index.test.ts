@@ -3,11 +3,11 @@ import { Container } from 'typedi'
 import { HexagonLayerDataService } from '@/services'
 
 describe('HexagonLayerDataService test suite', (): void => {
-  test('hexagonLayerData getter should be called', (): void => {
+  test('getHexagonLayerData method should be called with a return', async (): Promise<void> => {
     const hexagonLayerDataService = Container.get(HexagonLayerDataService),
-      spy = vi.spyOn(hexagonLayerDataService, 'hexagonLayerData', 'get')
-    hexagonLayerDataService.hexagonLayerData
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+      spy = vi.spyOn(hexagonLayerDataService, 'getHexagonLayerData')
+    await hexagonLayerDataService.getHexagonLayerData()
+    expect(spy).toBeCalled()
+    expect(spy).toHaveReturned()
   })
 })

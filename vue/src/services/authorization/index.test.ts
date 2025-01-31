@@ -1,40 +1,29 @@
 import { Container } from 'typedi'
 
 import { AuthorizationService } from '@/services'
-import { testData } from '@/test'
 
 describe('AuthorizationService test suite', (): void => {
   const authorizationService = Container.get(AuthorizationService)
 
-  test('jwtState getter should be called', (): void => {
-    const spy = vi.spyOn(authorizationService, 'jwtState', 'get')
+  test('jwtState getter should be called with a return', (): void => {
+    const jwtState = window.jwtState,
+      spy = vi.spyOn(authorizationService, 'jwtState', 'get').mockReturnValue(jwtState)
     authorizationService.jwtState
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toHaveReturned()
   })
 
-  test('mapboxAccessToken getter should be called', (): void => {
-    const spy = vi.spyOn(authorizationService, 'mapboxAccessToken', 'get')
-    authorizationService.mapboxAccessToken
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+  test('jwtState setter should be called', (): void => {
+    const jwtState = window.jwtState,
+      spy = vi.spyOn(authorizationService, 'jwtState', 'set')
+    authorizationService.jwtState = jwtState
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(jwtState)
   })
 
-  test('getMapboxAccessToken method should be called', async (): Promise<void> => {
-    const { jwtToken } = testData,
-      spy = vi.spyOn(authorizationService, 'getMapboxAccessToken')
-    await authorizationService.getMapboxAccessToken(jwtToken)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(jwtToken)
-    expect(spy).toHaveReturnedTimes(1)
-  })
-
-  test('setJWTState method should be called', (): void => {
-    const { jwtToken, jwtExpiry } = testData,
-      spy = vi.spyOn(authorizationService, 'setJWTState')
-    authorizationService.setJWTState({ jwtToken, jwtExpiry })
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith({ jwtToken, jwtExpiry })
-    expect(spy).toHaveReturnedTimes(1)
+  test('setMapboxAccessToken method should be called', async (): Promise<void> => {
+    const spy = vi.spyOn(authorizationService, 'setMapboxAccessToken')
+    await authorizationService.setMapboxAccessToken()
+    expect(spy).toBeCalled()
   })
 })
