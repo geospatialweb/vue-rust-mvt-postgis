@@ -4,9 +4,10 @@ import '@testing-library/jest-dom/vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { Container } from 'typedi'
 
-import { ICredentialsState } from '@/interfaces'
 import { ApiService, CredentialsService } from '@/services'
 import { testData } from '@/test'
+
+import type { ICredentialsState } from '@/interfaces'
 
 setActivePinia(createPinia())
 

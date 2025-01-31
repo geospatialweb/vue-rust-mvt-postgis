@@ -5,8 +5,9 @@ import { Container } from 'typedi'
 
 import { HexagonLayerControllerButtons } from '@/components'
 import { hexagonLayerControllerButtons } from '@/configuration'
-import { IHexagonLayerControllerButton } from '@/interfaces'
 import { RouterService } from '@/services'
+
+import type { IHexagonLayerControllerButton } from '@/interfaces'
 
 describe('HexagonLayerControllerButtons component test suite', (): void => {
   it('should receive correct `id` for each HexagonLayerController button', (): void => {

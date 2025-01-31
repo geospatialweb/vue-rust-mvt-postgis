@@ -7,9 +7,10 @@ import {
   hexagonLayerControllerHeading,
   hexagonLayerControllerSliders
 } from '@/configuration'
-import { IHexagonLayerState, IHexagonLayerControllerButton, IHexagonLayerControllerSlider } from '@/interfaces'
 import { HexagonLayerService } from '@/services'
 import { testData } from '@/test'
+
+import type { IHexagonLayerState, IHexagonLayerControllerButton, IHexagonLayerControllerSlider } from '@/interfaces'
 
 describe('HexagonLayerController component test suite', (): void => {
   const setup = (): RenderResult => render(HexagonLayerController)

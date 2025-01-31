@@ -3,13 +3,14 @@ import { Container } from 'typedi'
 import { defineComponent, PropType } from 'vue'
 
 import { hexagonLayerControllerSliders } from '@/configuration'
-import {
+import { HexagonLayerService, HexagonLayerControllerService } from '@/services'
+import styles from '../index.module.css'
+
+import type {
   IHexagonLayerControllerSlider,
   IHexagonLayerControllerSliderLabelsState,
   IHexagonLayerState
 } from '@/interfaces'
-import { HexagonLayerService, HexagonLayerControllerService } from '@/services'
-import styles from '../index.module.css'
 
 export default defineComponent({
   name: 'HexagonLayerControllerSliders Component',

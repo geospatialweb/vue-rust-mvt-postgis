@@ -8,13 +8,14 @@ import {
   HexagonLayerControllerSliders
 } from '@/components'
 import { hexagonLayerControllerButtons, hexagonLayerControllerHeading } from '@/configuration'
-import {
+import { HexagonLayerService, HexagonLayerControllerService } from '@/services'
+import styles from './index.module.css'
+
+import type {
   IHexagonLayerState,
   IHexagonLayerControllerButton,
   IHexagonLayerControllerSliderLabelsState
 } from '@/interfaces'
-import { HexagonLayerService, HexagonLayerControllerService } from '@/services'
-import styles from './index.module.css'
 
 export default defineComponent({
   name: 'HexagonLayerController Component',

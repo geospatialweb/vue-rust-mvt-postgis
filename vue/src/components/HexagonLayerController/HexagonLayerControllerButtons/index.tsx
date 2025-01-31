@@ -3,8 +3,9 @@ import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
 import { hexagonLayerControllerButtons } from '@/configuration'
-import { IHexagonLayerControllerButton } from '@/interfaces'
 import { HexagonLayerService, RouterService } from '@/services'
+
+import type { IHexagonLayerControllerButton } from '@/interfaces'
 
 export default defineComponent({
   name: 'HexagonLayerControllerButtons Component',

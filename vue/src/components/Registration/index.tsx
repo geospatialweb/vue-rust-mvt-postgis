@@ -3,9 +3,10 @@ import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
 import { Role, Route } from '@/enums'
-import { ICredentialsState } from '@/interfaces'
 import { CredentialsService, RegistrationService } from '@/services'
 import styles from './index.module.css'
+
+import type { ICredentialsState } from '@/interfaces'
 
 export default defineComponent({
   name: 'Registration Component',

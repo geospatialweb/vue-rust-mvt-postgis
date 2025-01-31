@@ -4,9 +4,10 @@ import { defineComponent } from 'vue'
 
 import { LayerControllerIconListItem, LayerControllerLayerListItem } from '@/components'
 import { layerControllerIcons } from '@/configuration'
-import { ILayerControllerState } from '@/interfaces'
 import { LayerControllerService } from '@/services'
 import styles from './index.module.css'
+
+import type { ILayerControllerState } from '@/interfaces'
 
 export default defineComponent({
   name: 'LayerController Component',

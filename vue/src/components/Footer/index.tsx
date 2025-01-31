@@ -2,9 +2,10 @@ import 'vue/jsx'
 import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
-import { IAppState } from '@/interfaces'
 import { AppService } from '@/services'
 import styles from './index.module.css'
+
+import type { IAppState } from '@/interfaces'
 
 export default defineComponent({
   name: 'Footer Component',

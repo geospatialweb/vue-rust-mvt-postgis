@@ -2,9 +2,10 @@ import 'vue/jsx'
 import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
-import { IModalState } from '@/interfaces'
 import { ModalService } from '@/services'
 import styles from './index.module.css'
+
+import type { IModalState } from '@/interfaces'
 
 export default defineComponent({
   name: 'Modal Component',
