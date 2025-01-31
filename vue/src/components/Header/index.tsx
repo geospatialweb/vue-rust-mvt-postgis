@@ -14,11 +14,11 @@ export default defineComponent({
           Geospatial Web
         </div>
         <div id="title" class={title} aria-labelledby="title">
-          Vue&ensp;TSX&ensp;&#45;&ensp;Bun&ensp;Express&ensp;&#45;&ensp;MVT&ensp;Tile&ensp;Server&ensp;&#45;&ensp;PostGIS
+          Vue&ensp;TSX&ensp;&#45;&ensp;Rust&ensp;REST&thinsp;API&ensp;&#45;&ensp;MVT&ensp;Tile&thinsp;Server&ensp;&#45;&ensp;PostGIS
         </div>
         <div id="repo" class={repo} aria-labelledby="repo">
           <a
-            href="https://gitlab.com/geospatialweb/vue-bun-mvt-postgis"
+            href="https://gitlab.com/geospatialweb/vue-rust-mvt-postgis"
             title="Review the source code"
             rel="noopener noreferrer"
             target="_blank"

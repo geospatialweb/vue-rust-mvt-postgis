@@ -24,18 +24,6 @@
       },
       "console": "integratedTerminal",
       "postDebugTask": "debug rust test"
-    },
-    {
-      "name": "Debug Vitest Current File",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}/vue",
-      "program": "node_modules/vitest/vitest.mjs",
-      "args": ["run", "${file}"],
-      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
-      "console": "integratedTerminal",
-      "autoAttachChildProcesses": true,
-      "smartStep": true
     }
   ]
 }
