@@ -5,14 +5,14 @@ import { testData } from '@/test'
 
 describe('HexagonLayerControllerSliders component test suite', (): void => {
   it('should receive correct props', (): void => {
-    const { hexagonLayerControllerSliderLabelsState, hexagonLayerState } = testData,
+    const { hexagonLayerState, sliderLabelsState } = testData,
       wrapper = mount(HexagonLayerControllerSliders, {
         props: {
           layerState: hexagonLayerState,
-          sliderLabelsState: hexagonLayerControllerSliderLabelsState
+          sliderLabelsState: sliderLabelsState
         }
       })
     expect(wrapper.props().layerState).toEqual(hexagonLayerState)
-    expect(wrapper.props().sliderLabelsState).toEqual(hexagonLayerControllerSliderLabelsState)
+    expect(wrapper.props().sliderLabelsState).toEqual(sliderLabelsState)
   })
 })

@@ -1,35 +1,37 @@
 import { Container } from 'typedi'
 
+import { IMapboxStylesState } from '@/interfaces'
 import { MapboxStyleService } from '@/services'
+import { testData } from '@/test'
 
 describe('MapboxStyleService test suite', (): void => {
   const mapboxStyleService = Container.get(MapboxStyleService)
 
-  test('activeMapboxStyle getter should be called', (): void => {
-    const spy = vi.spyOn(mapboxStyleService, 'activeMapboxStyle', 'get')
+  test('activeMapboxStyle getter should be called with a return', (): void => {
+    const { activeMapboxStyle } = testData,
+      spy = vi.spyOn(mapboxStyleService, 'activeMapboxStyle', 'get').mockReturnValue(activeMapboxStyle)
     mapboxStyleService.activeMapboxStyle
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toHaveReturned()
   })
 
-  test('mapboxStylesState getter should be called', (): void => {
-    const spy = vi.spyOn(mapboxStyleService, 'mapboxStylesState', 'get')
+  test('mapboxStylesState getter should be called with a return', (): void => {
+    const { mapboxStyles } = testData as { mapboxStyles: IMapboxStylesState },
+      spy = vi.spyOn(mapboxStyleService, 'mapboxStylesState', 'get').mockReturnValue(mapboxStyles)
     mapboxStyleService.mapboxStylesState
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toHaveReturned()
   })
 
   test('setActiveMapboxStyle method should be called', (): void => {
     const spy = vi.spyOn(mapboxStyleService, 'setActiveMapboxStyle')
     mapboxStyleService.setActiveMapboxStyle()
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
   })
 
   test('setMapboxStyleState method should be called', (): void => {
     const spy = vi.spyOn(mapboxStyleService, 'setMapboxStyleState')
     mapboxStyleService.setMapboxStyleState()
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
   })
 })

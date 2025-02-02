@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/vue'
 
 import { Header } from '@/components'
@@ -15,7 +14,7 @@ describe('Header component test suite', (): void => {
     const header = screen.getByRole('banner'),
       image = screen.getByRole('img')
     expect(header).toHaveTextContent(/Geospatial Web/)
-    expect(header).toHaveTextContent(/Vue 3 - Rust REST API - MVT Tile Server - PostGIS/)
+    expect(header).toHaveTextContent(/Vue TSX - Rust REST API - MVT Tile Server - PostGIS/)
     expect(header).toHaveTextContent(/GitLab Repository/)
     expect(image).toBeInTheDocument()
     expect(link).toBeInTheDocument()

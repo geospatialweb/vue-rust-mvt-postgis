@@ -3,7 +3,6 @@ import { Container } from 'typedi'
 import { MapboxService } from '@/services'
 
 export default function mockMapImplementation(): void {
-  const mapboxService = Container.get(MapboxService),
-    { map } = mapboxService
+  const { map } = Container.get(MapboxService)
   new MapboxService(map)
 }

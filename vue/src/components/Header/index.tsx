@@ -14,8 +14,7 @@ export default defineComponent({
           Geospatial Web
         </div>
         <div id="title" class={title} aria-labelledby="title">
-          Vue&ensp;3&ensp;&#45;&ensp;Rust&ensp;REST&thinsp;API&ensp;&#45;&ensp;MVT&thinsp;Tile&thinsp;Server&ensp;&#45;
-          &ensp;PostGIS
+          Vue&ensp;TSX&ensp;&#45;&ensp;Rust&ensp;REST&thinsp;API&ensp;&#45;&ensp;MVT&ensp;Tile&thinsp;Server&ensp;&#45;&ensp;PostGIS
         </div>
         <div id="repo" class={repo} aria-labelledby="repo">
           <a

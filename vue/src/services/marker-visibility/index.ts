@@ -2,42 +2,37 @@ import { Marker } from 'mapbox-gl'
 import { Container, Service } from 'typedi'
 
 import { State } from '@/enums'
-import { IMarkerVisibilityState } from '@/interfaces'
 import { MapboxService, MarkerService, StoreService } from '@/services'
+
+import type { IMarkerVisibilityState } from '@/interfaces'
 
 @Service()
 export default class MarkerVisibilityService {
   get #markerVisibilityState(): IMarkerVisibilityState {
-    const storeService = Container.get(StoreService)
-    return <IMarkerVisibilityState>storeService.getState(State.MarkerVisibility)
+    const { getState } = Container.get(StoreService)
+    return <IMarkerVisibilityState>getState(State.MarkerVisibility)
   }
 
   set #markerVisibilityState(state: IMarkerVisibilityState) {
-    const storeService = Container.get(StoreService)
-    storeService.setState(State.MarkerVisibility, state)
+    const { setState } = Container.get(StoreService)
+    setState(State.MarkerVisibility, state)
   }
 
-  setHiddenMarkersVisibility(): void {
-    const markerService = Container.get(MarkerService)
-    for (const [idx, markers] of markerService.markers.entries()) {
-      const id = <string>markerService.reverseMarkersHashmap.get(idx),
+  setHiddenMarkersVisibility = (): void => {
+    const { markers, markersReverseHashmap } = Container.get(MarkerService)
+    for (const [idx, marker] of markers.entries()) {
+      const id = <string>markersReverseHashmap.get(idx),
         { isActive } = this.#markerVisibilityState[id as keyof IMarkerVisibilityState]
-      isActive && this.#setHiddenMarkers(id, markers)
+      isActive && this.#setHiddenMarkers(id, marker)
     }
   }
 
-  toggleMarkerVisibility(id: string): void {
-    const markerService = Container.get(MarkerService)
+  toggleMarkerVisibility = (id: string): void => {
+    const { markers, markersHashmap } = Container.get(MarkerService)
     this.#setMarkerVisibilityState(id)
-    for (const marker of markerService.markers[<number>markerService.markersHashmap.get(id)]) {
+    for (const marker of markers[Number(markersHashmap.get(id))]) {
       this.#addRemoveMarkers(id, marker)
     }
-  }
-
-  #setMarkerVisibilityState(id: string): void {
-    const state = <IMarkerVisibilityState>{ ...this.#markerVisibilityState }
-    state[id as keyof IMarkerVisibilityState].isActive = !state[id as keyof IMarkerVisibilityState].isActive
-    this.#markerVisibilityState = state
   }
 
   #setHiddenMarkers(id: string, markers: Marker[]): void {
@@ -53,21 +48,26 @@ export default class MarkerVisibilityService {
     this.#markerVisibilityState = state
   }
 
-  #addRemoveMarkers(id: string, marker: Marker): void {
-    this.#markerVisibilityState[id as keyof IMarkerVisibilityState].isActive
-      ? this.#addMarker(marker)
-      : this.#removeMarker(marker)
-  }
-
   #addRemoveHiddenMarkers(id: string, marker: Marker): void {
     this.#markerVisibilityState[id as keyof IMarkerVisibilityState].isHidden
       ? this.#removeMarker(marker)
       : this.#addMarker(marker)
   }
 
+  #setMarkerVisibilityState(id: string): void {
+    const state = <IMarkerVisibilityState>{ ...this.#markerVisibilityState }
+    state[id as keyof IMarkerVisibilityState].isActive = !state[id as keyof IMarkerVisibilityState].isActive
+    this.#markerVisibilityState = state
+  }
+
+  #addRemoveMarkers(id: string, marker: Marker): void {
+    this.#markerVisibilityState[id as keyof IMarkerVisibilityState].isActive
+      ? this.#addMarker(marker)
+      : this.#removeMarker(marker)
+  }
+
   #addMarker(marker: Marker): void {
-    const mapboxService = Container.get(MapboxService),
-      { map } = mapboxService
+    const { map } = Container.get(MapboxService)
     marker.addTo(map)
   }
 

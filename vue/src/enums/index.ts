@@ -1,19 +1,47 @@
-export enum ApiEndpoint {
-  DeleteUser = '/api/deleteuser',
-  Geojson = '/api/geojson',
-  GetUser = '/api/getuser',
-  MapboxAccessToken = '/api/mapbox-access-token',
-  UpdatePassword = '/api/updatepassword'
+export enum Axios {
+  AcceptHeader = 'application/json',
+  Timeout = '2000'
 }
 
-export enum CredentialsEndpoint {
-  Login = '/credentials/login',
-  Register = '/credentials/register',
-  ValidateUser = '/credentials/validateuser'
+export enum Color {
+  Red = '\x1b[31m%s\x1b[0m'
 }
 
-export enum Error {
-  'undefined jwt' = 'undefined jwt'
+export enum Endpoint {
+  DeleteUser = '/deleteuser',
+  GetGeoJson = '/geojson',
+  GetMapboxAccessToken = '/mapbox-access-token',
+  GetUser = '/getuser',
+  Login = '/login',
+  Register = '/register',
+  UpdatePassword = '/updatepassword',
+  ValidateUser = '/validateuser'
+}
+
+export enum EndpointPrefix {
+  Api = '/api',
+  Credentials = '/credentials'
+}
+
+export enum Event {
+  Click = 'click',
+  DrawModeChange = 'draw.modechange',
+  Idle = 'idle',
+  Load = 'load',
+  Mouseenter = 'mouseenter',
+  Mouseleave = 'mouseleave',
+  Touchend = 'touchend',
+  Touchstart = 'touchstart'
+}
+
+export enum Header {
+  Authorization = 'Authorization',
+  Bearer = 'Bearer'
+}
+
+export enum HTTP {
+  Forbidden = 403,
+  Unauthorized = 401
 }
 
 export enum Layer {
@@ -24,6 +52,11 @@ export enum Layer {
   Places = 'places',
   Satellite = 'satellite',
   Trails = 'trails'
+}
+
+export enum Role {
+  Admin = 'admin',
+  User = 'user'
 }
 
 export enum Route {
@@ -58,4 +91,10 @@ export enum URL {
   ApiBaseUrlProd = 'https://geospatialweb.ca:8000',
   HexagonLayerData = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/3d-heatmap/heatmap-data.csv',
   MvtBaseUrl = 'http://localhost:3000'
+}
+
+export enum Visibility {
+  None = 'none',
+  Visibility = 'visibility',
+  Visible = 'visible'
 }

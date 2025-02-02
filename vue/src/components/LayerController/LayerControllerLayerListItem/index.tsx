@@ -1,8 +1,9 @@
 import 'vue/jsx'
 import { defineComponent } from 'vue'
 
-import { ILayerControllerState } from '@/interfaces'
 import styles from '../index.module.css'
+
+import type { ILayerControllerState } from '@/interfaces'
 
 export default defineComponent({
   name: 'LayerControllerLayerListItem Component',

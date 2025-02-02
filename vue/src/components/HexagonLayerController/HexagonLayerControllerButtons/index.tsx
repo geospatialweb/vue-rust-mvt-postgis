@@ -3,8 +3,9 @@ import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
 import { hexagonLayerControllerButtons } from '@/configuration'
-import { IHexagonLayerControllerButton } from '@/interfaces'
 import { HexagonLayerService, RouterService } from '@/services'
+
+import type { IHexagonLayerControllerButton } from '@/interfaces'
 
 export default defineComponent({
   name: 'HexagonLayerControllerButtons Component',
@@ -20,11 +21,11 @@ export default defineComponent({
       const { id } = evt.target as HTMLButtonElement,
         buttons: IHexagonLayerControllerButton[] = hexagonLayerControllerButtons
       if (id === buttons[0].id) {
-        const hexagonLayerService = Container.get(HexagonLayerService)
-        hexagonLayerService.resetHexagonLayerState()
+        const { resetHexagonLayerState } = Container.get(HexagonLayerService)
+        void resetHexagonLayerState()
       } else {
-        const routerService = Container.get(RouterService)
-        void routerService.setRoute(id)
+        const { setRoute } = Container.get(RouterService)
+        void setRoute(id)
       }
     }
     return (): JSX.Element => (

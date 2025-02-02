@@ -10,6 +10,7 @@ use salvo::{
 };
 
 use super::auth::{self, Jwt};
+use super::hash;
 use super::mapbox::MapboxAccessToken;
 use super::model::User;
 use super::query;
@@ -39,11 +40,13 @@ pub async fn handle_get_geojson_feature_collection(
 
 /// Return Mapbox Access Token.
 #[handler]
-pub async fn handle_get_mapbox_access_token(depot: &mut Depot) -> Result<ResponsePayload<String>, ResponseError> {
+pub async fn handle_get_mapbox_access_token(
+    depot: &mut Depot,
+) -> Result<ResponsePayload<MapboxAccessToken>, ResponseError> {
     match depot.jwt_auth_state() {
         Authorized => {
-            let mapbox = depot.obtain::<MapboxAccessToken>().unwrap();
-            let res = ResponsePayload::new(mapbox.access_token.clone().into(), StatusCode::OK);
+            let token = depot.obtain::<MapboxAccessToken>().unwrap().clone();
+            let res = ResponsePayload::new(token.into(), StatusCode::OK);
             Ok(res)
         }
         Unauthorized => Err(ResponseError::JwtUnauthorized),
@@ -56,33 +59,36 @@ pub async fn handle_get_mapbox_access_token(depot: &mut Depot) -> Result<Respons
 pub async fn handle_login(req: &mut Request) -> Result<ResponsePayload<Jwt>, ResponseError> {
     let user = req.parse_queries::<User>()?;
     validation::validate_user(&user)?;
-    let credential = query::get_password(&user.username).await?;
-    auth::verify_password_and_hashed_password(&user.password.unwrap(), &credential.hashed_password)?;
-    let jwt = auth::get_jwt(&user.username)?;
+    validation::validate_role(&user)?;
+    let hashed_password = query::get_password(&user.username).await?;
+    hash::verify_hashed_password_and_password(&hashed_password, &user.password.unwrap())?;
+    let jwt = auth::create_jwt(&user.username, &user.role)?;
     let res = ResponsePayload::new(jwt.into(), StatusCode::OK);
     Ok(res)
 }
 
 /// Register user. User submitted password is converted into HS256 hash and stored in db.
 #[handler]
-pub async fn handle_register(req: &mut Request) -> Result<ResponsePayload<String>, ResponseError> {
-    let user = req.parse_body::<User>().await?;
+pub async fn handle_register(req: &mut Request) -> Result<ResponsePayload<User>, ResponseError> {
+    let mut user = req.parse_body::<User>().await?;
     validation::validate_user(&user)?;
-    let hashed_password = auth::generate_hashed_password_from_password(&user.password.unwrap())?;
-    let username = query::insert_user(&user.username, &hashed_password).await?;
-    let res = ResponsePayload::new(username.into(), StatusCode::CREATED);
+    validation::validate_role(&user)?;
+    let hashed_password = hash::generate_hashed_password(&user.password.unwrap())?;
+    user = query::insert_user(&user.username, &hashed_password, &user.role).await?;
+    let res = ResponsePayload::new(user.into(), StatusCode::CREATED);
     Ok(res)
 }
 
 /// Return user.
 #[handler]
-pub async fn handle_get_user(depot: &mut Depot, req: &mut Request) -> Result<ResponsePayload<String>, ResponseError> {
+pub async fn handle_get_user(depot: &mut Depot, req: &mut Request) -> Result<ResponsePayload<User>, ResponseError> {
     match depot.jwt_auth_state() {
         Authorized => {
-            let user = req.parse_queries::<User>()?;
+            let mut user = req.parse_queries::<User>()?;
             validation::validate_user(&user)?;
-            let username = query::get_user(&user.username).await?;
-            let res = ResponsePayload::new(username.into(), StatusCode::OK);
+            validation::validate_role(&user)?;
+            user = query::get_user(&user.username).await?;
+            let res = ResponsePayload::new(user.into(), StatusCode::OK);
             Ok(res)
         }
         Unauthorized => Err(ResponseError::JwtUnauthorized),
@@ -92,16 +98,14 @@ pub async fn handle_get_user(depot: &mut Depot, req: &mut Request) -> Result<Res
 
 /// Delete user returning username.
 #[handler]
-pub async fn handle_delete_user(
-    depot: &mut Depot,
-    req: &mut Request,
-) -> Result<ResponsePayload<String>, ResponseError> {
+pub async fn handle_delete_user(depot: &mut Depot, req: &mut Request) -> Result<ResponsePayload<User>, ResponseError> {
     match depot.jwt_auth_state() {
         Authorized => {
-            let user = req.parse_queries::<User>()?;
+            let mut user = req.parse_queries::<User>()?;
             validation::validate_user(&user)?;
-            let username = query::delete_user(&user.username).await?;
-            let res = ResponsePayload::new(username.into(), StatusCode::OK);
+            validation::validate_role(&user)?;
+            user = query::delete_user(&user.username).await?;
+            let res = ResponsePayload::new(user.into(), StatusCode::OK);
             Ok(res)
         }
         Unauthorized => Err(ResponseError::JwtUnauthorized),
@@ -111,11 +115,12 @@ pub async fn handle_delete_user(
 
 /// Validate user exists in db returning username.
 #[handler]
-pub async fn handle_validate_user(req: &mut Request) -> Result<ResponsePayload<String>, ResponseError> {
-    let user = req.parse_queries::<User>()?;
+pub async fn handle_validate_user(req: &mut Request) -> Result<ResponsePayload<User>, ResponseError> {
+    let mut user = req.parse_queries::<User>()?;
     validation::validate_user(&user)?;
-    let username = query::get_user(&user.username).await?;
-    let res = ResponsePayload::new(username.into(), StatusCode::OK);
+    validation::validate_role(&user)?;
+    user = query::get_user(&user.username).await?;
+    let res = ResponsePayload::new(user.into(), StatusCode::OK);
     Ok(res)
 }
 
@@ -124,14 +129,15 @@ pub async fn handle_validate_user(req: &mut Request) -> Result<ResponsePayload<S
 pub async fn handle_update_password(
     depot: &mut Depot,
     req: &mut Request,
-) -> Result<ResponsePayload<String>, ResponseError> {
+) -> Result<ResponsePayload<User>, ResponseError> {
     match depot.jwt_auth_state() {
         Authorized => {
-            let user = req.parse_body::<User>().await?;
+            let mut user = req.parse_body::<User>().await?;
             validation::validate_user(&user)?;
-            let hashed_password = auth::generate_hashed_password_from_password(&user.password.unwrap())?;
-            let username = query::update_password(&user.username, &hashed_password).await?;
-            let res = ResponsePayload::new(username.into(), StatusCode::OK);
+            validation::validate_role(&user)?;
+            let hashed_password = hash::generate_hashed_password(&user.password.unwrap())?;
+            user = query::update_password(&user.username, &hashed_password).await?;
+            let res = ResponsePayload::new(user.into(), StatusCode::OK);
             Ok(res)
         }
         Unauthorized => Err(ResponseError::JwtUnauthorized),

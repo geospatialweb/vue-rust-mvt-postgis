@@ -1,6 +1,6 @@
 use tracing::error;
 
-use lib::database;
+use lib::database::Pool;
 use lib::env::Env;
 use lib::server;
 
@@ -13,10 +13,10 @@ async fn main() {
     if let Err(err) = Env::set_env() {
         return error!("env error: {}", &err);
     }
-    if let Err(err) = database::set_pool().await {
-        return error!("database pool connection error: {}", &err);
+    if let Err(err) = Pool::set_pool().await {
+        return error!("database error: {}", &err);
     }
-    if let Err(err) = server::set_service().await {
-        return error!("server tsl error: {}", &err);
+    if let Err(err) = server::set_server().await {
+        return error!("server error: {}", &err);
     }
 }

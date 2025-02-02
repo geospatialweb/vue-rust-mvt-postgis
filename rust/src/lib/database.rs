@@ -1,20 +1,35 @@
+use once_cell::sync::OnceCell;
 use sqlx::{Error, PgPool};
 use tracing::info;
 
 use super::env::Env;
 
-/// Set Postgres connection pool.
-pub async fn set_pool() -> Result<PgPool, Error> {
-    let env = Env::get_env();
-    let uri = &env.postgres_uri;
-    let pool = create_pool_connection(uri).await?;
-    Ok(pool)
+static POOL: OnceCell<PgPool> = OnceCell::new();
+
+/// Pool struct with PgPool field.
+#[derive(Debug)]
+pub struct Pool {}
+
+impl Pool {
+    /// Get pool connection from static POOL and return PgPool static lifetime reference.
+    pub fn get_pool() -> &'static PgPool {
+        POOL.get().unwrap()
+    }
+
+    /// Set pool connection and set static POOL.
+    pub async fn set_pool() -> Result<(), Error> {
+        let env = Env::get_env();
+        let dsn = env.postgres_dsn.as_str();
+        let pool = create_pool_connection(dsn).await?;
+        POOL.set(pool).ok();
+        Ok(())
+    }
 }
 
 /// Create Postgres pool connection.
-pub async fn create_pool_connection(uri: &str) -> Result<PgPool, Error> {
-    let pool = PgPool::connect(uri).await?;
-    info!("pool connection ok");
+async fn create_pool_connection(dsn: &str) -> Result<PgPool, Error> {
+    let pool = PgPool::connect(dsn).await?;
+    info!("database pool connection ok");
     Ok(pool)
 }
 
@@ -24,17 +39,15 @@ mod test {
 
     #[tokio::test]
     async fn set_pool_ok() {
-        let env = Env::get_env();
-        let uri = &env.postgres_uri;
-        let result = create_pool_connection(uri).await;
+        let result = Pool::set_pool().await;
         assert!(result.is_ok());
     }
 
     #[tokio::test]
     async fn create_pool_connection_err() {
         let env = Env::get_env();
-        let uri = &env.postgres_test_uri;
-        let result = create_pool_connection(uri).await;
+        let dsn = env.postgres_test_dsn.as_str();
+        let result = create_pool_connection(dsn).await;
         assert!(matches!(result, Err(_)));
     }
 }

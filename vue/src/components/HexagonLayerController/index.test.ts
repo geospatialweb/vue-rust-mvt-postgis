@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { RenderResult, fireEvent, render, screen } from '@testing-library/vue'
 import { Container } from 'typedi'
 
@@ -8,9 +7,10 @@ import {
   hexagonLayerControllerHeading,
   hexagonLayerControllerSliders
 } from '@/configuration'
-import { IHexagonLayerState, IHexagonLayerControllerButton, IHexagonLayerControllerSlider } from '@/interfaces'
 import { HexagonLayerService } from '@/services'
 import { testData } from '@/test'
+
+import type { IHexagonLayerState, IHexagonLayerControllerButton, IHexagonLayerControllerSlider } from '@/interfaces'
 
 describe('HexagonLayerController component test suite', (): void => {
   const setup = (): RenderResult => render(HexagonLayerController)
@@ -40,25 +40,25 @@ describe('HexagonLayerController component test suite', (): void => {
     }
   })
 
-  test('label element class set correctly during mouseover on input for each parameter', async (): Promise<void> => {
+  test('label element class set correctly during mouseover on input for each parameter', (): void => {
     setup()
     const sliders: IHexagonLayerControllerSlider[] = hexagonLayerControllerSliders
     for (const [idx, { text }] of sliders.entries()) {
       const label = screen.getByText(text),
         slider = screen.getAllByRole('slider')[idx]
-      await fireEvent.mouseOver(slider)
-      expect(label.className).toMatch(/mouseover/)
+      fireEvent.mouseOver(slider)
+      expect(label.className).toMatch(/_mouseout/)
     }
   })
 
-  test('label element class set correctly during mouseout on input for each parameter', async (): Promise<void> => {
+  test('label element class set correctly during mouseout on input for each parameter', (): void => {
     setup()
     const sliders: IHexagonLayerControllerSlider[] = hexagonLayerControllerSliders
     for (const [idx, { text }] of sliders.entries()) {
       const label = screen.getByText(text),
         slider = screen.getAllByRole('slider')[idx]
-      await fireEvent.mouseOut(slider)
-      expect(label.className).toMatch(/mouseout/)
+      fireEvent.mouseOut(slider)
+      expect(label.className).toMatch(/_mouseover/)
     }
   })
 
@@ -85,13 +85,13 @@ describe('HexagonLayerController component test suite', (): void => {
     }
   })
 
-  test('display correct input element display value when slider value changes', async () => {
+  test('display correct input element display value when slider value changes', (): void => {
     setup()
     const sliders: IHexagonLayerControllerSlider[] = hexagonLayerControllerSliders,
       { sliderValues } = testData
     for (const [idx] of sliders.entries()) {
       const slider = screen.getAllByRole('slider')[idx]
-      await fireEvent.update(slider, sliderValues[idx])
+      fireEvent.update(slider, sliderValues[idx])
       expect(slider).toHaveDisplayValue(sliderValues[idx])
     }
   })

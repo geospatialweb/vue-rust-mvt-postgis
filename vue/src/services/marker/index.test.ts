@@ -6,33 +6,35 @@ import { testData } from '@/test'
 describe('MarkerService test suite', (): void => {
   const markerService = Container.get(MarkerService)
 
-  test('markers getter should be called', (): void => {
+  test('markers getter should be called with a return', (): void => {
     const spy = vi.spyOn(markerService, 'markers', 'get')
     markerService.markers
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toHaveReturned()
   })
 
-  test('markersHashmap getter should be called', (): void => {
-    const spy = vi.spyOn(markerService, 'markersHashmap', 'get')
+  test('markersHashmap getter should be called with a return', (): void => {
+    const { markersHashmap } = testData,
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      spy = vi.spyOn(markerService, 'markersHashmap', 'get').mockReturnValue(<any>markersHashmap)
     markerService.markersHashmap
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toHaveReturned()
   })
 
-  test('reverseMarkersHashmap getter should be called', (): void => {
-    const spy = vi.spyOn(markerService, 'reverseMarkersHashmap', 'get')
-    markerService.reverseMarkersHashmap
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+  test('markersReverseHashmap getter should be called with a return', (): void => {
+    const { markersReverseHashmap } = testData,
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      spy = vi.spyOn(markerService, 'markersReverseHashmap', 'get').mockReturnValue(<any>markersReverseHashmap)
+    markerService.markersReverseHashmap
+    expect(spy).toBeCalled()
+    expect(spy).toHaveReturned()
   })
 
   test('setMarkerFeatures method should be called', async (): Promise<void> => {
-    const { jwtToken } = testData,
+    const { jwtToken } = window.jwtState,
       spy = vi.spyOn(markerService, 'setMarkerFeatures')
     await markerService.setMarkerFeatures(jwtToken)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(jwtToken)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
   })
 })

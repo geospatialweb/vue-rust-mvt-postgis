@@ -2,33 +2,34 @@ import 'vue/jsx'
 import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
-import { Route } from '@/enums'
-import { ICredentialsState } from '@/interfaces'
+import { Role, Route } from '@/enums'
 import { AuthenticationService, CredentialsService } from '@/services'
 import styles from './index.module.css'
+
+import type { ICredentialsState } from '@/interfaces'
 
 export default defineComponent({
   name: 'Authentication Component',
   setup() {
     const { active, credentials, doublespacer, inactive, spacer } = styles,
       getCredentialsState = (): ICredentialsState => {
-        const credentialsService = Container.get(CredentialsService)
-        return credentialsService.credentialsState
+        const { credentialsState } = Container.get(CredentialsService)
+        return credentialsState
       },
       setCredentialsState = (state: ICredentialsState): void => {
         const credentialsService = Container.get(CredentialsService)
-        credentialsService.setCredentialsState({ ...state })
+        credentialsService.credentialsState = { ...getCredentialsState(), ...state }
       },
       onSubmitHandler = (evt: Event): void => {
-        /* eslint-disable */
         evt.preventDefault()
+        /* eslint-disable @typescript-eslint/no-explicit-any */
         const username = (evt as any).target[1].value as string,
           password = (evt as any).target[2].value as string,
-          authenticationService = Container.get(AuthenticationService)
-        void authenticationService.login({ username, password })
-        /* eslint-enable */
+          /* eslint-enable */
+          { login } = Container.get(AuthenticationService)
+        void login({ ...getCredentialsState(), password, username })
       },
-      jsx = ({ isAdmin, isCorrect, isValid, password, username }: ICredentialsState): JSX.Element => (
+      jsx = ({ isCorrect, isValid, password, role, username }: ICredentialsState): JSX.Element => (
         <div class={credentials} role="presentation">
           <p class={isCorrect ? inactive : active}>Username/password incorrect</p>
           <p class={isValid ? inactive : active}>Username is not registered</p>
@@ -37,7 +38,7 @@ export default defineComponent({
             <fieldset>
               <h1>Welcome to Geospatial Web</h1>
               <label for="username">Username:</label>
-              {isAdmin ? (
+              {role === (Role.Admin as string) ? (
                 /* prettier-ignore */
                 <input
                   id="username"
@@ -59,7 +60,7 @@ export default defineComponent({
               )}
               <div class={spacer}></div>
               <label for="password">Password:</label>
-              {isAdmin ? (
+              {role === (Role.Admin as string) ? (
                 /* prettier-ignore */
                 <input
                   id="password"
@@ -87,7 +88,7 @@ export default defineComponent({
           <div class={doublespacer}></div>
           <router-link
             to={{ name: Route.Register }}
-            onClick={(): void => setCredentialsState({ isCorrect: true, isValid: true })}
+            onClick={(): void => setCredentialsState({ ...getCredentialsState(), isCorrect: true, isValid: true })}
           >
             Optional Registration
           </router-link>

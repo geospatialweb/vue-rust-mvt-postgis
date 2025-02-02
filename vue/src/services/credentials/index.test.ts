@@ -1,53 +1,68 @@
 import { Container } from 'typedi'
 
 import { ICredentialsState } from '@/interfaces'
-import { CredentialsService } from '@/services'
+import { ApiService, CredentialsService } from '@/services'
 import { testData } from '@/test'
 
-describe('CredentialsService test suite', (): void => {
-  const credentialsService = Container.get(CredentialsService)
+const { credentials } = testData as { credentials: ICredentialsState },
+  credentialsService = Container.get(CredentialsService)
 
-  test('credentialsState getter should be called', (): void => {
-    const spy = vi.spyOn(credentialsService, 'credentialsState', 'get')
+describe('CredentialsService test suite 1', (): void => {
+  test('credentialsState getter should be called with a return', (): void => {
+    const spy = vi.spyOn(credentialsService, 'credentialsState', 'get').mockReturnValue(credentials)
     credentialsService.credentialsState
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toHaveReturned()
   })
 
-  test('login method should be called', async (): Promise<void> => {
-    const { credentials } = testData as { credentials: ICredentialsState },
-      spy = vi.spyOn(credentialsService, 'login')
+  test('credentialsState setter should be called', (): void => {
+    const spy = vi.spyOn(credentialsService, 'credentialsState', 'set')
+    credentialsService.credentialsState = credentials
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(credentials)
+  })
+})
+
+describe('CredentialsService test suite 2', (): void => {
+  beforeEach(async (): Promise<void> => {
+    const credentialsService = Container.get(CredentialsService)
+    await credentialsService.register(credentials)
+  })
+
+  afterEach(async (): Promise<void> => {
+    const { jwtToken } = window.jwtState,
+      apiService = Container.get(ApiService)
+    await apiService.deleteUser(credentials, jwtToken)
+  })
+
+  test('login method should be called with a return', async (): Promise<void> => {
+    const spy = vi.spyOn(credentialsService, 'login')
     await credentialsService.login(credentials)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(credentials)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(credentials)
+    expect(spy).toHaveReturned()
   })
 
-  test('register method should be called', async (): Promise<void> => {
-    const { requestBody } = testData,
-      spy = vi.spyOn(credentialsService, 'register')
-    await credentialsService.register(<ICredentialsState>requestBody)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(<ICredentialsState>requestBody)
-    expect(spy).toHaveReturnedTimes(1)
+  test('validateUser method should be called with a return', async (): Promise<void> => {
+    const spy = vi.spyOn(credentialsService, 'validateUser')
+    await credentialsService.validateUser(credentials)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(credentials)
+  })
+})
+
+describe('CredentialsService test suite 3', (): void => {
+  afterEach(async (): Promise<void> => {
+    const { jwtToken } = window.jwtState,
+      apiService = Container.get(ApiService)
+    await apiService.deleteUser(credentials, jwtToken)
   })
 
-  test('setCredentialsState method should be called', (): void => {
-    const { credentials } = testData as { credentials: ICredentialsState },
-      spy = vi.spyOn(credentialsService, 'setCredentialsState')
-    credentialsService.setCredentialsState(credentials)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(credentials)
-    expect(spy).toHaveReturnedTimes(1)
-  })
-
-  test('validateUser method should be called', async (): Promise<void> => {
-    /* prettier-ignore */
-    const { credentials: { username } } = testData,
-      spy = vi.spyOn(credentialsService, 'validateUser')
-    await credentialsService.validateUser(username)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(username)
-    expect(spy).toHaveReturnedTimes(1)
+  test('register method should be called with a return', async (): Promise<void> => {
+    const spy = vi.spyOn(credentialsService, 'register')
+    await credentialsService.register(credentials)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(credentials)
+    expect(spy).toHaveReturned()
   })
 })

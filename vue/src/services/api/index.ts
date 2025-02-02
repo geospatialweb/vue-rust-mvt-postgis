@@ -1,37 +1,53 @@
-import { AxiosRequestConfig } from 'axios'
-import { FeatureCollection } from 'geojson'
 import { Container, Service } from 'typedi'
 
-import { ApiEndpoint } from '@/enums'
-import { ICredentialsState, IQueryParam } from '@/interfaces'
+import { Endpoint, EndpointPrefix } from '@/enums'
 import { HttpService } from '@/services'
+
+import type { FeatureCollection } from 'geojson'
+import type { ICredentialsState, IGeoJsonParam, IMapboxAccessToken, IUser } from '@/interfaces'
+import type { HttpRequest } from '@/types'
 
 @Service()
 export default class ApiService {
-  #httpService = Container.get(HttpService)
+  #endpointPrefix: EndpointPrefix
+  #httpService: HttpService
 
-  async deleteUser(jwtToken: string, username: string): Promise<string> {
-    const params = <AxiosRequestConfig>{ params: { username } }
-    return <string>await this.#httpService.delete(ApiEndpoint.DeleteUser, jwtToken, params)
+  constructor() {
+    this.#endpointPrefix = EndpointPrefix.Api
+    this.#httpService = Container.get(HttpService)
   }
 
-  async getGeoJSONFeatureCollection(jwtToken: string, { columns, id }: IQueryParam): Promise<FeatureCollection> {
-    const params = <AxiosRequestConfig>{ params: { columns, table: id.split('-')[0] } }
-    return <FeatureCollection>await this.#httpService.get(ApiEndpoint.Geojson, jwtToken, params)
+  getGeoJsonFeatureCollection = async (
+    { columns, table }: IGeoJsonParam,
+    { role }: ICredentialsState,
+    jwtToken: string
+  ): Promise<FeatureCollection> => {
+    const query = <HttpRequest>{ params: { columns, table: table.split('-')[0], role } },
+      endpoint = `${this.#endpointPrefix}${Endpoint.GetGeoJson}`
+    return <FeatureCollection>await this.#httpService.get(endpoint, query, jwtToken)
   }
 
-  async getMapboxAccessToken(jwtToken: string): Promise<string> {
-    const params = <AxiosRequestConfig>{ params: {} }
-    return <string>await this.#httpService.get(ApiEndpoint.MapboxAccessToken, jwtToken, params)
+  deleteUser = async ({ username, role }: ICredentialsState, jwtToken: string): Promise<IUser> => {
+    const query = <HttpRequest>{ params: { username, role } },
+      endpoint = `${this.#endpointPrefix}${Endpoint.DeleteUser}`
+    return <IUser>await this.#httpService.delete(endpoint, query, jwtToken)
   }
 
-  async getUser(jwtToken: string, username: string): Promise<string> {
-    const params = <AxiosRequestConfig>{ params: { username } }
-    return <string>await this.#httpService.get(ApiEndpoint.GetUser, jwtToken, params)
+  getUser = async ({ username, role }: ICredentialsState, jwtToken: string): Promise<IUser> => {
+    const query = <HttpRequest>{ params: { username, role } },
+      endpoint = `${this.#endpointPrefix}${Endpoint.GetUser}`
+    return <IUser>await this.#httpService.get(endpoint, query, jwtToken)
   }
 
-  async updatePassword(jwtToken: string, credentials: ICredentialsState): Promise<string> {
-    const body = <AxiosRequestConfig>{ ...credentials }
-    return <string>await this.#httpService.patch(ApiEndpoint.UpdatePassword, jwtToken, body)
+  updatePassword = async ({ username, password, role }: ICredentialsState, jwtToken: string): Promise<IUser> => {
+    const body = <HttpRequest>{ username, password, role },
+      endpoint = `${this.#endpointPrefix}${Endpoint.UpdatePassword}`
+    return <IUser>await this.#httpService.patch(endpoint, body, jwtToken)
+  }
+
+  getMapboxAccessToken = async ({ role }: ICredentialsState, jwtToken: string): Promise<IMapboxAccessToken> => {
+    const query = <HttpRequest>{ params: { role } },
+      endpoint = `${this.#endpointPrefix}${Endpoint.GetMapboxAccessToken}`
+    return <IMapboxAccessToken>await this.#httpService.get(endpoint, query, jwtToken)
   }
 }

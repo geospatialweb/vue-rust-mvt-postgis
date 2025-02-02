@@ -1,8 +1,9 @@
 import { Container, Service } from 'typedi'
 
 import { State } from '@/enums'
-import { IMapStyle, IMapboxStylesState } from '@/interfaces'
 import { StoreService } from '@/services'
+
+import type { IMapStyle, IMapboxStylesState } from '@/interfaces'
 
 @Service()
 export default class MapboxStyleService {
@@ -17,23 +18,22 @@ export default class MapboxStyleService {
   }
 
   get mapboxStylesState(): IMapboxStylesState {
-    const storeService = Container.get(StoreService)
-    return <IMapboxStylesState>storeService.getState(State.MapboxStyles)
+    const { getState } = Container.get(StoreService)
+    return <IMapboxStylesState>getState(State.MapboxStyles)
   }
 
   set #mapboxStylesState(state: IMapboxStylesState) {
-    const storeService = Container.get(StoreService)
-    storeService.setState(State.MapboxStyles, state)
+    const { setState } = Container.get(StoreService)
+    setState(State.MapboxStyles, state)
   }
 
-  setActiveMapboxStyle(): void {
-    const mapboxStylesState = this.mapboxStylesState,
-      isActive = ({ isActive }: IMapStyle): boolean => isActive,
-      { id } = <IMapStyle>Object.values(mapboxStylesState).find(isActive)
-    this.#activeMapboxStyle = id
+  setActiveMapboxStyle = (): void => {
+    const isActive = ({ isActive }: IMapStyle): boolean => isActive,
+      { url: style } = <IMapStyle>Object.values(this.mapboxStylesState).find(isActive)
+    this.#activeMapboxStyle = style
   }
 
-  setMapboxStyleState(): void {
+  setMapboxStyleState = (): void => {
     const mapboxStylesState = <IMapboxStylesState>{ ...this.mapboxStylesState },
       isActive = (mapStyle: IMapStyle): boolean => (mapStyle.isActive = !mapStyle.isActive)
     Object.values(mapboxStylesState).forEach(isActive)

@@ -9,8 +9,9 @@ export default defineComponent({
   name: 'App Component',
   setup() {
     onBeforeMount((): void => {
-      const appService = Container.get(AppService)
-      appService.setInitialZoom()
+      const { setAppState, setInitialZoom } = Container.get(AppService)
+      setAppState()
+      setInitialZoom()
     })
     return (): JSX.Element => (
       <div role="presentation">

@@ -3,13 +3,14 @@ import { Container } from 'typedi'
 import { defineComponent, PropType } from 'vue'
 
 import { hexagonLayerControllerSliders } from '@/configuration'
-import {
+import { HexagonLayerService, HexagonLayerControllerService } from '@/services'
+import styles from '../index.module.css'
+
+import type {
   IHexagonLayerControllerSlider,
   IHexagonLayerControllerSliderLabelsState,
   IHexagonLayerState
 } from '@/interfaces'
-import { HexagonLayerService, HexagonLayerControllerService } from '@/services'
-import styles from '../index.module.css'
 
 export default defineComponent({
   name: 'HexagonLayerControllerSliders Component',
@@ -29,21 +30,21 @@ export default defineComponent({
       onInputHandler = (evt: Event): void => {
         evt.stopPropagation()
         const { id, value } = evt.target as HTMLInputElement,
-          hexagonLayerService = Container.get(HexagonLayerService)
-        hexagonLayerService.setHexagonLayerState({ id, value })
-        hexagonLayerService.renderHexagonLayer()
+          { renderHexagonLayer, setHexagonLayerState } = Container.get(HexagonLayerService)
+        setHexagonLayerState({ id, value })
+        void renderHexagonLayer()
       },
       onMouseover_onMouseoutHandler = (evt: MouseEvent): void => {
         evt.stopPropagation()
         const { id } = evt.target as HTMLInputElement,
-          hexagonLayerControllerService = Container.get(HexagonLayerControllerService)
-        hexagonLayerControllerService.setHexagonLayerControllerSliderLabel(id)
+          { setSliderLabelsState } = Container.get(HexagonLayerControllerService)
+        setSliderLabelsState(id)
       }
     return (): JSX.Element => (
       <div>
         <hr />
         {Object.values(layerState).map((value: string, idx: number) => (
-          <>
+          <div>
             <label
               class={
                 sliderLabelsState[sliders[idx].id as keyof IHexagonLayerControllerSliderLabelsState]
@@ -70,7 +71,7 @@ export default defineComponent({
             </label>
             <output for={sliders[idx].id}>{value}</output>
             <hr />
-          </>
+          </div>
         ))}
       </div>
     )

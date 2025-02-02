@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/vue'
 
 import { LayerController, Mapbox, Modal, Trails } from '@/components'
@@ -13,8 +12,7 @@ describe('Mapbox view test suite', (): void => {
   })
 
   test('Mapbox component renders successfully', (): void => {
-    /* prettier-ignore */
-    const { options: { container } } = mapbox
+    const { container } = mapbox.options
     render(Mapbox, { props: { container } })
     const mapboxComponent = screen.getByRole('presentation')
     expect(mapboxComponent).toBeInTheDocument()

@@ -4,8 +4,7 @@ import { Deckgl } from '@/components'
 import { deckgl } from '@/configuration'
 
 describe('Deckgl component test suite', (): void => {
-  /* prettier-ignore */
-  const { options: { canvas, container } } = deckgl,
+  const { canvas, container } = deckgl.options,
     setup = (): RenderResult => render(Deckgl, { props: { canvas, container } })
 
   test('container attributes set correctly', (): void => {

@@ -2,31 +2,32 @@ import 'vue/jsx'
 import { Container } from 'typedi'
 import { defineComponent } from 'vue'
 
-import { Route } from '@/enums'
-import { ICredentialsState } from '@/interfaces'
+import { Role, Route } from '@/enums'
 import { CredentialsService, RegistrationService } from '@/services'
 import styles from './index.module.css'
+
+import type { ICredentialsState } from '@/interfaces'
 
 export default defineComponent({
   name: 'Registration Component',
   setup() {
     const { active, credentials, doublespacer, inactive, spacer } = styles,
       getCredentialsState = (): ICredentialsState => {
-        const credentialsService = Container.get(CredentialsService)
-        return credentialsService.credentialsState
+        const { credentialsState } = Container.get(CredentialsService)
+        return credentialsState
       },
       setCredentialsState = (state: ICredentialsState): void => {
         const credentialsService = Container.get(CredentialsService)
-        credentialsService.setCredentialsState({ ...state })
+        credentialsService.credentialsState = { ...getCredentialsState(), ...state }
       },
       onSubmitHandler = (evt: Event): void => {
-        /* eslint-disable */
         evt.preventDefault()
+        /* eslint-disable @typescript-eslint/no-explicit-any */
         const username = (evt as any).target[1].value as string,
           password = (evt as any).target[2].value as string,
-          registrationService = Container.get(RegistrationService)
-        void registrationService.register({ username, password })
-        /* eslint-enable */
+          /* eslint-enable */
+          { register } = Container.get(RegistrationService)
+        void register({ ...getCredentialsState(), password, username, role: Role.User })
       },
       jsx = ({ isCorrect, isValid }: ICredentialsState): JSX.Element => (
         <div class={credentials} role="presentation">
@@ -63,7 +64,7 @@ export default defineComponent({
           <div class={doublespacer}></div>
           <router-link
             to={{ name: Route.Login }}
-            onClick={(): void => setCredentialsState({ isCorrect: true, isValid: true })}
+            onClick={(): void => setCredentialsState({ ...getCredentialsState(), isCorrect: true, isValid: true })}
           >
             Already Registered?
           </router-link>

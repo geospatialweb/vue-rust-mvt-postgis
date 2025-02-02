@@ -8,11 +8,11 @@ export interface IAppState {
 }
 
 export interface ICredentialsState {
-  isAdmin?: boolean | undefined
-  isCorrect?: boolean | undefined
-  isValid?: boolean | undefined
-  password?: string | undefined
-  username?: string | undefined
+  isCorrect: boolean
+  isValid: boolean
+  password: string
+  role: string
+  username: string
 }
 
 export interface ICsvResponseError {
@@ -41,7 +41,12 @@ export interface IDeckglSettingsState {
   zoom: number
 }
 
-export interface IGeoJSONProperty {
+export interface IGeoJsonParam {
+  columns: string
+  table: string
+}
+
+export interface IGeoJsonProperty {
   description: string
   name: string
 }
@@ -138,6 +143,10 @@ export interface IMapStyle {
   url: string
 }
 
+export interface IMapboxAccessToken {
+  token: string
+}
+
 export interface IMapboxOption {
   container: string
   doubleClickZoom: boolean
@@ -183,12 +192,7 @@ export interface INavigationControl {
   visualizePitch: boolean
 }
 
-export interface IQueryParam {
-  columns: string
-  id: string
-}
-
-export interface IState {
+export interface IStoreState {
   app: IAppState
   credentials: ICredentialsState
   deckglSettings: IDeckglSettingsState
@@ -207,4 +211,9 @@ export interface ITrail {
   center: LngLatLike
   name: string
   zoom: number
+}
+
+export interface IUser {
+  role: string
+  username: string
 }

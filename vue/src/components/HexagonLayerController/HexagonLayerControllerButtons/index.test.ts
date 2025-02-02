@@ -5,8 +5,9 @@ import { Container } from 'typedi'
 
 import { HexagonLayerControllerButtons } from '@/components'
 import { hexagonLayerControllerButtons } from '@/configuration'
-import { IHexagonLayerControllerButton } from '@/interfaces'
 import { RouterService } from '@/services'
+
+import type { IHexagonLayerControllerButton } from '@/interfaces'
 
 describe('HexagonLayerControllerButtons component test suite', (): void => {
   it('should receive correct `id` for each HexagonLayerController button', (): void => {
@@ -25,7 +26,8 @@ describe('HexagonLayerControllerButtons component test suite', (): void => {
       spy = vi.spyOn(routerService, 'setRoute'),
       view = userEvent.setup()
     await view.click(buttons[1])
-    void routerService.setRoute(route)
-    expect(spy).toHaveBeenCalledTimes(1)
+    await routerService.setRoute(route)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(route)
   })
 })

@@ -1,14 +1,16 @@
+use serde::Serialize;
+
 /// Mapbox access token originally stored in .env file.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct MapboxAccessToken {
-    pub access_token: String,
+    pub token: String,
 }
 
 impl MapboxAccessToken {
     /// Create new MapboxAccessToken.
-    pub fn new(access_token: &str) -> Self {
+    pub fn new(token: &str) -> Self {
         Self {
-            access_token: access_token.to_owned(),
+            token: token.to_owned(),
         }
     }
 }

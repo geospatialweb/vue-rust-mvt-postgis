@@ -7,8 +7,7 @@ import { mapbox } from '@/configuration'
 export default defineComponent({
   name: 'Mapbox View',
   setup() {
-    /* prettier-ignore */
-    const { options: { container } } = mapbox
+    const { container } = mapbox.options
     return (): JSX.Element => (
       <section role="presentation">
         <Mapbox container={container} />

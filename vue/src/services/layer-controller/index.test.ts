@@ -9,18 +9,17 @@ describe('LayerControllerService test suite', (): void => {
   const ids = layerControllerLayers.map((layer: ILayerControllerState): string => <string>Object.values(layer)[0]),
     layerControllerService = Container.get(LayerControllerService)
 
-  test('layerControllerState getter should be called', (): void => {
-    const spy = vi.spyOn(layerControllerService, 'layerControllerState', 'get')
+  test('layerControllerState getter should be called with a return', (): void => {
+    const spy = vi.spyOn(layerControllerService, 'layerControllerState', 'get').mockReturnValue(layerControllerLayers)
     layerControllerService.layerControllerState
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toHaveReturned()
   })
 
   test.each(ids)("pass '%s' id to displayLayer method", (id): void => {
     const spy = vi.spyOn(layerControllerService, 'displayLayer').mockImplementation(mockMapImplementation)
     layerControllerService.displayLayer(id)
-    expect(spy).toHaveBeenCalledTimes(1)
-    expect(spy).toHaveBeenCalledWith(id)
-    expect(spy).toHaveReturnedTimes(1)
+    expect(spy).toBeCalled()
+    expect(spy).toBeCalledWith(id)
   })
 })

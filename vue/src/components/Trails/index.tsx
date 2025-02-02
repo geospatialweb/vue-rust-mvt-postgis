@@ -13,8 +13,8 @@ export default defineComponent({
       onChangeHandler = (evt: Event): void => {
         evt.stopPropagation()
         const { value: name } = evt.target as HTMLSelectElement,
-          trailService = Container.get(TrailService)
-        trailService.selectTrail(name)
+          { selectTrail } = Container.get(TrailService)
+        selectTrail(name)
       }
     return (): JSX.Element => (
       <label>

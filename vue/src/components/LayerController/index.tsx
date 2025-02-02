@@ -4,23 +4,24 @@ import { defineComponent } from 'vue'
 
 import { LayerControllerIconListItem, LayerControllerLayerListItem } from '@/components'
 import { layerControllerIcons } from '@/configuration'
-import { ILayerControllerState } from '@/interfaces'
 import { LayerControllerService } from '@/services'
 import styles from './index.module.css'
+
+import type { ILayerControllerState } from '@/interfaces'
 
 export default defineComponent({
   name: 'LayerController Component',
   setup() {
     const { layer_controller } = styles,
       getLayerControllerState = (): ILayerControllerState[] => {
-        const layerControllerService = Container.get(LayerControllerService)
-        return layerControllerService.layerControllerState
+        const { layerControllerState } = Container.get(LayerControllerService)
+        return layerControllerState
       },
       onClickHandler = (evt: MouseEvent): void => {
         evt.stopPropagation()
         const { id } = evt.target as HTMLElement,
-          layerControllerService = Container.get(LayerControllerService)
-        layerControllerService.displayLayer(id.split('-icon')[0])
+          { displayLayer } = Container.get(LayerControllerService)
+        displayLayer(id.split('-icon')[0])
       },
       listItem = ({ id, isActive, name }: ILayerControllerState, idx: number): JSX.Element => (
         <li>

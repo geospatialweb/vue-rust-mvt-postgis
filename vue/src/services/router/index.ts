@@ -1,9 +1,11 @@
 import { Container, Service } from 'typedi'
-import { createRouter, createWebHistory, RouteRecordRaw, Router } from 'vue-router'
+import { createRouter, createWebHistory, Router } from 'vue-router'
 
 import { Route } from '@/enums'
 import { AuthorizationService } from '@/services'
 import { Authentication, Deckgl, Mapbox, PageNotFound, Registration } from '@/views'
+
+import type { RouteRecordRaw } from 'vue-router'
 
 @Service()
 export default class RouterService {
@@ -17,20 +19,19 @@ export default class RouterService {
     return this.#router
   }
 
-  async setRoute(name: string): Promise<void> {
+  setRoute = async (name: string): Promise<void> => {
     await this.#router.push({ name })
   }
 
   #createRouter(): Router {
-    const baseURL = import.meta.env.BASE_URL,
-      history = createWebHistory(baseURL),
+    const { BASE_URL: baseURL } = import.meta.env,
       beforeEnter = () => () => {
         /* prettier-ignore */
-        const authorizationService = Container.get(AuthorizationService),
-          { jwtState: { jwtExpiry } } = authorizationService,
-          currentTimestamp = Math.floor(Date.now() / 1000)
+        const currentTimestamp = Math.floor(Date.now() / 1000),
+          { jwtState: { jwtExpiry } } = Container.get(AuthorizationService)
         if (currentTimestamp > jwtExpiry) return { name: Route.Login }
       },
+      history = createWebHistory(baseURL),
       routes: RouteRecordRaw[] = [
         {
           path: baseURL,
@@ -63,7 +64,8 @@ export default class RouterService {
           name: Route.PageNotFound,
           component: PageNotFound
         }
-      ]
-    return createRouter({ history, routes })
+      ],
+      router = createRouter({ history, routes })
+    return router
   }
 }

@@ -8,32 +8,31 @@ import { Container, Service } from 'typedi'
 
 import { hexagonLayer } from '@/configuration'
 import { State } from '@/enums'
-import { IHexagonLayerControllerSliderInput, IHexagonLayerProp, IHexagonLayerState } from '@/interfaces'
 import { DeckglService, HexagonLayerDataService, StoreService } from '@/services'
-import { HexagonLayerData } from '@/types'
+
+import type { IHexagonLayerControllerSliderInput, IHexagonLayerProp, IHexagonLayerState } from '@/interfaces'
+import type { HexagonLayerData } from '@/types'
 
 @Service()
 export default class HexagonLayerService {
-  #hexagonLayerData: HexagonLayerData = []
-  #hexagonLayerDataService = Container.get(HexagonLayerDataService)
-  #hexagonLayerInitialState: IHexagonLayerState = hexagonLayer.state
-  #hexagonLayerProps: IHexagonLayerProp = hexagonLayer.props
+  #hexagonLayerData = <HexagonLayerData>[]
+  #hexagonLayerInitialState = <IHexagonLayerState>hexagonLayer.state
+  #hexagonLayerProps = <IHexagonLayerProp>hexagonLayer.props
 
   get hexagonLayerState(): IHexagonLayerState {
-    const storeService = Container.get(StoreService)
-    return <IHexagonLayerState>storeService.getState(State.HexagonLayer)
+    const { getState } = Container.get(StoreService)
+    return <IHexagonLayerState>getState(State.HexagonLayer)
   }
 
   set #hexagonLayerState(state: IHexagonLayerState) {
-    const storeService = Container.get(StoreService)
-    storeService.setState(State.HexagonLayer, state)
+    const { setState } = Container.get(StoreService)
+    setState(State.HexagonLayer, state)
   }
 
   /* eslint-disable */
-  renderHexagonLayer(): void {
-    !this.#hexagonLayerData.length && this.#setHexagonLayerData()
-    const deckglService = Container.get(DeckglService),
-      { deck } = deckglService,
+  renderHexagonLayer = async (): Promise<void> => {
+    await this.#setHexagonLayerData()
+    const { deck } = Container.get(DeckglService),
       hexagonLayer = new HexagonLayer({
         data: this.#hexagonLayerData,
         getPosition: (d: number[]): number[] => d,
@@ -44,19 +43,21 @@ export default class HexagonLayerService {
   }
   /* eslint-enable */
 
-  setHexagonLayerState({ id, value }: IHexagonLayerControllerSliderInput): void {
+  setHexagonLayerState = ({ id, value }: IHexagonLayerControllerSliderInput): void => {
     const state = <IHexagonLayerState>{ ...this.hexagonLayerState }
     state[id as keyof IHexagonLayerState] = Number(value)
     this.#hexagonLayerState = state
   }
 
-  resetHexagonLayerState(): void {
+  resetHexagonLayerState = async (): Promise<void> => {
     this.#hexagonLayerState = this.#hexagonLayerInitialState
-    this.renderHexagonLayer()
+    await this.renderHexagonLayer()
   }
 
-  #setHexagonLayerData(): void {
-    const { hexagonLayerData } = this.#hexagonLayerDataService
-    this.#hexagonLayerData = hexagonLayerData
+  async #setHexagonLayerData(): Promise<void> {
+    if (!this.#hexagonLayerData?.length) {
+      const { getHexagonLayerData } = Container.get(HexagonLayerDataService)
+      this.#hexagonLayerData = await getHexagonLayerData()
+    }
   }
 }

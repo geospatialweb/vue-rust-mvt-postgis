@@ -1,9 +1,9 @@
 use garde::Validate;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::fmt::{Debug, Formatter, Result};
 
 /// Plain text password.
-#[derive(Clone, Deserialize, PartialEq, Validate)]
+#[derive(Clone, Deserialize, PartialEq, Serialize, Validate)]
 pub struct TextPassword(#[garde(ascii)] String);
 
 impl TextPassword {
@@ -12,7 +12,7 @@ impl TextPassword {
         Self(password.to_owned())
     }
 
-    /// Return the string slice representation of TextPassword.
+    /// Return string slice representation of TextPassword.
     pub fn as_str(&self) -> &str {
         self.0.as_str()
     }
@@ -38,7 +38,7 @@ impl HashedPassword {
         Self(password.to_owned())
     }
 
-    /// Return the string slice representation of HashedPassword.
+    /// Return string slice representation of HashedPassword.
     pub fn as_str(&self) -> &str {
         self.0.as_str()
     }
@@ -51,5 +51,26 @@ impl Debug for HashedPassword {
        f.debug_struct("HashedPassword")
         .field("password", &"<hidden>")
         .finish()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn new_text_password() {
+        let password = "secretPassword";
+        let user = TextPassword(password.to_owned());
+        let result = TextPassword::new(password);
+        assert_eq!(result, user);
+    }
+
+    #[test]
+    fn new_hashed_password() {
+        let password = "hyQUdlbTpwEcdGhQMFD4c96tRcSQX4Ma";
+        let user = HashedPassword(password.to_owned());
+        let result = HashedPassword::new(password);
+        assert_eq!(result, user);
     }
 }

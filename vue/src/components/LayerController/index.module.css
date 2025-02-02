@@ -74,7 +74,7 @@
 }
 
 @media screen and (orientation: landscape) and (width <= 932px) {
-  .layer_element {
+  .layer_controller {
     left: 0;
     top: 4.1rem;
     transform: scale(0.9);
@@ -82,7 +82,7 @@
 }
 
 @media screen and (orientation: landscape) and (width <= 844px) {
-  .layer_element {
+  .layer_controller {
     left: -0.5rem;
     top: 3.6rem;
     transform: scale(0.85);
@@ -90,7 +90,7 @@
 }
 
 @media screen and (orientation: landscape) and (width <= 740px) {
-  .layer_element {
+  .layer_controller {
     left: -0.6rem;
     top: 3.1rem;
     transform: scale(0.8);
@@ -98,7 +98,7 @@
 }
 
 @media screen and (width <=430px) {
-  .layer_element {
+  .layer_controller {
     left: 0;
     top: 4.1rem;
     transform: scale(0.9);
@@ -106,7 +106,7 @@
 }
 
 @media screen and (width <=395px) {
-  .layer_element {
+  .layer_controller {
     left: -0.3rem;
     top: 3.6rem;
     transform: scale(0.85);
@@ -114,7 +114,7 @@
 }
 
 @media screen and (width <=360px) {
-  .layer_element {
+  .layer_controller {
     left: -0.7rem;
     top: 3.1rem;
     transform: scale(0.8);

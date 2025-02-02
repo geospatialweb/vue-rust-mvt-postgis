@@ -20,6 +20,16 @@ pub fn validate_user(user: &User) -> Result<(), ResponseError> {
     Ok(())
 }
 
+/// Validate user role with a vector of valid roles.
+pub fn validate_role(user: &User) -> Result<(), ResponseError> {
+    let _ = validate_user(user);
+    let roles = ["admin", "user"];
+    if !roles.contains(&user.role.as_str()) {
+        return Err(ResponseError::UserRoleValidation);
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -30,8 +40,8 @@ mod test {
         let columns = "name,description,geom";
         let table = "office";
         let params = LayerParams {
-            columns: String::from(columns),
-            table: String::from(table),
+            columns: columns.to_owned(),
+            table: table.to_owned(),
         };
         let result = validate_layer_params(&params);
         assert!(result.is_ok());
@@ -39,21 +49,45 @@ mod test {
 
     #[test]
     fn validate_user_ok() {
+        let role = "user";
         let username = "foo@bar.com";
         let password = "secretPassword";
-        let text_password = TextPassword::new(&String::from(password));
-        let user = User::new(username, &Some(&text_password));
+        let text_password = TextPassword::new(password);
+        let user = User::new(username, &Some(&text_password), role);
         let result = validate_user(&user);
         assert!(result.is_ok());
     }
 
     #[test]
     fn validate_user_err() {
+        let role = "user";
         let username = "foobar.com"; // must be email format
         let password = "secretPassword";
-        let text_password = TextPassword::new(&String::from(password));
-        let user = User::new(username, &Some(&text_password));
+        let text_password = TextPassword::new(password);
+        let user = User::new(username, &Some(&text_password), role);
         let result = validate_user(&user);
         assert!(matches!(result, Err(ResponseError::UserValidation)));
+    }
+
+    #[test]
+    fn validate_role_ok() {
+        let role = "user";
+        let username = "foo@bar.com";
+        let password = "secretPassword";
+        let text_password = TextPassword::new(password);
+        let user = User::new(username, &Some(&text_password), role);
+        let result = validate_role(&user);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn validate_role_err() {
+        let role = "test";
+        let username = "foobar.com";
+        let password = "secretPassword";
+        let text_password = TextPassword::new(password);
+        let user = User::new(username, &Some(&text_password), role);
+        let result = validate_role(&user);
+        assert!(matches!(result, Err(ResponseError::UserRoleValidation)));
     }
 }

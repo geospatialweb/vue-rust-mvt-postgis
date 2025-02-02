@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/vue'
 
 import { PageNotFound } from '@/components'

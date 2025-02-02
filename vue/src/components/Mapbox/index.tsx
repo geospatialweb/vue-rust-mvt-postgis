@@ -15,12 +15,12 @@ export default defineComponent({
   },
   setup({ container }) {
     const { mapbox } = styles,
-      mapboxService = Container.get(MapboxService)
-    onMounted((): void => mapboxService.loadMap())
+      { loadMap, removeMapResources } = Container.get(MapboxService),
+      { setHiddenMarkersVisibility } = Container.get(MarkerVisibilityService)
+    onMounted((): void => loadMap())
     onUnmounted((): void => {
-      const markerVisibilityService = Container.get(MarkerVisibilityService)
-      markerVisibilityService.setHiddenMarkersVisibility()
-      mapboxService.removeMapResources()
+      setHiddenMarkersVisibility()
+      removeMapResources()
     })
     return (): JSX.Element => <div id={container} class={mapbox} role="presentation"></div>
   }
