@@ -1,6 +1,6 @@
 postgres:
   auto_publish: false
-  connection_string: $POSTGRES_URI
+  connection_string: $POSTGRES_DSN
   tables:
     biosphere:
       id_column: id

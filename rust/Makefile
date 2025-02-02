@@ -20,7 +20,7 @@ test:
 	@cargo test --lib -- --test-threads=1
 
 update:
-	@cargo update
+	@cargo update --verbose
 
 upgrade:
 	@rustup update stable

@@ -1,1 +1,2 @@
-cd vue && npx lint-staged
+cd vue
+npx lint-staged

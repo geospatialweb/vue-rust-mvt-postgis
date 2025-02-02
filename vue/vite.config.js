@@ -10,8 +10,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          deckgl: ['@deck.gl/aggregation-layers', '@deck.gl/core', '@deck.gl/layers'],
-          mapboxgl: ['mapbox-gl'],
+          deckgl: ['@deck.gl/aggregation-layers', '@deck.gl/core'],
+          mapboxgl: ['mapbox-gl', '@mapbox/mapbox-gl-draw'],
           vue: ['vue', 'vue-router', 'pinia']
         }
       }
@@ -30,6 +30,7 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    fileParallelism: false,
     globals: true,
     include: ['src/**/index.test.ts'],
     outputFile: 'src/test/vitest.json',

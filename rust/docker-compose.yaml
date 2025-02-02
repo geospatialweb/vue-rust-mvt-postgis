@@ -23,7 +23,6 @@ services:
     build:
       context: .
       target: app
-    # image: geospatialweb/vue-rust-mvt-postgis:latest
     restart: unless-stopped
     depends_on:
       postgis:
@@ -37,7 +36,7 @@ services:
 
   mvt:
     container_name: martin
-    image: ghcr.io/maplibre/martin:latest
+    image: ghcr.io/maplibre/martin:v0.14.2
     command: ["--config", "./config/martin.yaml"]
     restart: unless-stopped
     depends_on:
@@ -60,7 +59,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: pg_isready -d $POSTGRES_URI
+      test: pg_isready -d $POSTGRES_DSN
       interval: 15s
       timeout: 5s
     networks:

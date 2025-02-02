@@ -1,1 +1,2 @@
-cd vue && npm test && npm run build
+cd vue
+bun run build

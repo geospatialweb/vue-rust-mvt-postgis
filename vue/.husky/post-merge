@@ -1,1 +1,2 @@
-cd vue && npm i
+cd vue
+bun install
