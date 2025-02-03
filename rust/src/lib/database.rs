@@ -3,6 +3,48 @@ use sqlx::{Error, PgPool};
 use tracing::info;
 
 use super::env::Env;
+use super::geojson::JsonFeature;
+use super::model::User;
+use super::password::HashedPassword;
+use super::query;
+use super::request::LayerParams;
+use super::response::ResponseError;
+
+
+pub struct Repo {
+    pool: PgPool,
+}
+
+trait Repository {
+    async fn get_json_features(params: &LayerParams) -> Result<Vec<JsonFeature>, ResponseError>;
+    async fn get_user(username: &str) -> Result<User, ResponseError>;
+    async fn delete_user(username: &str) -> Result<User, ResponseError>;
+    async fn insert_user(username: &str, password: &HashedPassword, role: &str) -> Result<User, ResponseError>;
+    async fn get_password(username: &str) -> Result<HashedPassword, ResponseError>;
+    async fn update_password(username: &str, password: &HashedPassword) -> Result<User, ResponseError>;
+}
+
+impl Repository for Repo {
+    async fn get_json_features(params: &LayerParams) -> Result<Vec<JsonFeature>, ResponseError> {
+        let features = query::get_json_features(params).await?;
+        Ok(features)
+    }
+    async fn get_user(username: &str) -> Result<User, ResponseError> {
+        query::get_user(username).await
+    }
+    async fn delete_user(username: &str) -> Result<User, ResponseError> {
+        query::delete_user(username).await
+    }
+    async fn insert_user(username: &str, password: &HashedPassword, role: &str) -> Result<User, ResponseError> {
+        query::insert_user(username, password, role).await
+    }
+    async fn get_password(username: &str) -> Result<HashedPassword, ResponseError> {
+        query::get_password(username).await
+    }
+    async fn update_password(username: &str, password: &HashedPassword) -> Result<User, ResponseError> {
+        query::update_password(username, password).await
+    }
+}
 
 static POOL: OnceCell<PgPool> = OnceCell::new();
 
