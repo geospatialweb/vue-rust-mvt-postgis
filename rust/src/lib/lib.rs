@@ -8,6 +8,7 @@ pub mod mapbox;
 pub mod model;
 pub mod password;
 pub mod query;
+pub mod repository;
 pub mod request;
 pub mod response;
 pub mod router;

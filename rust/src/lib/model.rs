@@ -48,7 +48,7 @@ mod test {
         let text_password = TextPassword::new(password);
         let user = User {
             username: username.to_owned(),
-            password: Some(text_password.clone()),
+            password: Some(text_password.to_owned()),
             role: role.to_owned(),
         };
         let result = User::new(username, &Some(&text_password), role);

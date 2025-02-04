@@ -56,9 +56,9 @@ pub fn new() -> Router {
         .push(
             Router::with_path(&env.api_path_prefix)
                 .hoop(handle_jwt_auth())
-                .push(
-                    Router::with_path(&env.get_geojson_endpoint)
-                        .get(handler::handle_get_geojson_feature_collection))
+        //         .push(
+        //             Router::with_path(&env.get_geojson_endpoint)
+        //                 .get(handler::handle_get_geojson_feature_collection))
                 .push(
                     Router::with_path(&env.get_mapbox_access_token_endpoint)
                         .hoop(affix_state::inject(MapboxAccessToken::new(env.mapbox_access_token.as_str())))
