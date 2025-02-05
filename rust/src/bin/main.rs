@@ -1,7 +1,7 @@
 use tracing::error;
 
-use lib::database::Pool;
 use lib::env::Env;
+use lib::postgres::Pool;
 use lib::server;
 
 #[tokio::main]
@@ -14,7 +14,7 @@ async fn main() {
         return error!("env error: {}", &err);
     }
     if let Err(err) = Pool::set_pool().await {
-        return error!("database error: {}", &err);
+        return error!("postgres error: {}", &err);
     }
     if let Err(err) = server::set_server().await {
         return error!("server error: {}", &err);
