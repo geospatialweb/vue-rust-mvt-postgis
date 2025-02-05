@@ -56,12 +56,12 @@ pub fn new() -> Router {
         .push(
             Router::with_path(&env.api_path_prefix)
                 .hoop(handle_jwt_auth())
-        //         .push(
-        //             Router::with_path(&env.get_geojson_endpoint)
-        //                 .get(handler::handle_get_geojson_feature_collection))
+                .push(
+                    Router::with_path(&env.get_geojson_endpoint)
+                        .get(handler::handle_get_geojson_feature_collection))
                 .push(
                     Router::with_path(&env.get_mapbox_access_token_endpoint)
-                        .hoop(affix_state::inject(MapboxAccessToken::new(env.mapbox_access_token.as_str())))
+                        .hoop(affix_state::inject(MapboxAccessToken::new(&env.mapbox_access_token)))
                         .get(handler::handle_get_mapbox_access_token))
                 .push(
                     Router::with_path(&env.get_user_endpoint)
@@ -220,10 +220,11 @@ mod test {
         let jwt_token = create_jwt_token();
         let columns = "name,description,geom";
         let table = "office";
+        let role = "user";
         let url = format!("{}{}", &get_api_url(), &env.get_geojson_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .bearer_auth(&jwt_token)
-            .queries([("columns", columns), ("table", table)])
+            .queries([("columns", columns), ("table", table), ("role", role)])
             .send(&service)
             .await;
         let status_code = res.status_code.unwrap();
@@ -237,14 +238,15 @@ mod test {
         let jwt_token = create_jwt_token();
         let columns = "name,description,geom";
         let table = "offices";
+        let role = "user";
         let url = format!("{}{}", &get_api_url(), &env.get_geojson_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .bearer_auth(&jwt_token)
-            .queries([("columns", columns), ("table", table)])
+            .queries([("columns", columns), ("table", table), ("role", role)])
             .send(&service)
             .await;
         let status_code = res.status_code.unwrap();
-        assert_eq!(status_code, StatusCode::INTERNAL_SERVER_ERROR);
+        assert_eq!(status_code, StatusCode::BAD_REQUEST);
     }
 
     #[tokio::test]
@@ -252,9 +254,11 @@ mod test {
         let env = Env::get_env();
         let service = get_service();
         let jwt_token = create_jwt_token();
+        let role = "user";
         let url = format!("{}{}", &get_api_url(), &env.get_mapbox_access_token_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .bearer_auth(&jwt_token)
+            .queries([("role", role)])
             .send(&service)
             .await;
         let status_code = res.status_code.unwrap();

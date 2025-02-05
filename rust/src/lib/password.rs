@@ -29,7 +29,7 @@ impl Debug for TextPassword {
 }
 
 /// HS256 hashed password.
-#[derive(Clone, PartialEq)]
+#[derive(PartialEq)]
 pub struct HashedPassword(String);
 
 impl HashedPassword {
@@ -68,7 +68,7 @@ mod test {
 
     #[test]
     fn new_hashed_password() {
-        let password = "hyQUdlbTpwEcdGhQMFD4c96tRcSQX4Ma";
+        let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
         let user = HashedPassword(password.to_owned());
         let result = HashedPassword::new(password);
         assert_eq!(result, user);
