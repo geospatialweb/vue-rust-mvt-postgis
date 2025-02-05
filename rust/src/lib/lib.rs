@@ -1,5 +1,4 @@
 pub mod auth;
-pub mod database;
 pub mod env;
 pub mod geojson;
 pub mod handler;
@@ -7,9 +6,9 @@ pub mod hash;
 pub mod mapbox;
 pub mod model;
 pub mod password;
+pub mod postgres;
 pub mod query;
 pub mod repository;
-pub mod request;
 pub mod response;
 pub mod router;
 pub mod server;
