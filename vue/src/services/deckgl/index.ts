@@ -83,8 +83,9 @@ export default class DeckglService {
       },
       getTooltip: ({ object }: Record<string, Record<string, number[]>>): string | null => {
         if (!object) return null
-        const { points }: Record<string, number[]> = object
-        return `${points.length} Accidents`
+        const { count }: Record<string, number[]> = object
+        if (count) return `${count} Accidents`
+        return null
       }
     })
   }
