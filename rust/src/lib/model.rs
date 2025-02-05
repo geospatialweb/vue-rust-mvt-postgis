@@ -8,7 +8,7 @@ use super::password::TextPassword;
 #[derive(Clone, Deserialize, PartialEq, Serialize, Validate)]
 pub struct User {
     #[garde(email)]
-    pub username: String,
+    pub username: Option<String>,
     #[garde(skip)]
     pub password: Option<TextPassword>,
     #[garde(ascii)]
@@ -17,9 +17,9 @@ pub struct User {
 
 impl User {
     /// Create new User.
-    pub fn new(username: &str, password: &Option<&TextPassword>, role: &str) -> Self {
+    pub fn new(username: &Option<&String>, password: &Option<&TextPassword>, role: &str) -> Self {
         Self {
-            username: username.to_owned(),
+            username: username.cloned(),
             password: password.cloned(),
             role: role.to_owned(),
         }
@@ -47,11 +47,11 @@ mod test {
         let password = "secretPassword";
         let text_password = TextPassword::new(password);
         let user = User {
-            username: username.to_owned(),
+            username: Some(username.to_owned()),
             password: Some(text_password.to_owned()),
             role: role.to_owned(),
         };
-        let result = User::new(username, &Some(&text_password), role);
+        let result = User::new(&Some(&username.to_owned()), &Some(&text_password.to_owned()), role);
         assert_eq!(result, user);
     }
 
@@ -60,11 +60,11 @@ mod test {
         let role = "user";
         let username = "foobar.com";
         let user = User {
-            username: username.to_owned(),
+            username: Some(username.to_owned()),
             password: None,
             role: role.to_owned(),
         };
-        let result = User::new(username, &None, role);
+        let result = User::new(&Some(&username.to_owned()), &None, role);
         assert_eq!(result, user);
     }
 }
