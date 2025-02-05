@@ -7,11 +7,6 @@ import { testData } from '@/test'
 const { credentials } = testData as { credentials: ICredentialsState },
   apiService = Container.get(ApiService)
 
-// beforeEach(async (): Promise<void> => {
-//   const credentialsService = Container.get(CredentialsService)
-//   await credentialsService.register(credentials)
-// })
-
 describe('ApiService test suite 1', (): void => {
   test('getGeoJsonFeatureCollection method should be called with a return', async (): Promise<void> => {
     const { geoJsonParams } = testData as { geoJsonParams: IGeoJsonParam },
