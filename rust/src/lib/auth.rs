@@ -60,7 +60,7 @@ pub fn create_jwt(username: &str, role: &str) -> Result<Jwt, ResponseError> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::postgres::Pool;
+    use crate::database::Pool;
 
     #[tokio::main]
     async fn test_init() {

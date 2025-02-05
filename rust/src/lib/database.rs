@@ -6,17 +6,17 @@ use super::env::Env;
 
 static POOL: OnceCell<PgPool> = OnceCell::new();
 
-/// Postgres Pool unit struct.
+/// Pool struct with PgPool field.
 #[derive(Debug)]
 pub struct Pool {}
 
 impl Pool {
-    /// Get Postgres pool connection from static POOL and return PgPool static lifetime reference.
+    /// Get pool connection from static POOL and return PgPool static lifetime reference.
     pub fn get_pool() -> &'static PgPool {
         POOL.get().unwrap()
     }
 
-    /// Set Postgres pool connection as a static POOL.
+    /// Set pool connection and set static POOL.
     pub async fn set_pool() -> Result<(), Error> {
         let env = Env::get_env();
         let dsn = env.postgres_dsn.as_str();
