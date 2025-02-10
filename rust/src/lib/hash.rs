@@ -53,7 +53,7 @@ mod test {
     fn verify_password_and_hashed_password_err() {
         let password = "secretPassword";
         let text_password = TextPassword::new(password);
-        let hashed_password = "hyQUdlbTpwEcdGhQMFD4c96tRcSQX4Ma";
+        let hashed_password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
         let result = verify_hashed_password_and_password(&HashedPassword::new(hashed_password), &text_password);
         assert!(matches!(result, Err(ResponseError::Argon2(_))));
     }

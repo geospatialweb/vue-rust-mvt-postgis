@@ -2,7 +2,7 @@ use garde::Validate;
 use serde::{Deserialize, Serialize};
 use std::fmt::{Debug, Formatter, Result};
 
-/// Plain text password.
+/// Plain text password struct.
 #[derive(Clone, Deserialize, PartialEq, Serialize, Validate)]
 pub struct TextPassword(#[garde(ascii)] String);
 
@@ -28,7 +28,7 @@ impl Debug for TextPassword {
     }
 }
 
-/// HS256 hashed password.
+/// HS256 hashed password struct.
 #[derive(PartialEq)]
 pub struct HashedPassword(String);
 
@@ -68,7 +68,7 @@ mod test {
 
     #[test]
     fn new_hashed_password() {
-        let password = "$2b$12$OaGlXlV/drI7Zdf4kX32YOU6OZIO9I4hWWkx/TNybgI9tBsP/6EM6";
+        let password = "$argon2id$v=19$m=19456,t=2,p=1$bnVMV1RsQVpxTks5c3hNQQ$r4g+fMtNBV5srD2zgiVsTU/8EkWREGgy6epi7Ux6d+c";
         let user = HashedPassword(password.to_owned());
         let result = HashedPassword::new(password);
         assert_eq!(result, user);

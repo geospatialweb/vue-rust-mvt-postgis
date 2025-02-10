@@ -4,9 +4,12 @@ import { resolve } from 'path'
 
 export default defineConfig({
   build: {
-    chunkSizeWarningLimit: 1500,
+    chunkSizeWarningLimit: 2000,
     emptyOutDir: true,
     outDir: 'static',
+    esbuild: {
+      target: 'es2022'
+    },
     rollupOptions: {
       output: {
         manualChunks: {
