@@ -16,8 +16,7 @@ use super::handler;
 use super::mapbox::MapboxAccessToken;
 
 /// JWT authentication middleware handler.
-fn handle_jwt_auth() -> JwtAuth<JwtClaims, ConstDecoder> {
-    let env = Env::get_env();
+fn handle_jwt_auth(env: &Env) -> JwtAuth<JwtClaims, ConstDecoder> {
     let jwt_secret = env.jwt_secret.as_bytes();
     JwtAuth::new(ConstDecoder::from_secret(jwt_secret))
         .finders(vec![Box::new(HeaderFinder::new())])
@@ -55,13 +54,13 @@ pub fn new() -> Router {
         .hoop(Logger::new())
         .push(
             Router::with_path(&env.api_path_prefix)
-                .hoop(handle_jwt_auth())
+                .hoop(handle_jwt_auth(env))
                 .push(
                     Router::with_path(&env.get_geojson_endpoint)
                         .get(handler::handle_get_geojson_feature_collection))
                 .push(
                     Router::with_path(&env.get_mapbox_access_token_endpoint)
-                        .hoop(affix_state::inject(MapboxAccessToken::new(&env.mapbox_access_token)))
+                        .hoop(affix_state::inject(MapboxAccessToken::new(env.mapbox_access_token.as_str())))
                         .get(handler::handle_get_mapbox_access_token))
                 .push(
                     Router::with_path(&env.get_user_endpoint)
@@ -96,19 +95,16 @@ mod test {
     use super::*;
     use crate::auth;
 
-    fn get_base_url() -> String {
-        let env = Env::get_env();
+    fn get_base_url(env: &Env) -> String {
         format!("http://{}:{}", &env.server_host, &env.server_port)
     }
 
-    fn get_api_url() -> String {
-        let env = Env::get_env();
-        format!("{}{}", &get_base_url(), &env.api_path_prefix)
+    fn get_api_url(env: &Env) -> String {
+        format!("{}{}", &get_base_url(env), &env.api_path_prefix)
     }
 
-    fn get_credentials_url() -> String {
-        let env = Env::get_env();
-        format!("{}{}", &get_base_url(), &env.credentials_path_prefix)
+    fn get_credentials_url(env: &Env) -> String {
+        format!("{}{}", &get_base_url(env), &env.credentials_path_prefix)
     }
 
     fn create_jwt_token() -> String {
@@ -128,7 +124,7 @@ mod test {
         let env = Env::get_env();
         let service = get_service();
         let body = r#"{"username":"foo@bar.com","password":"secretPassword","role":"user"}"#;
-        let url = format!("{}{}", &get_credentials_url(), &env.register_endpoint);
+        let url = format!("{}{}", &get_credentials_url(env), &env.register_endpoint);
         let res = RequestBuilder::new(&url, Method::POST)
             .raw_json(body)
             .send(&service)
@@ -142,7 +138,7 @@ mod test {
         let env = Env::get_env();
         let service = get_service();
         let body = r#"{"username":"foo@bar.com","password":"secretPassword","role":"user"}"#;
-        let url = format!("{}{}", &get_credentials_url(), &env.register_endpoint);
+        let url = format!("{}{}", &get_credentials_url(env), &env.register_endpoint);
         let res = RequestBuilder::new(&url, Method::POST)
             .raw_json(body)
             .send(&service)
@@ -157,7 +153,7 @@ mod test {
         let service = get_service();
         let username = "foo@bar.com";
         let role = "user";
-        let url = format!("{}{}", &get_credentials_url(), &env.validate_user_endpoint);
+        let url = format!("{}{}", &get_credentials_url(env), &env.validate_user_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .queries([("username", username), ("role", role)])
             .send(&service)
@@ -172,7 +168,7 @@ mod test {
         let service = get_service();
         let username = "bar@foo.com";
         let role = "user";
-        let url = format!("{}{}", &get_credentials_url(), &env.validate_user_endpoint);
+        let url = format!("{}{}", &get_credentials_url(env), &env.validate_user_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .queries([("username", username), ("role", role)])
             .send(&service)
@@ -188,7 +184,7 @@ mod test {
         let username = "foo@bar.com";
         let password = "secretPassword";
         let role = "user";
-        let url = format!("{}{}", &get_credentials_url(), &env.login_endpoint);
+        let url = format!("{}{}", &get_credentials_url(env), &env.login_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .queries([("username", username), ("password", password), ("role", role)])
             .send(&service)
@@ -204,7 +200,7 @@ mod test {
         let username = "bar@foo.com";
         let password = "secretPassword";
         let role = "user";
-        let url = format!("{}{}", &get_credentials_url(), &env.login_endpoint);
+        let url = format!("{}{}", &get_credentials_url(env), &env.login_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .queries([("username", username), ("password", password), ("role", role)])
             .send(&service)
@@ -214,14 +210,114 @@ mod test {
     }
 
     #[tokio::test]
-    async fn g_get_geojson_endpoint_ok() {
+    async fn g_get_user_endpoint_ok() {
+        let env = Env::get_env();
+        let service = get_service();
+        let jwt_token = create_jwt_token();
+        let username = "foo@bar.com";
+        let role = "user";
+        let url = format!("{}{}", &get_api_url(env), &env.get_user_endpoint);
+        let res = RequestBuilder::new(&url, Method::GET)
+            .bearer_auth(&jwt_token)
+            .queries([("username", username), ("role", role)])
+            .send(&service)
+            .await;
+        let status_code = res.status_code.unwrap();
+        assert_eq!(status_code, StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn h_get_user_endpoint_err() {
+        let env = Env::get_env();
+        let service = get_service();
+        let jwt_token = create_jwt_token();
+        let username = "bar@foo.com";
+        let role = "user";
+        let url = format!("{}{}", &get_api_url(env), &env.get_user_endpoint);
+        let res = RequestBuilder::new(&url, Method::GET)
+            .bearer_auth(&jwt_token)
+            .queries([("username", username), ("role", role)])
+            .send(&service)
+            .await;
+        let status_code = res.status_code.unwrap();
+        assert_eq!(status_code, StatusCode::INTERNAL_SERVER_ERROR);
+    }
+
+    #[tokio::test]
+    async fn i_update_password_endpoint_ok() {
+        let env = Env::get_env();
+        let service = get_service();
+        let jwt_token = create_jwt_token();
+        let body = r#"{"username":"foo@bar.com","password":"newSecretPassword","role":"user"}"#;
+        let url = format!("{}{}", &get_api_url(env), &env.update_password_endpoint);
+        let res = RequestBuilder::new(&url, Method::PATCH)
+            .bearer_auth(&jwt_token)
+            .raw_json(body)
+            .send(&service)
+            .await;
+        let status_code = res.status_code.unwrap();
+        assert_eq!(status_code, StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn j_update_password_endpoint_err() {
+        let env = Env::get_env();
+        let service = get_service();
+        let jwt_token = create_jwt_token();
+        let body = r#"{"username":"bar@foo.com","password":"newSecretPassword","role":"user"}"#;
+        let url = format!("{}{}", &get_api_url(env), &env.update_password_endpoint);
+        let res = RequestBuilder::new(&url, Method::PATCH)
+            .bearer_auth(&jwt_token)
+            .raw_json(body)
+            .send(&service)
+            .await;
+        let status_code = res.status_code.unwrap();
+        assert_eq!(status_code, StatusCode::INTERNAL_SERVER_ERROR);
+    }
+
+    #[tokio::test]
+    async fn k_delete_user_endpoint_ok() {
+        let env = Env::get_env();
+        let service = get_service();
+        let jwt_token = create_jwt_token();
+        let username = "foo@bar.com";
+        let role = "user";
+        let url = format!("{}{}", &get_api_url(env), &env.delete_user_endpoint);
+        let res = RequestBuilder::new(&url, Method::DELETE)
+            .bearer_auth(&jwt_token)
+            .queries([("username", username), ("role", role)])
+            .send(&service)
+            .await;
+        let status_code = res.status_code.unwrap();
+        assert_eq!(status_code, StatusCode::OK);
+    }
+
+    #[tokio::test]
+    async fn l_delete_user_endpoint_err() {
+        let env = Env::get_env();
+        let service = get_service();
+        let jwt_token = create_jwt_token();
+        let username = "bar@foo.com";
+        let role = "user";
+        let url = format!("{}{}", &get_api_url(env), &env.delete_user_endpoint);
+        let res = RequestBuilder::new(&url, Method::DELETE)
+            .bearer_auth(&jwt_token)
+            .queries([("username", username), ("role", role)])
+            .send(&service)
+            .await;
+        let status_code = res.status_code.unwrap();
+        assert_eq!(status_code, StatusCode::INTERNAL_SERVER_ERROR);
+    }
+
+    #[tokio::test]
+    async fn m_get_geojson_endpoint_ok() {
         let env = Env::get_env();
         let service = get_service();
         let jwt_token = create_jwt_token();
         let columns = "name,description,geom";
         let table = "office";
         let role = "user";
-        let url = format!("{}{}", &get_api_url(), &env.get_geojson_endpoint);
+        let url = format!("{}{}", &get_api_url(env), &env.get_geojson_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .bearer_auth(&jwt_token)
             .queries([("columns", columns), ("table", table), ("role", role)])
@@ -232,14 +328,14 @@ mod test {
     }
 
     #[tokio::test]
-    async fn h_get_geojson_endpoint_err() {
+    async fn n_get_geojson_endpoint_err() {
         let env = Env::get_env();
         let service = get_service();
         let jwt_token = create_jwt_token();
         let columns = "name,description,geom";
         let table = "offices";
         let role = "user";
-        let url = format!("{}{}", &get_api_url(), &env.get_geojson_endpoint);
+        let url = format!("{}{}", &get_api_url(env), &env.get_geojson_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .bearer_auth(&jwt_token)
             .queries([("columns", columns), ("table", table), ("role", role)])
@@ -250,12 +346,12 @@ mod test {
     }
 
     #[tokio::test]
-    async fn i_get_mapbox_access_token_endpoint_ok() {
+    async fn o_get_mapbox_access_token_endpoint_ok() {
         let env = Env::get_env();
         let service = get_service();
         let jwt_token = create_jwt_token();
         let role = "user";
-        let url = format!("{}{}", &get_api_url(), &env.get_mapbox_access_token_endpoint);
+        let url = format!("{}{}", &get_api_url(env), &env.get_mapbox_access_token_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .bearer_auth(&jwt_token)
             .queries([("role", role)])
@@ -266,10 +362,10 @@ mod test {
     }
 
     #[tokio::test]
-    async fn j_get_mapbox_access_token_endpoint_unauthorized_no_bearer_auth() {
+    async fn p_get_mapbox_access_token_endpoint_unauthorized_no_bearer_auth() {
         let env = Env::get_env();
         let service = get_service();
-        let url = format!("{}{}", &get_api_url(), &env.get_mapbox_access_token_endpoint);
+        let url = format!("{}{}", &get_api_url(env), &env.get_mapbox_access_token_endpoint);
         let res = RequestBuilder::new(&url, Method::GET)
             .send(&service)
             .await;
@@ -278,11 +374,11 @@ mod test {
     }
 
     #[tokio::test]
-    async fn k_get_mapbox_access_token_endpoint_forbidden_expired_token() {
+    async fn q_get_mapbox_access_token_endpoint_forbidden_expired_token() {
         let env = Env::get_env();
         let service = get_service();
-        let url = format!("{}{}", &get_api_url(), &env.get_mapbox_access_token_endpoint);
-        let expired_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiYXVkIjoiZ2Vvc3BhdGlhbHdlYi5jYSIsImV4cCI6MTY3OTk0MzkyNywiaXNzIjoiZ2Vvc3BhdGlhbHdlYi5jYSIsIm5hbWUiOiJqb2huY2FtcGJlbGxAZ2Vvc3BhdGlhbHdlYi5jYSIsInN1YiI6IjEifQ.w8oD07bCbCp7h4vfJU9X4f8Pam4QRrOd-se4Pggices";
+        let url = format!("{}{}", &get_api_url(env), &env.get_mapbox_access_token_endpoint);
+        let expired_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3Mzg4NzE0NzMsImlzcyI6Imdlb3NwYXRpYWx3ZWIuY2EiLCJyb2xlcyI6InVzZXIiLCJzdWIiOiJmb29AYmFyLmNvbSJ9.9yzeOAb8R8z8woQSi44NXtKS2uZhBQ7qOnAqmg5XYTo";
         let res = RequestBuilder::new(&url, Method::GET)
             .bearer_auth(expired_token)
             .send(&service)
@@ -292,116 +388,16 @@ mod test {
     }
 
     #[tokio::test]
-    async fn l_get_mapbox_access_token_endpoint_forbidden_invalid_token() {
+    async fn r_get_mapbox_access_token_endpoint_forbidden_invalid_token() {
         let env = Env::get_env();
         let service = get_service();
-        let url = format!("{}{}", &get_api_url(), &env.get_mapbox_access_token_endpoint);
-        let invalid_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiYXVkIjoiZ2Vvc3BhdGlhbHdlYi5jYSIsImV4cCI6MTY3OTk0MzkyNywiaXNzIjoiZ2Vvc3BhdGlhbHdlYi5jYSIsIm5hbWUiOiJqb2huY2FtcGJlbGxAZ2Vvc3BhdGlhbHdlYi5jYSIsInN1YiI6IjEifQ.w8oD07bCbCp7h4vfJU9X4f8Pam4QRrOd-se4PggicesJ";
+        let url = format!("{}{}", &get_api_url(env), &env.get_mapbox_access_token_endpoint);
+        let invalid_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3Mzg4NzE0NzMsImlzcyI6Imdlb3NwYXRpYWx3ZWIuY2EiLCJyb2xlcyI6InVzZXIiLCJzdWIiOiJmb29AYmFyLmNvbSJ9.9yzeOAb8R8z8woQSi44NXtKS2uZhBQ7qOnAqmg5XYTo";
         let res = RequestBuilder::new(&url, Method::GET)
             .bearer_auth(invalid_token)
             .send(&service)
             .await;
         let status_code = res.status_code.unwrap();
         assert_eq!(status_code, StatusCode::FORBIDDEN);
-    }
-
-    #[tokio::test]
-    async fn m_get_user_endpoint_ok() {
-        let env = Env::get_env();
-        let service = get_service();
-        let jwt_token = create_jwt_token();
-        let username = "foo@bar.com";
-        let role = "user";
-        let url = format!("{}{}", &get_api_url(), &env.get_user_endpoint);
-        let res = RequestBuilder::new(&url, Method::GET)
-            .bearer_auth(&jwt_token)
-            .queries([("username", username), ("role", role)])
-            .send(&service)
-            .await;
-        let status_code = res.status_code.unwrap();
-        assert_eq!(status_code, StatusCode::OK);
-    }
-
-    #[tokio::test]
-    async fn n_get_user_endpoint_err() {
-        let env = Env::get_env();
-        let service = get_service();
-        let jwt_token = create_jwt_token();
-        let username = "bar@foo.com";
-        let role = "user";
-        let url = format!("{}{}", &get_api_url(), &env.get_user_endpoint);
-        let res = RequestBuilder::new(&url, Method::GET)
-            .bearer_auth(&jwt_token)
-            .queries([("username", username), ("role", role)])
-            .send(&service)
-            .await;
-        let status_code = res.status_code.unwrap();
-        assert_eq!(status_code, StatusCode::INTERNAL_SERVER_ERROR);
-    }
-
-    #[tokio::test]
-    async fn o_update_password_endpoint_ok() {
-        let env = Env::get_env();
-        let service = get_service();
-        let jwt_token = create_jwt_token();
-        let body = r#"{"username":"foo@bar.com","password":"newSecretPassword","role":"user"}"#;
-        let url = format!("{}{}", &get_api_url(), &env.update_password_endpoint);
-        let res = RequestBuilder::new(&url, Method::PATCH)
-            .bearer_auth(&jwt_token)
-            .raw_json(body)
-            .send(&service)
-            .await;
-        let status_code = res.status_code.unwrap();
-        assert_eq!(status_code, StatusCode::OK);
-    }
-
-    #[tokio::test]
-    async fn p_update_password_endpoint_err() {
-        let env = Env::get_env();
-        let service = get_service();
-        let jwt_token = create_jwt_token();
-        let body = r#"{"username":"bar@foo.com","password":"newSecretPassword","role":"user"}"#;
-        let url = format!("{}{}", &get_api_url(), &env.update_password_endpoint);
-        let res = RequestBuilder::new(&url, Method::PATCH)
-            .bearer_auth(&jwt_token)
-            .raw_json(body)
-            .send(&service)
-            .await;
-        let status_code = res.status_code.unwrap();
-        assert_eq!(status_code, StatusCode::INTERNAL_SERVER_ERROR);
-    }
-
-    #[tokio::test]
-    async fn q_delete_user_endpoint_ok() {
-        let env = Env::get_env();
-        let service = get_service();
-        let jwt_token = create_jwt_token();
-        let username = "foo@bar.com";
-        let role = "user";
-        let url = format!("{}{}", &get_api_url(), &env.delete_user_endpoint);
-        let res = RequestBuilder::new(&url, Method::DELETE)
-            .bearer_auth(&jwt_token)
-            .queries([("username", username), ("role", role)])
-            .send(&service)
-            .await;
-        let status_code = res.status_code.unwrap();
-        assert_eq!(status_code, StatusCode::OK);
-    }
-
-    #[tokio::test]
-    async fn r_delete_user_endpoint_err() {
-        let env = Env::get_env();
-        let service = get_service();
-        let jwt_token = create_jwt_token();
-        let username = "bar@foo.com";
-        let role = "user";
-        let url = format!("{}{}", &get_api_url(), &env.delete_user_endpoint);
-        let res = RequestBuilder::new(&url, Method::DELETE)
-            .bearer_auth(&jwt_token)
-            .queries([("username", username), ("role", role)])
-            .send(&service)
-            .await;
-        let status_code = res.status_code.unwrap();
-        assert_eq!(status_code, StatusCode::INTERNAL_SERVER_ERROR);
     }
 }

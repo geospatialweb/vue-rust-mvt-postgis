@@ -4,7 +4,29 @@ use std::fmt::{Debug, Formatter, Result};
 
 use super::password::TextPassword;
 
-/// User struct with username, password and role fields.
+/// Layer query URL params with `garde` validation.
+#[derive(Debug, Clone, Deserialize, PartialEq, Validate)]
+pub struct Layer {
+    #[garde(ascii)]
+    pub columns: String,
+    #[garde(ascii)]
+    pub table: String,
+    #[garde(ascii)]
+    pub role: String,
+}
+
+impl Layer {
+    /// Create new Layer.
+    pub fn new(columns: &str, table: &str, role: &str) -> Self {
+        Self {
+            columns: columns.to_owned(),
+            table: table.to_owned(),
+            role: role.to_owned(),
+        }
+    }
+}
+
+/// User struct with username, password and role fields with `garde` validation.
 #[derive(Clone, Deserialize, PartialEq, Serialize, Validate)]
 pub struct User {
     #[garde(email)]
@@ -41,9 +63,23 @@ mod test {
     use super::*;
 
     #[test]
-    fn new_user_password() {
+    fn new_layer() {
+        let columns = "name,description,geom";
+        let table = "office";
         let role = "user";
-        let username = "foobar.com";
+        let layer = Layer {
+            columns: columns.to_owned(),
+            table: table.to_owned(),
+            role: role.to_owned(),
+        };
+        let result = Layer::new(columns, table, role);
+        assert_eq!(result, layer);
+    }
+
+    #[test]
+    fn new_user_with_password() {
+        let role = "user";
+        let username = String::from("foo@bar.com");
         let password = "secretPassword";
         let text_password = TextPassword::new(password);
         let user = User {
@@ -51,20 +87,20 @@ mod test {
             password: Some(text_password.to_owned()),
             role: role.to_owned(),
         };
-        let result = User::new(&Some(&username.to_owned()), &Some(&text_password.to_owned()), role);
+        let result = User::new(&Some(&username), &Some(&text_password), role);
         assert_eq!(result, user);
     }
 
     #[test]
-    fn new_user_no_password() {
+    fn new_user_without_password() {
         let role = "user";
-        let username = "foobar.com";
+        let username = String::from("foo@bar.com");
         let user = User {
             username: Some(username.to_owned()),
             password: None,
             role: role.to_owned(),
         };
-        let result = User::new(&Some(&username.to_owned()), &None, role);
+        let result = User::new(&Some(&username), &None, role);
         assert_eq!(result, user);
     }
 }

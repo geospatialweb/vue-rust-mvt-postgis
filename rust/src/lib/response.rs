@@ -69,14 +69,14 @@ pub enum ResponseError {
     #[error("parse int error: {0}")]
     ParseInt(#[from] ParseIntError),
 
-    #[error("geojson query params validation error")]
-    GeoJsonParamsValidation,
-
     #[error("jwt forbidden")]
     JwtForbidden,
 
     #[error("jwt unauthorized")]
     JwtUnauthorized,
+
+    #[error("layer query params validation error")]
+    LayerValidation,
 
     #[error("role validation error")]
     RoleValidation,
@@ -95,9 +95,9 @@ impl ResponseError {
             Self::Jwt(_) => StatusCode::UNAUTHORIZED,
             Self::Parse(_) => StatusCode::BAD_REQUEST,
             Self::ParseInt(_) => StatusCode::INTERNAL_SERVER_ERROR,
-            Self::GeoJsonParamsValidation => StatusCode::BAD_REQUEST,
             Self::JwtForbidden => StatusCode::FORBIDDEN,
             Self::JwtUnauthorized => StatusCode::UNAUTHORIZED,
+            Self::LayerValidation => StatusCode::BAD_REQUEST,
             Self::RoleValidation => StatusCode::BAD_REQUEST,
             Self::UserValidation => StatusCode::BAD_REQUEST,
         }

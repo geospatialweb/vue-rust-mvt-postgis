@@ -1,19 +1,18 @@
 use garde::Validate;
 
-use super::model::User;
-use super::repository::GeoJsonParams;
+use super::model::{Layer, User};
 use super::response::ResponseError;
 
-/// Validate geojson query params with `garde` field constraints in GeoJsonParams struct.
-pub fn validate_geojson_params(params: &GeoJsonParams) -> Result<(), ResponseError> {
-    if params.validate().is_err() {
-        return Err(ResponseError::GeoJsonParamsValidation);
+/// Validate layer query params with `garde` field constraints in Layer struct.
+pub fn validate_layer(layer: &Layer) -> Result<(), ResponseError> {
+    if layer.validate().is_err() {
+        return Err(ResponseError::LayerValidation);
     }
     let tables = ["office", "places", "trails"];
-    if !tables.contains(&params.table.as_str()) {
-        return Err(ResponseError::GeoJsonParamsValidation);
+    if !tables.contains(&layer.table.as_str()) {
+        return Err(ResponseError::LayerValidation);
     }
-    validate_role(&params.role)?;
+    validate_role(&layer.role)?;
     Ok(())
 }
 
@@ -41,40 +40,32 @@ mod test {
     use crate::password::TextPassword;
 
     #[test]
-    fn validate_geojson_params_ok() {
+    fn validate_layer_ok() {
         let columns = "name,description,geom";
         let table = "office";
         let role = "user";
-        let params = GeoJsonParams {
-            columns: columns.to_owned(),
-            table: table.to_owned(),
-            role: role.to_owned(),
-        };
-        let result = validate_geojson_params(&params);
+        let layer = Layer::new(columns, table, role);
+        let result = validate_layer(&layer);
         assert!(result.is_ok());
     }
 
     #[test]
-    fn validate_geojson_params_err() {
+    fn validate_layer_err() {
         let columns = "name,description,geom";
         let table = "offices";
         let role = "user";
-        let params = GeoJsonParams {
-            columns: columns.to_owned(),
-            table: table.to_owned(),
-            role: role.to_owned(),
-        };
-        let result = validate_geojson_params(&params);
-        assert!(matches!(result, Err(ResponseError::GeoJsonParamsValidation)));
+        let layer = Layer::new(columns, table, role);
+        let result = validate_layer(&layer);
+        assert!(matches!(result, Err(ResponseError::LayerValidation)));
     }
 
     #[test]
     fn validate_user_ok() {
         let role = "user";
-        let username = "foo@bar.com";
+        let username = String::from("foo@bar.com");
         let password = "secretPassword";
         let text_password = TextPassword::new(password);
-        let user = User::new(&Some(&username.to_owned()), &Some(&text_password), role);
+        let user = User::new(&Some(&username), &Some(&text_password), role);
         let result = validate_user(&user);
         assert!(result.is_ok());
     }
@@ -82,10 +73,10 @@ mod test {
     #[test]
     fn validate_user_err() {
         let role = "user";
-        let username = "foobar.com"; // must be email format
+        let username = String::from("foobar.com"); // must be email format
         let password = "secretPassword";
         let text_password = TextPassword::new(password);
-        let user = User::new(&Some(&username.to_owned()), &Some(&text_password), role);
+        let user = User::new(&Some(&username), &Some(&text_password), role);
         let result = validate_user(&user);
         assert!(matches!(result, Err(ResponseError::UserValidation)));
     }
@@ -93,10 +84,10 @@ mod test {
     #[test]
     fn validate_role_ok() {
         let role = "user";
-        let username = "foo@bar.com";
+        let username = String::from("foo@bar.com");
         let password = "secretPassword";
         let text_password = TextPassword::new(password);
-        let user = User::new(&Some(&username.to_owned()), &Some(&text_password), role);
+        let user = User::new(&Some(&username), &Some(&text_password), role);
         let result = validate_user(&user);
         assert!(result.is_ok());
     }
@@ -104,10 +95,10 @@ mod test {
     #[test]
     fn validate_role_err() {
         let role = "test";
-        let username = "foo@bar.com";
+        let username = String::from("foo@bar.com");
         let password = "secretPassword";
         let text_password = TextPassword::new(password);
-        let user = User::new(&Some(&username.to_owned()), &Some(&text_password), role);
+        let user = User::new(&Some(&username), &Some(&text_password), role);
         let result = validate_user(&user);
         assert!(matches!(result, Err(ResponseError::RoleValidation)));
     }

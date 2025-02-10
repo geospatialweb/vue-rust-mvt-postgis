@@ -24,8 +24,7 @@ fn create_service() -> Service {
 }
 
 /// Set server host with http request service.
-pub async fn set_server() -> Result<(), Error> {
-    let env = Env::get_env();
+pub async fn set_server(env: &Env) -> Result<(), Error> {
     let host = format!("{}:{}", &env.server_host, &env.server_port);
     let service = create_service();
     if env.app_env == env.dev_env {

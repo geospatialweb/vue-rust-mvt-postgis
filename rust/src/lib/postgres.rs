@@ -17,8 +17,7 @@ impl Pool {
     }
 
     /// Set Postgres pool connection as a static POOL.
-    pub async fn set_pool() -> Result<(), Error> {
-        let env = Env::get_env();
+    pub async fn set_pool(env: &Env) -> Result<(), Error> {
         let dsn = env.postgres_dsn.as_str();
         let pool = create_pool_connection(dsn).await?;
         POOL.set(pool).ok();
@@ -29,7 +28,7 @@ impl Pool {
 /// Create Postgres pool connection.
 async fn create_pool_connection(dsn: &str) -> Result<PgPool, Error> {
     let pool = PgPool::connect(dsn).await?;
-    info!("database pool connection ok");
+    info!("postgres pool connection ok");
     Ok(pool)
 }
 
@@ -39,7 +38,8 @@ mod test {
 
     #[tokio::test]
     async fn set_pool_ok() {
-        let result = Pool::set_pool().await;
+        let env = Env::get_env();
+        let result = Pool::set_pool(env).await;
         assert!(result.is_ok());
     }
 

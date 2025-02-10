@@ -13,10 +13,11 @@ async fn main() {
     if let Err(err) = Env::set_env() {
         return error!("env error: {}", &err);
     }
-    if let Err(err) = Pool::set_pool().await {
+    let env = Env::get_env();
+    if let Err(err) = Pool::set_pool(env).await {
         return error!("postgres error: {}", &err);
     }
-    if let Err(err) = server::set_server().await {
+    if let Err(err) = server::set_server(env).await {
         return error!("server error: {}", &err);
     }
 }
