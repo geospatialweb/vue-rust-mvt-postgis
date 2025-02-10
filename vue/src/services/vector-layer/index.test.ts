@@ -1,8 +1,9 @@
-import { LayerSpecification } from 'mapbox-gl'
 import { Container } from 'typedi'
 
 import { vectorLayers } from '@/configuration'
 import { VectorLayerService } from '@/services'
+
+import type { LayerSpecification } from 'mapbox-gl'
 
 describe('VectorLayerService test suite', (): void => {
   test('vectorLayers getter should be called with a return', (): void => {

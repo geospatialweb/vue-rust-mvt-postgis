@@ -1,8 +1,9 @@
 import { Container } from 'typedi'
 
-import { ICredentialsState, IGeoJsonParam } from '@/interfaces'
 import { ApiService, CredentialsService } from '@/services'
 import { testData } from '@/test'
+
+import type { ICredentialsState, IGeoJsonParam } from '@/interfaces'
 
 const { credentials } = testData as { credentials: ICredentialsState },
   apiService = Container.get(ApiService)

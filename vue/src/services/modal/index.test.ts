@@ -1,8 +1,9 @@
 import { Container } from 'typedi'
 
-import { IModalState } from '@/interfaces'
 import { ModalService } from '@/services'
 import { testData } from '@/test'
+
+import type { IModalState } from '@/interfaces'
 
 describe('ModalService test suite', (): void => {
   const modalService = Container.get(ModalService)

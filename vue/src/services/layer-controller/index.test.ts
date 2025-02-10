@@ -1,9 +1,10 @@
 import { Container } from 'typedi'
 
 import { layerControllerLayers } from '@/configuration'
-import { ILayerControllerState } from '@/interfaces'
 import { LayerControllerService } from '@/services'
 import { mockMapImplementation } from '@/test'
+
+import type { ILayerControllerState } from '@/interfaces'
 
 describe('LayerControllerService test suite', (): void => {
   const ids = layerControllerLayers.map((layer: ILayerControllerState): string => <string>Object.values(layer)[0]),

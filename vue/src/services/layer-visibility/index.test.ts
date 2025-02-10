@@ -1,9 +1,10 @@
 import { Container } from 'typedi'
 
 import { Layer } from '@/enums'
-import { ILayerVisibilityState } from '@/interfaces'
 import { LayerVisibilityService } from '@/services'
 import { testData } from '@/test'
+
+import type { ILayerVisibilityState } from '@/interfaces'
 
 describe('LayerVisibilityService test suite', (): void => {
   const layerVisibilityService = Container.get(LayerVisibilityService)

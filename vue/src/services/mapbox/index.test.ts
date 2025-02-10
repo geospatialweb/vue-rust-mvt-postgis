@@ -1,9 +1,10 @@
 import { Container } from 'typedi'
 
 import { Layer } from '@/enums'
-import { ITrail } from '@/interfaces'
 import { MapboxService } from '@/services'
 import { mockMapImplementation, testData } from '@/test'
+
+import type { ITrail } from '@/interfaces'
 
 describe('MapboxService test suite', (): void => {
   const mapboxService = Container.get(MapboxService)

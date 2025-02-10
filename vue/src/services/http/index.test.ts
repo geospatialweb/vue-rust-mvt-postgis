@@ -1,10 +1,11 @@
 import { Container } from 'typedi'
 
 import { Endpoint, EndpointPrefix } from '@/enums'
-import { ICredentialsState } from '@/interfaces'
 import { ApiService, CredentialsService, HttpService } from '@/services'
 import { testData } from '@/test'
-import { HttpRequest } from '@/types'
+
+import type { ICredentialsState } from '@/interfaces'
+import type { HttpRequest } from '@/types'
 
 /* prettier-ignore */
 const { credentials: { username, password, role } } = testData as { credentials: ICredentialsState },

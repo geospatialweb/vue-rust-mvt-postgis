@@ -1,12 +1,13 @@
 import { Container } from 'typedi'
 
-import { ICredentialsState } from '@/interfaces'
 import { ApiService, AuthenticationService, CredentialsService } from '@/services'
 import { testData } from '@/test'
 
-const { credentials } = testData as { credentials: ICredentialsState }
+import type { ICredentialsState } from '@/interfaces'
 
 describe('AuthenticationService test suite', (): void => {
+  const { credentials } = testData as { credentials: ICredentialsState }
+
   beforeEach(async (): Promise<void> => {
     const credentialsService = Container.get(CredentialsService)
     await credentialsService.register(credentials)

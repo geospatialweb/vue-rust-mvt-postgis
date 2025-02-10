@@ -1,8 +1,9 @@
 import { Container } from 'typedi'
 
-import { IAppState } from '@/interfaces'
 import { AppService } from '@/services'
 import { testData } from '@/test'
+
+import type { IAppState } from '@/interfaces'
 
 describe('AppService test suite', (): void => {
   const appService = Container.get(AppService)

@@ -1,9 +1,10 @@
-import { Feature } from 'geojson'
-import { LngLatLike } from 'mapbox-gl'
 import { Container } from 'typedi'
 
 import { PopupService } from '@/services'
 import { mockMapImplementation, testData } from '@/test'
+
+import type { Feature } from 'geojson'
+import type { LngLatLike } from 'mapbox-gl'
 
 describe('PopupService test suite', (): void => {
   const popupService = Container.get(PopupService)

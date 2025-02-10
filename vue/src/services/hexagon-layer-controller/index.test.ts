@@ -1,9 +1,10 @@
 import { Container } from 'typedi'
 
 import { hexagonLayerControllerSliders } from '@/configuration'
-import { IHexagonLayerControllerSlider, IHexagonLayerControllerSliderLabelsState } from '@/interfaces'
 import { HexagonLayerControllerService } from '@/services'
 import { testData } from '@/test'
+
+import type { IHexagonLayerControllerSlider, IHexagonLayerControllerSliderLabelsState } from '@/interfaces'
 
 describe('HexagonLayerControllerService test suite', (): void => {
   const hexagonLayerControllerService = Container.get(HexagonLayerControllerService)

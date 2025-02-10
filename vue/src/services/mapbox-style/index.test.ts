@@ -1,8 +1,9 @@
 import { Container } from 'typedi'
 
-import { IMapboxStylesState } from '@/interfaces'
 import { MapboxStyleService } from '@/services'
 import { testData } from '@/test'
+
+import type { IMapboxStylesState } from '@/interfaces'
 
 describe('MapboxStyleService test suite', (): void => {
   const mapboxStyleService = Container.get(MapboxStyleService)
