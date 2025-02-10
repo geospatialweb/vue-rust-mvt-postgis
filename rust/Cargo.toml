@@ -2,7 +2,7 @@
 name = "vue-rust-mvt-postgis"
 version = "3.0.0"
 edition = "2021"
-rust-version = "1.84.0"
+rust-version = "1.84.1"
 authors = ["John Campbell <johncampbell@geospatialweb.ca> <http://www.linkedin.com/in/geospatialweb>"]
 repository = "https://gitlab.com/geospatialweb/vue-rust-mvt-postgis"
 homepage = "https://www.geospatialweb.ca/"
