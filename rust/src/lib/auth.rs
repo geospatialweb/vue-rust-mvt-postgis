@@ -5,8 +5,8 @@ use serde::{Deserialize, Serialize};
 use super::env::Env;
 use super::response::ResponseError;
 
-/// Auth JWT token and expiry.
-#[derive(Debug, Serialize)]
+/// JWT struct with token and expiry fields.
+#[derive(Debug, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Jwt {
     jwt_expiry: i64,
@@ -23,8 +23,8 @@ impl Jwt {
     }
 }
 
-/// JWT claims issuer, subject and expiry.
-#[derive(Debug, Deserialize, Serialize)]
+/// JWT claims struct with expiry, issuer, roles and subject fields.
+#[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct JwtClaims {
     exp: i64,
     iss: String,
@@ -60,13 +60,10 @@ pub fn create_jwt(username: &str, role: &str) -> Result<Jwt, ResponseError> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::postgres::Pool;
 
-    #[tokio::main]
-    async fn test_init() {
+    fn test_init() {
         dotenvy::dotenv().unwrap();
         Env::set_env().unwrap();
-        Pool::set_pool().await.unwrap();
     }
 
     #[test]
@@ -76,5 +73,35 @@ mod test {
         let username = "foo@bar.com";
         let result = create_jwt(username, role);
         assert!(result.is_ok());
+    }
+
+    #[test]
+    fn auth_new_jwt() {
+        let expiry = 30;
+        let jwt_expiry = expiry as i64;
+        let jwt_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3Mzg4NzE0NzMsImlzcyI6Imdlb3NwYXRpYWx3ZWIuY2EiLCJyb2xlcyI6InVzZXIiLCJzdWIiOiJmb29AYmFyLmNvbSJ9.9yzeOAb8R8z8woQSi44NXtKS2uZhBQ7qOnAqmg5XYTo";
+        let jwt = Jwt {
+            jwt_expiry,
+            jwt_token: jwt_token.to_owned(),
+        };
+        let result = Jwt::new(&jwt_expiry, jwt_token);
+        assert_eq!(result, jwt);
+    }
+
+    #[test]
+    fn auth_new_jwt_claims() {
+        let minutes = 30;
+        let expiry = (Utc::now() + Duration::minutes(minutes)).timestamp();
+        let issuer = "bar.com";
+        let roles = "user";
+        let subject = "foo@bar.com";
+        let jwt_claims = JwtClaims {
+            exp: expiry,
+            iss: issuer.to_owned(),
+            roles: roles.to_owned(),
+            sub: subject.to_owned(),
+        };
+        let result = JwtClaims::new(&expiry, issuer, roles, subject);
+        assert_eq!(result, jwt_claims);
     }
 }

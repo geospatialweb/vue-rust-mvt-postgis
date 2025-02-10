@@ -6,7 +6,7 @@ use tracing::info;
 static ENV: OnceCell<Env> = OnceCell::new();
 
 /// Environment variables parsed from .env file.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, PartialEq)]
 pub struct Env {
     pub api_path_prefix: String,
     pub app_env: String,
@@ -57,5 +57,12 @@ mod test {
     fn set_env_ok() {
         let result = Env::set_env();
         assert!(result.is_ok());
+    }
+
+    #[test]
+    fn get_env_ok() {
+        let env = ENV.get().unwrap();
+        let result = Env::get_env();
+        assert_eq!(result, env);
     }
 }

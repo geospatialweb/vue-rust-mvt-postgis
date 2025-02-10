@@ -11,6 +11,15 @@ pub struct JsonFeature {
     pub feature: String,
 }
 
+impl JsonFeature {
+    /// Create new JsonFeature.
+    pub fn new(feature: &str) -> Self {
+        Self {
+            feature: feature.to_owned(),
+        }
+    }
+}
+
 /// Create GeoJSON feature collection from a vector of GeoJSON features.
 pub fn create_feature_collection(json_features: &[JsonFeature]) -> Result<FeatureCollection, ResponseError> {
     if !json_features.is_empty() {
@@ -44,18 +53,20 @@ fn create_geojson_features(json_features: &[JsonFeature]) -> Result<Vec<Feature>
 mod test {
     use super::*;
 
-    impl JsonFeature {
-        pub fn new(feature: &str) -> Self {
-            Self {
-                feature: feature.to_owned(),
-            }
-        }
-    }
-
     fn create_feature() -> String {
         String::from(
             r#"{"geometry":{"coordinates":[-76.011422,44.384362],"type":"Point"},"properties":{"description":"19 Reynolds Road, Lansdowne, ON. Open Monday to Friday 8:30am - 4:30pm","name":"Frontenac Arch Biosphere Office"},"type":"Feature"}"#
         )
+    }
+
+    #[test]
+    fn new_json_feature() {
+        let feature = create_feature();
+        let json_feature = JsonFeature {
+            feature: feature.to_owned(),
+        };
+        let result = JsonFeature::new(&feature);
+        assert_eq!(result, json_feature);
     }
 
     #[test]
