@@ -3,7 +3,7 @@ use geojson::Error as GeoJsonError;
 use jsonwebtoken::errors::Error as JwtError;
 use salvo::{
     http::{ParseError, Response, StatusCode},
-    Scribe,
+    prelude::Scribe,
 };
 use serde::Serialize;
 use serde_json::json;

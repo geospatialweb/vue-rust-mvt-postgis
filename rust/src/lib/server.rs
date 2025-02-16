@@ -1,11 +1,11 @@
 #![cfg_attr(rustfmt, rustfmt_skip)]
 
 use salvo::{
+    Error,
     catcher::Catcher,
     conn::rustls::{Keycert, RustlsConfig},
-    prelude::{Listener, TcpListener},
+    prelude::{Listener, Service, TcpListener},
     server::{Server, ServerHandle},
-    Error, Service,
 };
 use tokio::signal::{self, unix};
 use tracing::{error, info};

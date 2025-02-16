@@ -1,4 +1,4 @@
-use argon2::{hash_encoded, verify_encoded, Config, Error};
+use argon2::{Config, Error};
 
 use super::env::Env;
 use super::password::{HashedPassword, TextPassword};
@@ -10,7 +10,7 @@ pub fn generate_hashed_password(password: &TextPassword) -> Result<HashedPasswor
     let config = Config::default();
     let password = password.as_str().as_bytes();
     let salt = env.hash_salt.as_bytes();
-    let hash = hash_encoded(password, salt, &config)?;
+    let hash = argon2::hash_encoded(password, salt, &config)?;
     let hashed_password = HashedPassword::new(&hash);
     Ok(hashed_password)
 }
@@ -20,7 +20,7 @@ pub fn verify_hashed_password_and_password(
     hashed_password: &HashedPassword,
     password: &TextPassword,
 ) -> Result<(), ResponseError> {
-    let verify = verify_encoded(hashed_password.as_str(), password.as_str().as_bytes());
+    let verify = argon2::verify_encoded(hashed_password.as_str(), password.as_str().as_bytes());
     match verify {
         Ok(true) => Ok(()),
         Ok(false) => Err(ResponseError::Argon2(Error::DecodingFail)),

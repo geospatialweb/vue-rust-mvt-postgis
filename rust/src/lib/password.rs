@@ -18,9 +18,9 @@ impl TextPassword {
     }
 }
 
-/// Manually implement Debug to prevent password leakage into logs.
 #[rustfmt::skip]
 impl Debug for TextPassword {
+    /// Manually implement Debug to prevent password leakage into logs.
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         f.debug_struct("TextPassword")
          .field("password", &"<hidden>")
@@ -44,9 +44,9 @@ impl HashedPassword {
     }
 }
 
-/// Manually implement Debug to prevent password leakage into logs.
 #[rustfmt::skip]
 impl Debug for HashedPassword {
+    /// Manually implement Debug to prevent password leakage into logs.
     fn fmt(&self, f: &mut Formatter<'_>) -> Result {
        f.debug_struct("HashedPassword")
         .field("password", &"<hidden>")
